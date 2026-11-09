@@ -39,7 +39,7 @@ class ExcelReportAlarmMaker():
             dynamic_info = DynamicInfoUtil()
             site = dynamic_info.get_value(2, SC.K_SCREEN_INPUT, SC.K_SITE1)
         except Exception as e:
-            LoggerUtil.get_logger().error(f'ExcelRpAlarmMaker _normalize : exception {e}')
+            LoggerUtil.get_logger().error(f'ExcelRpAl Cell _normalize : exception {e}')
             raise RuntimeError
 
         cellxg_item_list_all = \

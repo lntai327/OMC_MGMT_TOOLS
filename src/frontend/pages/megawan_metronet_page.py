@@ -171,7 +171,7 @@ class MegawanMetronetPage(BasePage):
                     expand=True,
                 ),
                 pagination_bar,
-                # detail_record_section, # TODO
+                detail_record_section,
             ],
             spacing=0,
             expand=True,

@@ -1,22 +1,98 @@
 from backend.constant import type as T
-from backend.repositories.bc_bts.excel_rp_alarm_chay_mpd.excel_rp_alarm_loader import *
-from backend.repositories.bc_bts.excel_enodeb4g.excel_enodeb4g_maker import ExcelEnodeb4gSheetMaker
-from backend.repositories.bc_bts.excel_gnodeb5g.excel_gnodeb5g_maker import ExcelGnodeb5gSheetMaker
-from backend.repositories.bc_bts.excel_nodeb3g.excel_nodeb3g_maker import ExcelNodeb3gSheetMaker
+from backend.repositories.bc_bts.excel_enodeb4g_repo import ExcelEnodeb4gService
+from backend.repositories.bc_bts.excel_gnodeb5g_repo import ExcelGnodeb5gService
+from backend.repositories.bc_bts.excel_nodeb3g_repo import ExcelNodeb3gService
 from backend.repositories.common.excel_tht_ttvt.excel_tht_ttvt_maker import ExcelThtTtvtMaker
 from backend.repositories.common_csht_ccl_repo import CshtCclService
+from backend.util.ex_handle_util import ExcelHandleUtil
 
+from share.util.dynamic_info_util import DynamicInfoUtil
+from share.util.explorer_util import ExplorerUtil
 from share.util.logger_util import LoggerUtil
 from share.constant import constant as SC
 from share.constant import type as ST
 
-class ExcelRpAlarmMaker():
+class DataSheet:
+    def __init__(self):
+        self._ten_ne = None
+        self._tgian_su_co = None
+        self._tgian_clr = None
+        self._tgain_cbao: str = None
+        self._vnp_ghi_chu = None
+        self._tinh_ghi_chu = None
+        self._loai_su_co = None
+        self._time_ac = None
+        self._phan_loai_tram = None
+        self._he_thong = None
+        self._dvi_qly = None
+
+    def __repr__(self):
+        return str(self.to_dict())
+
+    def to_dict(self):
+        return {
+            SC.K_TEN_NE: self._ten_ne,
+            SC.K_TG_SU_CO_1: self._tgian_su_co,
+            SC.K_TG_CLR: self._tgian_clr,
+            SC.K_TG_CBAO: self._tgain_cbao,
+            SC.K_VNP_GHI_CHU: self._vnp_ghi_chu,
+            SC.K_TINH_GHI_CHU: self._tinh_ghi_chu,
+            SC.K_LOAI_SU_CO: self._loai_su_co,
+            SC.K_TIME_AC: self._time_ac,
+            SC.K_PHAN_LOAI_TRAM: self._phan_loai_tram,
+            SC.K_TTHAI_CLR: self._tthai_clr,
+            SC.K_HE_THONG: self._he_thong,
+            SC.K_DVI_QLY: self._dvi_qly,
+        }
+
+    def load(self, item_dic):
+        self._ten_ne = item_dic.get(SC.K_UI_TEN_NE)
+        self._tgian_su_co = item_dic.get(SC.K_UI_TG_SU_CO1)
+        self._tgian_clr = item_dic.get(SC.K_UI_TG_CLR)
+        self._tgain_cbao = item_dic.get(SC.K_UI_TG_CBAO)
+        self._vnp_ghi_chu = item_dic.get(SC.K_UI_VNP_GHI_CHU)
+        self._tinh_ghi_chu = item_dic.get(SC.K_UI_TINH_GHI_CHU)
+        self._loai_su_co = item_dic.get(SC.K_UI_LOAI_SU_CO)
+        self._time_ac = item_dic.get(SC.K_UI_TIME_AC)
+        self._phan_loai_tram = item_dic.get(SC.K_UI_PHAN_LOAI_TRAM1)
+        self._tthai_clr = item_dic.get(SC.K_UI_TTHAI_CLR)
+        self._he_thong = item_dic.get(SC.K_UI_HE_THONG)
+        self._dvi_qly = item_dic.get(SC.K_UI_DON_VI_QUAN_LY)
+        return self
+
+class ExcelRpAlarmLoader:
+    def __init__(self):
+        pass
+
+    def load_items(self):
+        sheet_names = DynamicInfoUtil().get_value(
+            4, SC.K_EXCEL_RP_ALARM_KEY, SC.K_REQUIRE_SHEET,
+            SC.K_SHEET_DATA, SC.K_NAME
+        )
+
+        excel_path = ExplorerUtil().get_cache_file_path(
+            DynamicInfoUtil().get_value(2, SC.K_EXCEL_RP_ALARM_KEY, SC.K_NAME)
+        )
+
+        all_items_in_sheet_list = []
+        for sheet_name in sheet_names:
+            items = ExcelHandleUtil().load_items(
+                sheet_name=sheet_name,
+                sheet_info_key=SC.K_SHEET_DATA,
+                excel_info_key=SC.K_EXCEL_RP_AL_BC_CHAY_MPD_QUA_BGS_KEY,
+                excel_path=excel_path
+            )
+            all_items_in_sheet_list.extend(items)
+
+        return [DataSheet().load(x) for x in all_items_in_sheet_list]
+
+class ExcelRpAlMpdService():
     def __init__(self, ui_set_error_callback=None):
         self._ui_set_error_callback = ui_set_error_callback
 
-        self._nodeb3g_sheet_maker = ExcelNodeb3gSheetMaker()
-        self._enodeb4g_sheet_maker = ExcelEnodeb4gSheetMaker()
-        self._gnodeb5g_sheet_maker = ExcelGnodeb5gSheetMaker()
+        self._nodeb3g_sheet_maker = ExcelNodeb3gService()
+        self._enodeb4g_sheet_maker = ExcelEnodeb4gService()
+        self._gnodeb5g_sheet_maker = ExcelGnodeb5gService()
         self._tht_ttvt_maker = ExcelThtTtvtMaker()
         self._csht_ccl_service = CshtCclService()
 
@@ -86,7 +162,7 @@ class ExcelRpAlarmMaker():
                     continue
             except Exception as e:
                 LoggerUtil.get_logger().warning(
-                    f'ExcelRpAlarmMaker _normalize  : {item[SC.K_TEN_NE]}'
+                    f'ExcelRpAlMpdService _normalize  : {item[SC.K_TEN_NE]}'
                     f' {SC.K_UI_MSG_NOT_DETECT_SITE}'
                 )
                 if self._ui_set_error_callback is not None:

@@ -73,7 +73,7 @@ class MegawanService(BaseService):
 
     def _get_unique_record_key(self) -> List:
         return [
-            SC.K_LAST_UPDATE, #TODO: remove, auto update
+            SC.K_LAST_UPDATE,
             SC.K_MA_TB,
             SC.K_MA_LT_MA_TB_SUB,
             SC.K_TEN_TH_BAO,

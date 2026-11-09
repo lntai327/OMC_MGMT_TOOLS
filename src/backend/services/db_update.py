@@ -2,10 +2,10 @@ from backend.repositories.bc_cell_mll.excel_cell3g.excel_cell3g_maker import Exc
 from backend.repositories.bc_cell_mll.excel_cell4g.excel_cell4g_maker import ExcelCell4gSheetMaker
 from backend.repositories.bc_cell_mll.excel_cell5g.excel_cell5g_maker import ExcelCell5gSheetMaker
 
-from backend.repositories.bc_bts.excel_nodeb3g.excel_nodeb3g_maker import ExcelNodeb3gSheetMaker
-from backend.repositories.bc_bts.excel_enodeb4g.excel_enodeb4g_maker import ExcelEnodeb4gSheetMaker
-from backend.repositories.bc_bts.excel_gnodeb5g.excel_gnodeb5g_maker import ExcelGnodeb5gSheetMaker
-from backend.repositories.bc_bts.excel_dmoi_qly_csht.excel_dmoi_qly_csht_maker import ExcelDmoiQlyCshtMaker
+from backend.repositories.bc_bts.excel_nodeb3g_repo import ExcelNodeb3gService
+from backend.repositories.bc_bts.excel_enodeb4g_repo import ExcelEnodeb4gService
+from backend.repositories.bc_bts.excel_gnodeb5g_repo import ExcelGnodeb5gService
+from backend.repositories.bc_bts.excel_dmoi_qly_csht_repo import ExcelDmoiQlyCshtService
 
 from backend.repositories.pon.pon_rp_card_access_repo import RpCardAccessService
 from backend.repositories.pon.pon_rp_trans_access_repo import RpTransAccessService
@@ -47,13 +47,13 @@ class DbUpdate:
 
             #
             case SC.K_EXCEL_NODEB3G_KEY:
-                ExcelNodeb3gSheetMaker().update_db()
+                ExcelNodeb3gService().update_db()
             case SC.K_EXCEL_ENODEB4G_KEY:
-                ExcelEnodeb4gSheetMaker().update_db()
+                ExcelEnodeb4gService().update_db()
             case SC.K_EXCEL_GNODEB5G_KEY:
-                ExcelGnodeb5gSheetMaker().update_db()
+                ExcelGnodeb5gService().update_db()
             case SC.K_EXCEL_DMOI_QLY_CSHT_KEY | SC.K_EXCEL_DMOI_QLY_CSHT_KEY_1:
-                ExcelDmoiQlyCshtMaker().update_db()
+                ExcelDmoiQlyCshtService().update_db()
 
             #
             case SC.K_EXCEL_RP_CARD_BY_UNIT:

@@ -96,8 +96,11 @@ EXCEL_STRUCT_INFO = {
     "sheet_info": {
       "sheet_nodeb_3g": {
         "start_cell": "Trạng thái hoạt động",
-        "require_col": ["Trạng thái hoạt động", "Mã CSHT", "Tên trên hệ thống", "Tên quản lý",
-                          "Trạng thái đặt máy nổ", "Loại trạm"]
+        "require_col": [
+          "Trạng thái hoạt động", "Mã CSHT", "Tên trên hệ thống", "Tên quản lý",
+          "Trạng thái đặt máy nổ", "Loại trạm",
+          "Băng tần",	"Ngày kiểm duyệt", "Service IP", "OAM IP",
+        ]
       }
     },
     "hint": "ex: (abc)site_3g(abc).xlsx | sheet: Data(abc)"
@@ -107,8 +110,11 @@ EXCEL_STRUCT_INFO = {
     "sheet_info": {
       "sheet_enodeb_4g": {
         "start_cell": "Trạng thái hoạt động",
-        "require_col": ["Trạng thái hoạt động", "Mã CSHT", "Tên trên hệ thống", "Tên quản lý",
-                          "Trạng thái đặt máy nổ", "Loại trạm"]
+        "require_col": [
+          "Trạng thái hoạt động", "Mã CSHT", "Tên trên hệ thống", "Tên quản lý",
+          "Trạng thái đặt máy nổ", "Loại trạm",
+          "Băng tần",	"Ngày kiểm duyệt", "Service IP", "OAM IP",
+        ]
       }
     },
     "hint": "ex: (abc)site_4g(abc).xlsx | sheet: Data(abc)"
@@ -118,7 +124,12 @@ EXCEL_STRUCT_INFO = {
     "sheet_info": {
       "sheet_gnodeb_5g": {
         "start_cell": "Trạng thái hoạt động",
-        "require_col": ["Trạng thái hoạt động", "Mã CSHT", "Tên trên hệ thống", "Loại trạm"]
+        "require_col": [
+          "Trạng thái hoạt động", "Mã CSHT", "Tên trên hệ thống", "Tên quản lý"
+          "Loại trạm",
+          "Băng tần",	"Ngày kiểm duyệt", "Service IP", "OAM IP",
+          "IP GW OAM 5G", "SERVICE_IP_GW", "5G service VLAN",	"OAM_VLAN",
+        ]
       }
     },
     "hint": "ex: (abc)site_5g(abc).xlsx | sheet: Data(abc)"
@@ -183,10 +194,14 @@ EXCEL_STRUCT_INFO = {
       "sheet_data": {
         "start_cell": "TÊN NE",
         "require_col": [
-            "TÊN NE", "OBJECT", "N.NHÂN", "TG SỰ CỐ", "TG CLR", "TG C.BÁO", "T.THÁI CLR",
-            "VNP-GHI CHÚ", "TỈNH GHI CHÚ",
-            "LOẠI SỰ CỐ", "PHÂN LOẠI TRẠM", "TIME AC", "HỆ THỐNG", "ĐƠN VỊ QUẢN LÝ",
-          ]
+          "TT", "MỨC", "LOẠI NE", "TÊN NE",
+          "TÊN GỢI NHỚ","OBJECT", "BSC/RNC",
+          "N.NHÂN","NHÀ CC", "TG SỰ CỐ",
+          "TG CLR", "TG C.BÁO", "T.THÁI CLR", "MÃ CB",
+          "CHI TIẾT", "TỈNH/TP", "QUẬN/HUYỆN", "VNP-GHI CHÚ",
+          "TỈNH GHI CHÚ", "LOẠI SỰ CỐ", "PHÂN LOẠI TRẠM", "TIME AC",
+          "HỆ THỐNG", "GLOBALID", "TG TẠO TRÊN FMS", "ĐƠN VỊ QUẢN LÝ",
+        ]
       }
     },
     "hint": "ex: ReportAlarm(abc).xlsx | sheet: DATA(abc)"

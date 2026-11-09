@@ -2,7 +2,7 @@ from share.constant import constant as SC
 from backend.constant import type as T
 from backend.util.database_util import DatabaseFactory
 
-class CFBtsMaker():
+class CFBtsRepo():
     def __init__(self):
         self._db_adapter = DatabaseFactory.create_adapter()
         self.ng_nhan_mll_site_list = []

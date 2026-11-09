@@ -8,7 +8,7 @@
     },
     "sql_server_dev": {
       "server": "DESKTOP-AHIHI",
-      "db": "omc_rpt_test",
+      "db": "omc_rpt",
       "username": "readwrite"
     }
   },
@@ -20,17 +20,17 @@
     "site": "all_site",
     "title": "BÁO CÁO CELL MẤT LIÊN LẠC",
     "src_data": "(Nguồn số liệu FMS: ...)",
-    "output_path": "C:\\_a_volumn\\vnpt\\a_vnpt_project\\doc\\bc_cell_mll\\Tháng 8\\291026_all_site_112430",
+    "output_path": "C:\\_a_volumn\\vnpt\\a_vnpt_project\\doc\\bc_bts_doc\\tuan_44\\Tuan45_111126_111126_2Site",
     "rp_time_type": "Tuần",
-    "rp_time": "42",
-    "rp_time_from": "29/10/2026",
-    "rp_time_to": "29/10/2026",
-    "rp_time_compare": "41",
+    "rp_time": "45",
+    "rp_time_from": "11/11/2026",
+    "rp_time_to": "11/11/2026",
+    "rp_time_compare": "44",
     "rp_time_compare_number": "4",
     "rp_year_compare": "2026",
-    "rp_time_from_cp": "09/10/2026",
-    "rp_time_to_cp": "15/10/2026",
-    "rp_date": "29/10/2026",
+    "rp_time_from_cp": "30/10/2026",
+    "rp_time_to_cp": "05/11/2026",
+    "rp_date": "11/11/2026",
     "rp_time_cpare": "(Nguồn số liệu FMS: ...)",
     "tgian_cb": "5",
     "save_bc_thop_to_db": "0",
@@ -40,9 +40,9 @@
   },
   "excel_rp_alarm": {
     "select": "0",
-    "select_path": "C:\\_a_volumn\\vnpt\\a_vnpt_project\\doc\\bc_cell_mll\\Tháng 8\\ReportAlarm-02-08-2026-01-20-08_all.xlsx",
+    "select_path": "C:\\_a_volumn\\vnpt\\a_vnpt_project\\doc\\bc_bts_doc\\tuan_44\\ReportAlarm-07-11-2026-07-59-06.xlsx",
     "key": "ReportAlarm",
-    "name": "ReportAlarm-02-08-2026-01-20-08_all.xlsx",
+    "name": "ReportAlarm-07-11-2026-07-59-06.xlsx",
     "require_sheet": {
       "sheet_data": {
         "key": "DATA",

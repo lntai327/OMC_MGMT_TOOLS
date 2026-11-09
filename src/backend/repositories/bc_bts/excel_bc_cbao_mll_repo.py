@@ -1,4 +1,3 @@
-import inspect
 import os
 import openpyxl
 
@@ -99,3 +98,16 @@ class ExcellBcNclLoader:
             all_items_list.append(req_row_dic)
 
         return [BcTgHopNclSheet().load(x) for x in all_items_list]
+
+class ExcelBcCbaoMllService():
+    def __init__(self):
+        self.bc_tghop_ttvt_dict = {}
+
+    def load(self):
+        self._loadFromExcel()
+
+    def _loadFromExcel(self):
+        bc_tghop_items_list = ExcellBcNclLoader().load_items()
+
+        for item in bc_tghop_items_list:
+            self.bc_tghop_ttvt_dict[item[SC.K_TTVT]] = item.to_dict()

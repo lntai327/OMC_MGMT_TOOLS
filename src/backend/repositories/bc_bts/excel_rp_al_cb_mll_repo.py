@@ -1,34 +1,151 @@
-# from collections import defaultdict
 from dateutil import parser
 import locale
 
 from backend.constant import type as T
-from backend.repositories.bc_bts.excel_enodeb4g.excel_enodeb4g_maker import ExcelEnodeb4gSheetMaker
-from backend.repositories.bc_bts.excel_gnodeb5g.excel_gnodeb5g_maker import ExcelGnodeb5gSheetMaker
-from backend.repositories.bc_bts.excel_nodeb3g.excel_nodeb3g_maker import ExcelNodeb3gSheetMaker
-from backend.repositories.bc_bts.excel_rp_alarm_cbao_mll.excel_rp_alarm_loader import ExcelRpAlarmLoader
-from backend.repositories.bc_bts.cf_bts.cf_bts_maker import CFBtsMaker
+from backend.repositories.bc_bts.excel_enodeb4g_repo import ExcelEnodeb4gService
+from backend.repositories.bc_bts.excel_gnodeb5g_repo import ExcelGnodeb5gService
+from backend.repositories.bc_bts.excel_nodeb3g_repo import ExcelNodeb3gService
+from backend.repositories.bc_bts.cf_bts_repo import CFBtsRepo
 from backend.repositories.common_csht_ccl_repo import CshtCclService
 from backend.repositories.common.excel_tht_ttvt.excel_tht_ttvt_maker import ExcelThtTtvtMaker
+from backend.util.ex_handle_util import ExcelHandleUtil
+
 from share.util.logger_util import LoggerUtil
 from share.util.dynamic_info_util import DynamicInfoUtil
-
 from share.constant import constant as SC
 from share.constant import type as ST
+from share.util.explorer_util import ExplorerUtil
 
-class ExcelRpAlarmCbaoMllMaker():
+class DataSheet:
+    def __init__(self):
+        self._tt = None
+        self._muc = None
+        self._loai_ne = None
+        self._ten_ne = None
+        self._ten_goi_nho = None
+        self._object = None
+        self._bsc_rnc = None
+        self._nnhan = None
+        self._nha_cc = None
+        self._tgian_su_co = None
+        self._tgian_clr = None
+        self._tgain_cbao = None
+        self._trthai_clr = None
+        self._ma_cbao = None
+        self._ch_tiet = None
+        self._tinh_tp = None
+        self._quan_huyen = None
+        self._vnp_ghi_chu = None
+        self._tinh_ghi_chu = None
+        self._loai_su_co = None
+        self._phan_loai_tram = None
+        self._time_ac = None
+        self._he_thong = None
+        self._global_id = None
+        self._tgian_tao_tren_fms = None
+        self._dvi_qly = None
+
+    def __repr__(self):
+        return str(self.to_dict())
+
+    def to_dict(self):
+        return {
+            SC.K_TT: self._tt,
+            SC.K_MUC: self._muc,
+            SC.K_LOAI_NE: self._loai_ne,
+            SC.K_TEN_NE: self._ten_ne,
+            SC.K_TEN_GOI_NHO: self._ten_goi_nho,
+            SC.K_OBJECT: self._object,
+            SC.K_BSC_RNC: self._bsc_rnc,
+            SC.K_NGUYEN_NHAN: self._nnhan,
+            SC.K_NHA_CC: self._nha_cc,
+            SC.K_TG_SU_CO_1: self._tgian_su_co,
+            SC.K_TG_CLR: self._tgian_clr,
+            SC.K_TG_CBAO: self._tgain_cbao,
+            SC.K_TTHAI_CLR: self._trthai_clr,
+            SC.K_MA_CBAO: self._ma_cbao,
+            SC.K_DETAIL: self._ch_tiet,
+            SC.K_TINH_TP: self._tinh_tp,
+            SC.K_QUAN_HUYEN: self._quan_huyen,
+            SC.K_VNP_GHI_CHU: self._vnp_ghi_chu,
+            SC.K_TINH_GHI_CHU: self._tinh_ghi_chu,
+            SC.K_LOAI_SU_CO: self._loai_su_co,
+            SC.K_PHAN_LOAI_TRAM: self._phan_loai_tram,
+            SC.K_TIME_AC: self._time_ac,
+            SC.K_HE_THONG: self._he_thong,
+            SC.K_GLOBAL_ID: self._global_id,
+            SC.K_TGIAN_TAO_TREN_FMS: self._tgian_tao_tren_fms,
+            SC.K_DVI_QLY: self._dvi_qly,
+        }
+
+    def load(self, item_dic):
+        self._tt = item_dic.get("TT")
+        self._muc = item_dic.get("MỨC")
+        self._loai_ne = item_dic.get("LOẠI NE")
+        self._ten_ne = item_dic.get("TÊN NE")
+        self._ten_goi_nho = item_dic.get("TÊN GỢI NHỚ")
+        self._object = item_dic.get("OBJECT")
+        self._bsc_rnc = item_dic.get("BSC/RNC")
+        self._nnhan = item_dic.get("N.NHÂN")
+        self._nha_cc = item_dic.get("NHÀ CC")
+        self._tgian_su_co = item_dic.get("TG SỰ CỐ")
+        self._tgian_clr = item_dic.get("TG CLR")
+        self._tgain_cbao = item_dic.get("TG C.BÁO")
+        self._trthai_clr = item_dic.get("T.THÁI CLR")
+        self._ma_cbao = item_dic.get("MÃ CB")
+        self._ch_tiet = item_dic.get("CHI TIẾT")
+        self._tinh_tp = item_dic.get("TỈNH/TP")
+        self._quan_huyen = item_dic.get("QUẬN/HUYỆN")
+        self._vnp_ghi_chu = item_dic.get("VNP-GHI CHÚ")
+        self._tinh_ghi_chu = item_dic.get("TỈNH GHI CHÚ")
+        self._loai_su_co = item_dic.get("LOẠI SỰ CỐ")
+        self._phan_loai_tram = item_dic.get("PHÂN LOẠI TRẠM")
+        self._time_ac = item_dic.get("TIME AC")
+        self._he_thong = item_dic.get("HỆ THỐNG")
+        self._global_id = item_dic.get("GLOBALID")
+        self._tgian_tao_tren_fms = item_dic.get("TG TẠO TRÊN FMS")
+        self._dvi_qly = item_dic.get("ĐƠN VỊ QUẢN LÝ")
+
+        return self
+
+class ExcelRpAlarmLoader:
+    def __init__(self):
+        pass
+
+    def load_items(self):
+        record_list: list[dict] = []
+        sheet_names = DynamicInfoUtil().get_value(
+            4, SC.K_EXCEL_RP_ALARM_KEY, SC.K_REQUIRE_SHEET,
+            SC.K_SHEET_DATA, SC.K_NAME
+        )
+
+        for sheet_name in sheet_names:
+            excel_path = ExplorerUtil().get_cache_file_path(
+                DynamicInfoUtil().get_value(2, SC.K_EXCEL_RP_ALARM_KEY, SC.K_NAME)
+            )
+            ret_list = ExcelHandleUtil().load_items(
+                sheet_name=sheet_name,
+                sheet_info_key=SC.K_SHEET_DATA,
+                excel_info_key=SC.K_EXCEL_RP_AL_BC_CBAO_MLL_KEY,
+                excel_path=excel_path
+            )
+            record_list.extend(ret_list)
+
+        return [DataSheet().load(x) for x in record_list]
+
+class ExcelRpAlarmCbaoMllService():
     def __init__(self, ui_set_error_callback=None):
         locale.setlocale(locale.LC_ALL, 'vi_VN.UTF-8')
         
         self._ui_set_error_callback = ui_set_error_callback
         self._init_data()
 
-        self._nodeb3g_sheet_maker = ExcelNodeb3gSheetMaker()
-        self._enodeb4g_sheet_maker = ExcelEnodeb4gSheetMaker()
-        self._gnodeb5g_sheet_maker = ExcelGnodeb5gSheetMaker()
+        self._nodeb3g_sheet_maker = ExcelNodeb3gService()
+        self._enodeb4g_sheet_maker = ExcelEnodeb4gService()
+        self._gnodeb5g_sheet_maker = ExcelGnodeb5gService()
         self._tht_ttvt_maker = ExcelThtTtvtMaker()
         self._csht_ccl_service = CshtCclService()
-        self._cf_bts_maker = CFBtsMaker()
+        self._cf_bts_maker = CFBtsRepo()
 
     def _init_data(self):
         self._bts_all_items_ten_tren_hthong_dict = {}
@@ -204,6 +321,7 @@ class ExcelRpAlarmCbaoMllMaker():
                     else:
                         self.rp_alarm_items_list_bts_nclr.append(item)
                     continue
+
             for nn in ng_nhan_mat_nguon_set:
                 if str(item[SC.K_TTHAI_CLR]).lower() == "clr":
                     continue # chỉ lấy NCLR
@@ -234,7 +352,7 @@ class ExcelRpAlarmCbaoMllMaker():
                     continue
             except Exception as e:
                 LoggerUtil.get_logger().warning(
-                    f'ExcelRpAlarmCbaoMllMaker _normalize : exception {item[SC.K_TEN_NE]} {e}')
+                    f'ExcelRpAlarmCbaoMllService _normalize : exception {item[SC.K_TEN_NE]} {e}')
 
             # Fillter: Site
             match site.lower():
@@ -252,7 +370,7 @@ class ExcelRpAlarmCbaoMllMaker():
                             rp_al_item_list.remove(item)
                     except Exception as e:
                         LoggerUtil.get_logger().warning(
-                            f'ExcelRpAlarmCbaoMllMaker _normalize  : {item[SC.K_TEN_NE]}'
+                            f'ExcelRpAlarmCbaoMllService _normalize  : {item[SC.K_TEN_NE]}'
                             f' {SC.K_UI_MSG_NOT_DETECT_SITE}'
                         )
                         if self._ui_set_error_callback is not None:
@@ -261,7 +379,7 @@ class ExcelRpAlarmCbaoMllMaker():
                         rp_al_item_list.remove(item)
                     continue
                 case _:
-                    LoggerUtil.get_logger.error("ExcelRpAlarmCbaoMllMaker _normalize : Invalid site")
+                    LoggerUtil.get_logger.error("ExcelRpAlarmCbaoMllService _normalize : Invalid site")
                     pass
 
         ################################# Fillter duplicated NE
