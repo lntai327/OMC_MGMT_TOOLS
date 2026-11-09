@@ -1,0 +1,53 @@
+2G - BTS
+3G - NODEB
+4G - ENODEB
+5G - GNODEB
+
+#BC chi tiết MLL_tất cả các NN
+STT = counter
+T.Tâm = Tên TTVT/Trạm viễn thông NETx ' csht_ccl.xlsx <- CSHT = Mã CSHT ' csht_ccl.xlsx
+NE = TÊN NE ' Report Alarm
+Tên trạm = Tên quản lý ' ENODEB
+Thời gian sự cố = TG SỰ CỐ ' Report Alarm
+Thời gian CLR = TG CLR ' Report Alarm
+Thời gian CB = TG C.BÁO ' Report Alarm
+VNP - Ghi chú = VNP-GHI CHÚ ' Report Alarm
+OMC Bình Định - Ghi chú = TỈNH GHI CHÚ ' Report Alarm
+Loại sự cố = LOẠI SỰ CỐ ' Report Alarm
+Thời gian cảnh báo AC = TIME AC ' Report Alarm
+Phân loại trạm = PHÂN LOẠI TRẠM ' Report Alarm
+CSHT = Mã CSHT ' ENODEB <- NE = Tên trên hệ thống ' ENODEB
+Tổ hạ tầng = Tên Đơn vị Quản lý ' csht_ccl.xlsx <- CSHT = Mã CSHT ' csht_ccl.xlsx
+Nhân viên hạ tầng = Họ và Tên ' Đầu mối quản lý CSHT.xlsx <- CSHT = Mã CSHT ' Đầu mối quản lý CSHT.xlsx
+
+Note
+điều kiện 1 item:
+Thời gian CB >= 5min
+
+-> Trùng "Sự cố" (Tên NE trong Report Alarm) -> Cần Loại bớt :
+Delta time = 10s : 1 sự cố (Tên NE) / 1 hệ thống cách nhau 10s -> cần loại bớt
+Thứ tự ưu tiên giữ lại :
+1. Mã lỗi 1
+2. Mã lỗi 5
+3. Mã lỗi khác
+4. Không có Mã Lỗi
+* Lấy min TG C.BÁO
+
+#BC MLL_nguồn(trừL3_KoMPĐ)-TD
+Note
+"BC MLL_nguồn(trừL3_KoMPĐ)-TD" = - "Loại nhà trạm" : "CSHT_L3" ' csht_ccl.xlsx <- CSHT = Mã CSHT ' csht_ccl.xlsx
+
+Note
+Loại nếu "LOẠI SỰ CỐ" khác [1, 5]
+Loại nếu "Loại trạm" = "Smallcell"
+Loại nếu "LOẠI SỰ CỐ" = 1 & "Loại nhà trạm" = "CSHT_L3" & "Trạng thái đặt máy nổ" = "Không có"
+
+#BC tổng hợp
+Tổng số BTS = counter (Tên Trên Hệ Thống / Trung tâm Viễn thông x - offair)
+
+############################################################
+Database :
+csht_ccl.xlsx : Tên TTVT/Trạm viễn thông NETx , Mã CSHT , Tên Đơn vị Quản lý , Loại nhà trạm
+BTS, NODEB, ENODEB, GNODEB : Tên quản lý , Mã CSHT , Tên trên hệ thống, Trạng thái đặt máy nổ, Loại trạm
+Đầu mối quản lý CSHT.xlsx : Họ và Tên, Mã CSHT, + Phân cấp: Nhân viên hạ tầng
+Report Alarm : TÊN NE , TG SỰ CỐ , TG CLR , TG C.BÁO , VNP-GHI CHÚ , TỈNH GHI CHÚ , LOẠI SỰ CỐ , TIME AC , PHÂN LOẠI TRẠM, HỆ THỐNG

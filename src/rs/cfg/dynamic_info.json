@@ -1,0 +1,380 @@
+{
+  "db_cf": {
+    "variant": "sql_server_dev",
+    "sql_server": {
+      "server": "10.53.67.168\\SQLEXPRESS",
+      "db": "omc_rpt",
+      "username": "readwrite"
+    },
+    "sql_server_dev": {
+      "server": "DESKTOP-AHIHI",
+      "db": "omc_rpt_test",
+      "username": "readwrite"
+    }
+  },
+  "app_cf": {
+    "keyring_service_name": "omc_report_tool"
+  },
+  "screen_input": {
+    "rp_type": "BC_CBAO_MLL",
+    "site": "all_site",
+    "title": "BÁO CÁO CELL MẤT LIÊN LẠC",
+    "src_data": "(Nguồn số liệu FMS: ...)",
+    "output_path": "C:\\_a_volumn\\vnpt\\a_vnpt_project\\doc\\bc_cell_mll\\Tháng 8\\291026_all_site_112430",
+    "rp_time_type": "Tuần",
+    "rp_time": "42",
+    "rp_time_from": "29/10/2026",
+    "rp_time_to": "29/10/2026",
+    "rp_time_compare": "41",
+    "rp_time_compare_number": "4",
+    "rp_year_compare": "2026",
+    "rp_time_from_cp": "09/10/2026",
+    "rp_time_to_cp": "15/10/2026",
+    "rp_date": "29/10/2026",
+    "rp_time_cpare": "(Nguồn số liệu FMS: ...)",
+    "tgian_cb": "5",
+    "save_bc_thop_to_db": "0",
+    "loai_dmoi_qly_csht": "1",
+    "slg_tbao_fsp": "40",
+    "gtri_hs_sfp_cbao": "100"
+  },
+  "excel_rp_alarm": {
+    "select": "0",
+    "select_path": "C:\\_a_volumn\\vnpt\\a_vnpt_project\\doc\\bc_cell_mll\\Tháng 8\\ReportAlarm-02-08-2026-01-20-08_all.xlsx",
+    "key": "ReportAlarm",
+    "name": "ReportAlarm-02-08-2026-01-20-08_all.xlsx",
+    "require_sheet": {
+      "sheet_data": {
+        "key": "DATA",
+        "name": [
+          "DATA"
+        ]
+      }
+    }
+  },
+  "excel_cell_3g": {
+    "select": "0",
+    "select_path": "C:\\_a_volumn\\vnpt\\a_vnpt_project\\doc\\bc_cell_mll\\Tháng 8\\CELL_3G01082026_225222.xlsx",
+    "key": "CELL_3G",
+    "name": "CELL_3G01082026_225222.xlsx",
+    "require_sheet": {
+      "sheet_cell3g": {
+        "key": "CELL_3G",
+        "name": "CELL_3G01082026_225222"
+      }
+    }
+  },
+  "excel_cell_4g": {
+    "select": "0",
+    "select_path": "C:\\_a_volumn\\vnpt\\a_vnpt_project\\doc\\bc_cell_mll\\Tháng 8\\CELL_4G01082026_225334.xlsx",
+    "key": "CELL_4G",
+    "name": "CELL_4G01082026_225334.xlsx",
+    "require_sheet": {
+      "sheet_cell4g": {
+        "key": "CELL_4G",
+        "name": "CELL_4G01082026_225334"
+      }
+    }
+  },
+  "excel_cell_5g": {
+    "select": "0",
+    "select_path": "C:\\_a_volumn\\vnpt\\a_vnpt_project\\doc\\bc_cell_mll\\Tháng 8\\CELL5G01082026_225425.xlsx",
+    "key": "CELL5G",
+    "name": "CELL5G01082026_225425.xlsx",
+    "require_sheet": {
+      "sheet_cell5g": {
+        "key": "CELL5G",
+        "name": "CELL5G01082026_225425"
+      }
+    }
+  },
+  "excel_csht_ccl": {
+    "select": "0",
+    "select_path": "C:\\_a_volumn\\vnpt\\a_vnpt_project\\doc\\bc_bts_doc\\211026_RIMRAN\\csht_ccl.xlsx",
+    "key": "csht_ccl",
+    "name": "csht_ccl.xlsx",
+    "require_sheet": {
+      "sheet_csht_mdsd": {
+        "key": "Sheet",
+        "name": [
+          "Sheet 1"
+        ]
+      }
+    }
+  },
+  "excel_tht_ttvt": {
+    "select": "0",
+    "select_path": "C:\\_a_volumn\\vnpt\\a_vnpt_project\\OMC_REPORT_TOOL\\to_ha_tang_ttvt_030826.xlsx",
+    "key": "to_ha_tang_ttvt",
+    "name": "to_ha_tang_ttvt_030826.xlsx",
+    "require_sheet": {
+      "sheet_ttvt": {
+        "key": "ttvt",
+        "name": "ttvt"
+      }
+    }
+  },
+  "excel_nodeb_3g": {
+    "select": "0",
+    "select_path": "C:\\_a_volumn\\vnpt\\a_vnpt_project\\doc\\bc_bts_doc\\211026_RIMRAN\\export_site_3g_20261021.xlsx",
+    "key": "site_3g",
+    "name": "export_site_3g_20261021.xlsx",
+    "require_sheet": {
+      "sheet_nodeb_3g": {
+        "key": "Data",
+        "name": [
+          "Data"
+        ]
+      }
+    }
+  },
+  "excel_enodeb_4g": {
+    "select": "0",
+    "select_path": "C:\\_a_volumn\\vnpt\\a_vnpt_project\\doc\\bc_bts_doc\\211026_RIMRAN\\export_site_4g_20261021.xlsx",
+    "key": "site_4g",
+    "name": "export_site_4g_20261021.xlsx",
+    "require_sheet": {
+      "sheet_enodeb_4g": {
+        "key": "Data",
+        "name": [
+          "Data"
+        ]
+      }
+    }
+  },
+  "excel_gnodeb_5g": {
+    "select": "0",
+    "select_path": "C:\\_a_volumn\\vnpt\\a_vnpt_project\\doc\\bc_bts_doc\\211026_RIMRAN\\export_site_5g_20261021.xlsx",
+    "key": "site_5g",
+    "name": "export_site_5g_20261021.xlsx",
+    "require_sheet": {
+      "sheet_gnodeb_5g": {
+        "key": "Data",
+        "name": [
+          "Data"
+        ]
+      }
+    }
+  },
+  "excel_dmoi_qly_csht": {
+    "select": "0",
+    "select_path": "C:\\_a_volumn\\vnpt\\a_vnpt_project\\doc\\bc_bts_doc\\DB4\\150426_SL_BTS\\Đầu mối quản lý CSHT.xlsx",
+    "key": "Đầu mối quản lý CSHT",
+    "name": "Đầu mối quản lý CSHT.xlsx",
+    "require_sheet": {
+      "sheet_dmoi_qly_csht": {
+        "key": "Sheet",
+        "name": [
+          "Sheet1"
+        ]
+      }
+    }
+  },
+  "excel_dmoi_qly_csht_1": {
+    "select": "0",
+    "select_path": "C:\\_a_volumn\\vnpt\\a_vnpt_project\\doc\\bc_bts_doc\\211026_RIMRAN\\DanhSachDauMoi_20261022_072551.xlsx",
+    "key": "DanhSachDauMoi",
+    "name": "DanhSachDauMoi_20261022_072551.xlsx",
+    "require_sheet": {
+      "sheet_data": {
+        "key": "DATA",
+        "name": [
+          "DATA"
+        ]
+      }
+    }
+  },
+  "excel_bc_cell_mll_cpare": {
+    "select": "0",
+    "select_path": "C:\\_a_volumn\\vnpt\\a_vnpt_project\\doc\\bc_cell_mll\\Tháng 8\\030826_all_site_184749_verified\\Báo cáo Cell mất liên lạc_184749_03082026.xlsx",
+    "key": "",
+    "name": "Báo cáo Cell mất liên lạc_184749_03082026.xlsx",
+    "require_sheet": {
+      "sheet_bc_tg_hop": {
+        "key": "BÁO CÁO TỔNG HỢP",
+        "name": [
+          "BÁO CÁO TỔNG HỢP"
+        ]
+      }
+    }
+  },
+  "excel_bc_cpare": {
+    "select": "0",
+    "select_path": "C:\\_a_volumn\\vnpt\\a_vnpt_project\\doc\\bc_bts_doc\\1041_f1_issue\\091026-151026 - test\\Tuan41_091026_151026_2Site\\BC MLL_NCLR_Tuan41_2Site_112138.xlsx",
+    "key": "",
+    "require_sheet": {
+      "sheet_bc_tg_hop": {
+        "key": "BÁO CÁO TỔNG HỢP",
+        "name": "BÁO CÁO TỔNG HỢP"
+      }
+    }
+  },
+  "excel_qly_hsuat_xgspon_info": {
+    "select": "0",
+    "select_path": "C:\\_a_volumn\\vnpt\\a_vnpt_project\\doc\\hsuat_xgspon\\Hiệu suất XGSPON T72026-import.xlsx",
+    "key": "Hiệu suất XGSPON",
+    "require_sheet": {
+      "sheet_data": {
+        "key": "data",
+        "name": "data"
+      }
+    },
+    "name": "Hiệu suất XGSPON T72026-import.xlsx"
+  },
+  "excel_rp_card_by_unit": {
+    "select": "0",
+    "select_path": "C:\\_a_volumn\\vnpt\\a_vnpt_project\\doc\\hsuat_pon\\191026\\ReportCardAccessByUnit_20261019111005.xlsx",
+    "key": "ReportCardAccessByUnit",
+    "require_sheet": {
+      "sheet_data": {
+        "key": "Sheet",
+        "name": [
+          "Sheet1"
+        ]
+      }
+    },
+    "name": "ReportCardAccessByUnit_20261019111005.xlsx"
+  },
+  "excel_rp_trans_by_unit": {
+    "select": "0",
+    "select_path": "C:\\_a_volumn\\vnpt\\a_vnpt_project\\doc\\hsuat_pon\\191026\\ReportTransAccessByUnit_20261019111055.xlsx",
+    "key": "ReportTransAccessByUnit",
+    "require_sheet": {
+      "sheet_data": {
+        "key": "Sheet",
+        "name": [
+          "Sheet1"
+        ]
+      }
+    },
+    "name": "ReportTransAccessByUnit_20261019111055.xlsx"
+  },
+  "excel_bc_chtiet_onu": {
+    "select": "0",
+    "select_path": "C:\\_a_volumn\\vnpt\\a_vnpt_project\\doc\\hsuat_pon\\191026\\BaoCaoChiTietOnu_20261019111089.xlsx",
+    "key": "BaoCaoChiTietOnu",
+    "require_sheet": {
+      "sheet_data": {
+        "key": "Sheet",
+        "name": [
+          "Sheet1"
+        ]
+      }
+    },
+    "name": "BaoCaoChiTietOnu_20261019111089.xlsx"
+  },
+  "excel_tghop_thbi_gpon_tren_mang": {
+    "select": "0",
+    "select_path": "C:\\_a_volumn\\vnpt\\a_vnpt_project\\doc\\hsuat_xgspon\\070726_xgsp - data ORG\\db_old\\tong hop thiet bi gpon tren mang.xlsx",
+    "key": "tong hop thiet bi gpon tren mang",
+    "require_sheet": {
+      "sheet_data": {
+        "key": "Sheet",
+        "name": "Sheet 1"
+      }
+    },
+    "name": "tong hop thiet bi gpon tren mang.xlsx"
+  },
+  "excel_chtiet_thbao_fiber_xgspon": {
+    "select": "0",
+    "select_path": "C:\\_a_volumn\\vnpt\\a_vnpt_project\\doc\\hsuat_xgspon\\070726_xgsp - data ORG\\48_BDH_187_Chi_tiết_phát_triển_Fiber_XGSPON_ONT_XGSPON_dùng_trong.xlsx",
+    "key": "BDH_187",
+    "require_sheet": {
+      "sheet_data": {
+        "key": "Sheet",
+        "name": [
+          "Sheet1"
+        ]
+      }
+    },
+    "name": "48_BDH_187_Chi_tiết_phát_triển_Fiber_XGSPON_ONT_XGSPON_dùng_trong.xlsx"
+  },
+  "ds_tbao_xgspon_dong": {
+    "select": "0",
+    "select_path": "C:\\_a_volumn\\vnpt\\a_vnpt_project\\doc\\hsuat_pon\\191026\\49. BDH-189- Chi tiêt thuê bao Fiber hiện có (kỹ thuật)_20261019_1142.xlsx",
+    "key": "BDH_189",
+    "require_sheet": {
+      "sheet_data": {
+        "key": "Sheet",
+        "name": [
+          "Sheet1"
+        ]
+      }
+    },
+    "name": "49. BDH-189- Chi tiêt thuê bao Fiber hiện có (kỹ thuật)_20261019_1142.xlsx"
+  },
+  "ds_tbao_xgspon_tay": {
+    "select": "0",
+    "select_path": "C:\\_a_volumn\\vnpt\\a_vnpt_project\\doc\\hsuat_xgspon\\091026\\4_GLI_001_5_Báo_cáo_thuê_bao_sử_dụng_thiết_bị_XGSPON_đơn_vị_VT_20261007.xlsx",
+    "key": "GLI_001",
+    "require_sheet": {
+      "sheet_data": {
+        "key": "Sheet",
+        "name": [
+          "Sheet1"
+        ]
+      }
+    },
+    "name": "4_GLI_001_5_Báo_cáo_thuê_bao_sử_dụng_thiết_bị_XGSPON_đơn_vị_VT_20261007.xlsx"
+  },
+  "excel_thbi_access": {
+    "select": "0",
+    "select_path": "C:\\_a_volumn\\vnpt\\a_vnpt_project\\doc\\hsuat_pon\\191026\\thiet_bi_access - Copy.xlsx",
+    "key": "thiet bi access",
+    "require_sheet": {
+      "sheet_data": {
+        "key": "Sheet",
+        "name": [
+          "Sheet 1"
+        ]
+      }
+    },
+    "name": "thiet_bi_access - Copy.xlsx"
+  },
+  "tbao_fiber_visa_dong": {
+    "select": "0",
+    "select_path": "C:\\_a_volumn\\vnpt\\a_vnpt_project\\doc\\hsuat_pon\\191026\\BDH_Báo cáo danh sách tài khoản dịch vụ hiện có theo gói dịch vụ và đơn vị (Gồm ĐV con + Từ 01.01.1990 Đến 19.10.2026).xlsx",
+    "key": "BDH_Báo cáo danh sách tài khoản dịch vụ hiện có",
+    "require_sheet": {
+      "sheet_data": {
+        "key": "Data",
+        "name": [
+          "Data (1)",
+          "Data (2)",
+          "Data (3)"
+        ]
+      }
+    },
+    "name": "BDH_Báo cáo danh sách tài khoản dịch vụ hiện có theo gói dịch vụ và đơn vị (Gồm ĐV con + Từ 01.01.1990 Đến 19.10.2026).xlsx"
+  },
+  "tbao_fiber_visa_tay": {
+    "select": "0",
+    "select_path": "C:\\_a_volumn\\vnpt\\a_vnpt_project\\doc\\hsuat_xgspon\\091026\\GLI_Báo cáo danh sách tài khoản dịch vụ hiện có theo gói dịch vụ và đơn vị _Gồm ĐV con _ Từ 01.10.1990 Đến 05.10.2026_.xlsx",
+    "key": "GLI_Báo cáo danh sách tài khoản dịch vụ hiện có",
+    "require_sheet": {
+      "sheet_data": {
+        "key": "Data",
+        "name": [
+          "Data (1)",
+          "Data (2)"
+        ]
+      }
+    },
+    "name": "GLI_Báo cáo danh sách tài khoản dịch vụ hiện có theo gói dịch vụ và đơn vị _Gồm ĐV con _ Từ 01.10.1990 Đến 05.10.2026_.xlsx"
+  },
+  "megawan_metronet": {
+    "select": "0",
+    "select_path": "C:\\_a_volumn\\vnpt\\a_vnpt_project\\doc\\ql_megawan\\csdl_org\\data_dauvao_301026.xlsx",
+    "key": "",
+    "require_sheet": {
+      "sheet_data": {
+        "key": "",
+        "name": [
+          "Sheet10"
+        ]
+      }
+    },
+    "name": "data_dauvao_301026.xlsx"
+  },
+  "_": {}
+}

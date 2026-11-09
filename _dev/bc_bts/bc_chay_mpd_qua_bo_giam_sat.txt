@@ -1,0 +1,50 @@
+#BC Chi tiết
+STT = counter
+ĐƠN VỊ QUẢN LÝ = Tên Đơn vị Quản lý ' csht_ccl 
+    <- Mã CSHT ' csht_ccl.xlsx = Mã CSHT ' ENODEB
+    <- Tên trên hệ thống ' ENODEB = TÊN NE ' Report Alarm
+NE = TÊN NE ' Report Alarm
+Tên trạm = Tên quản lý ' ENODEB
+Thời gian sự cố = TG SỰ CỐ ' Report Alarm
+Thời gian CLR = TG CLR ' Report Alarm
+Thời gian CB = TG C.BÁO ' Report Alarm
+VNP - Ghi chú = VNP-GHI CHÚ ' Report Alarm
+OMC Bình Định - Ghi chú = TỈNH GHI CHÚ ' Report Alarm
+Loại sự cố = LOẠI SỰ CỐ ' Report Alarm
+Thời gian cảnh báo AC = TIME AC ' Report Alarm
+Phân loại trạm = PHÂN LOẠI TRẠM ' Report Alarm
+
+Note
+T.THÁI CLR = "CLR"
+
+#CANHBAO_NCLR
+STT = counter
+ĐƠN VỊ QUẢN LÝ = Tên Đơn vị Quản lý ' csht_ccl 
+    <- Mã CSHT ' csht_ccl.xlsx = Mã CSHT ' ENODEB
+    <- Tên trên hệ thống ' ENODEB = TÊN NE ' Report Alarm
+NE = TÊN NE ' Report Alarm
+Tên trạm = Tên quản lý ' ENODEB
+Thời gian sự cố = TG SỰ CỐ ' Report Alarm
+Thời gian CLR = TG CLR ' Report Alarm
+Thời gian CB = TG C.BÁO ' Report Alarm
+VNP - Ghi chú = VNP-GHI CHÚ ' Report Alarm
+OMC Bình Định - Ghi chú = TỈNH GHI CHÚ ' Report Alarm
+Loại sự cố = LOẠI SỰ CỐ ' Report Alarm
+Thời gian cảnh báo AC = TIME AC ' Report Alarm
+Phân loại trạm = PHÂN LOẠI TRẠM ' Report Alarm
+Ghi chú = "Đề nghị kiểm tra lại"
+
+Note
+T.THÁI CLR = "NCLR"
+
+#TONG_HOP
+
+
+###########################################################################################
+###
+Report Alarm : ĐƠN VỊ QUẢN LÝ, TÊN NE (key), TG SỰ CỐ
+TG CLR, TG C.BÁO, VNP-GHI CHÚ, TỈNH GHI CHÚ, LOẠI SỰ CỐ, TIME AC, PHÂN LOẠI TRẠM, + T.THÁI CLR
+
+###
+BTS, ENODEB, NODEB, GNODEB = "" : Tên quản lý, + Tên trên hệ thống (key)
+Note : chỉ lấy Trạng thái hoạt động = Onair
