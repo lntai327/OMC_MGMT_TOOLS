@@ -1,0 +1,218 @@
+{
+  "db_cf": {
+    "variant": "sql_server_test",
+    "sql_server": {
+      "server": "10.53.67.168\\SQLEXPRESS",
+      "db": "omc_rpt_test",
+      "username": "readwrite"
+    },
+    "sql_server_test": {
+      "server": "DESKTOP-AHIHI",
+      "db": "omc_rpt",
+      "username": "test"
+    }
+  },
+  "app_cf": {
+    "keyring_service_name": "omc_report_tool"
+  },
+  "screen_input": {
+    "rp_type": "BC_CBAO_MLL",
+    "site": "all_site",
+    "title": "BÁO CÁO CELL MẤT LIÊN LẠC",
+    "src_data": "(Nguồn số liệu FMS: ...)",
+    "output_path": "C:\\_a_volumn\\vnpt\\a_vnpt_project\\OMC_REPORT_TOOL\\doc\\bc_cell_mll\\030826_all_site_173708",
+    "rp_time_type": "Tháng",
+    "rp_time": "15",
+    "rp_time_from": "03/08/2026",
+    "rp_time_to": "03/08/2026",
+    "rp_time_compare": "10",
+    "rp_time_compare_number": "5",
+    "rp_year_compare": "2026",
+    "rp_time_from_cp": "09/07/2026",
+    "rp_time_to_cp": "09/07/2026",
+    "rp_date": "03/08/2026",
+    "rp_time_cpare": "(Nguồn số liệu FMS: ...)",
+    "tgian_cb": "5",
+    "save_bc_thop_to_db": "1",
+    "loai_dmoi_qly_csht": "0"
+  },
+  "excel_rp_alarm": {
+    "select": "0",
+    "select_path": "C:\\_a_volumn\\vnpt\\a_vnpt_project\\OMC_REPORT_TOOL\\doc\\bc_cell_mll\\ReportAlarm-17-11-2025-07-19-04_CELL.xlsx",
+    "key": "ReportAlarm",
+    "name": "ReportAlarm-17-11-2025-07-19-04_CELL.xlsx",
+    "require_sheet": {
+      "sheet_data": {
+        "key": "DATA",
+        "name": "DATA"
+      }
+    }
+  },
+  "excel_cell_2g": {
+    "select": "0",
+    "select_path": "C:\\_a_volumn\\vnpt\\a_vnpt_project\\OMC_REPORT_TOOL\\doc\\bc_cell_mll\\Tháng 8\\CELL_2G25022026_080135_FAKE.xlsx",
+    "key": "CELL_2G",
+    "name": "CELL_2G25022026_080135_FAKE.xlsx",
+    "require_sheet": {
+      "sheet_cell2g": {
+        "key": "CELL_2G",
+        "name": "CELL_2G25022026_080135"
+      }
+    }
+  },
+  "excel_cell_3g": {
+    "select": "0",
+    "select_path": "C:\\_a_volumn\\vnpt\\a_vnpt_project\\OMC_REPORT_TOOL\\doc\\bc_cell_mll\\Tháng 8\\CELL_3G01082026_225222.xlsx",
+    "key": "CELL_3G",
+    "name": "CELL_3G01082026_225222.xlsx",
+    "require_sheet": {
+      "sheet_cell3g": {
+        "key": "CELL_3G",
+        "name": "CELL_3G01082026_225222"
+      }
+    }
+  },
+  "excel_cell_4g": {
+    "select": "0",
+    "select_path": "C:\\_a_volumn\\vnpt\\a_vnpt_project\\OMC_REPORT_TOOL\\doc\\bc_cell_mll\\Tháng 8\\CELL_4G01082026_225334.xlsx",
+    "key": "CELL_4G",
+    "name": "CELL_4G01082026_225334.xlsx",
+    "require_sheet": {
+      "sheet_cell4g": {
+        "key": "CELL_4G",
+        "name": "CELL_4G01082026_225334"
+      }
+    }
+  },
+  "excel_cell_5g": {
+    "select": "0",
+    "select_path": "C:\\_a_volumn\\vnpt\\a_vnpt_project\\OMC_REPORT_TOOL\\doc\\bc_cell_mll\\Tháng 8\\CELL5G01082026_225425.xlsx",
+    "key": "CELL5G",
+    "name": "CELL5G01082026_225425.xlsx",
+    "require_sheet": {
+      "sheet_cell5g": {
+        "key": "CELL5G",
+        "name": "CELL5G01082026_225425"
+      }
+    }
+  },
+  "excel_csht_ccl": {
+    "select": "0",
+    "select_path": "C:\\_a_volumn\\vnpt\\a_vnpt_project\\OMC_REPORT_TOOL\\doc\\bc_cell_mll\\Tháng 8\\csht_ccl.xlsx",
+    "key": "csht_ccl",
+    "name": "csht_ccl.xlsx",
+    "require_sheet": {
+      "sheet_csht_mdsd": {
+        "key": "Sheet",
+        "name": "Sheet 1"
+      }
+    }
+  },
+  "excel_tht_ttvt": {
+    "select": "0",
+    "select_path": "C:\\_a_volumn\\vnpt\\a_vnpt_project\\OMC_REPORT_TOOL\\to_ha_tang_ttvt_030826.xlsx",
+    "key": "to_ha_tang_ttvt",
+    "name": "to_ha_tang_ttvt_030826.xlsx",
+    "require_sheet": {
+      "sheet_ttvt": {
+        "key": "ttvt",
+        "name": "ttvt"
+      }
+    }
+  },
+  "excel_bts_2g": {
+    "select": "0",
+    "select_path": "C:/_a_volumn/vnpt/a_vnpt_project/VNPT_OMC_REPORT_TOOL/doc/bc_bts_doc/bc_thg06/010726/BTS01072026_090804.xlsx",
+    "key": "BTS",
+    "name": "BTS01072026_090804.xlsx",
+    "require_sheet": {
+      "sheet_bts_2g": {
+        "key": "BTS",
+        "name": "BTS01072026_090804"
+      }
+    }
+  },
+  "excel_nodeb_3g": {
+    "select": "0",
+    "select_path": "C:/_a_volumn/vnpt/a_vnpt_project/VNPT_OMC_REPORT_TOOL/doc/bc_bts_doc/bc_thg06/010726/NODEB01072026_091120.xlsx",
+    "key": "NODEB",
+    "name": "NODEB01072026_091120.xlsx",
+    "require_sheet": {
+      "sheet_nodeb_3g": {
+        "key": "NODEB",
+        "name": "NODEB01072026_091120"
+      }
+    }
+  },
+  "excel_enodeb_4g": {
+    "select": "0",
+    "select_path": "C:/_a_volumn/vnpt/a_vnpt_project/VNPT_OMC_REPORT_TOOL/doc/bc_bts_doc/bc_thg06/010726/ENODEB01072026_091136.xlsx",
+    "key": "ENODEB",
+    "name": "ENODEB01072026_091136.xlsx",
+    "require_sheet": {
+      "sheet_enodeb_4g": {
+        "key": "ENODEB",
+        "name": "ENODEB01072026_091136"
+      }
+    }
+  },
+  "excel_gnodeb_5g": {
+    "select": "0",
+    "select_path": "C:/_a_volumn/vnpt/a_vnpt_project/VNPT_OMC_REPORT_TOOL/doc/bc_bts_doc/bc_thg06/010726/GNODEB01072026_091149.xlsx",
+    "key": "GNODEB",
+    "name": "GNODEB01072026_091149.xlsx",
+    "require_sheet": {
+      "sheet_gnodeb_5g": {
+        "key": "GNODEB",
+        "name": "GNODEB01072026_091149"
+      }
+    }
+  },
+  "excel_dmoi_qly_csht": {
+    "select": "0",
+    "select_path": "C:/_a_volumn/vnpt/a_vnpt_project/VNPT_OMC_REPORT_TOOL/doc/bc_bts_doc/DB4/150426_SL_BTS/Đầu mối quản lý CSHT.xlsx",
+    "key": "Đầu mối quản lý CSHT",
+    "name": "Đầu mối quản lý CSHT.xlsx",
+    "require_sheet": {
+      "sheet_dmoi_qly_csht": {
+        "key": "Sheet",
+        "name": "Sheet1"
+      }
+    }
+  },
+  "excel_dmoi_qly_csht_1": {
+    "select": "0",
+    "select_path": "C:/_a_volumn/vnpt/a_vnpt_project/VNPT_OMC_REPORT_TOOL/doc/bc_bts_doc/dau_moi_qly_moi/DanhSachDauMoi_20260531_201330.xlsx",
+    "key": "DanhSachDauMoi",
+    "name": "DanhSachDauMoi_20260531_201330.xlsx",
+    "require_sheet": {
+      "sheet_data": {
+        "key": "DATA",
+        "name": "DATA"
+      }
+    }
+  },
+  "excel_bc_cell_mll_cpare": {
+    "select": "0",
+    "select_path": "C:\\_a_volumn\\vnpt\\a_vnpt_project\\OMC_REPORT_TOOL\\doc\\bc_cell_mll\\140726_all_site_080609\\Báo cáo Cell mất liên lạc.xlsx",
+    "key": "",
+    "name": "Báo cáo Cell mất liên lạc.xlsx",
+    "require_sheet": {
+      "sheet_bc_tg_hop": {
+        "key": "BÁO CÁO TỔNG HỢP",
+        "name": "BÁO CÁO TỔNG HỢP"
+      }
+    }
+  },
+  "excel_bc_cpare": {
+    "select": "0",
+    "select_path": "C:\\_a_volumn\\vnpt\\a_vnpt_project\\OMC_REPORT_TOOL\\doc\\bc_bts_doc\\bc_thg06\\thang06-2026\\Thang15_2026_2Site\\BC MLL_NCLR_Thang15_2Site_104225.xlsx",
+    "key": "",
+    "require_sheet": {
+      "sheet_bc_tg_hop": {
+        "key": "BÁO CÁO TỔNG HỢP",
+        "name": "BÁO CÁO TỔNG HỢP"
+      }
+    }
+  }
+}

@@ -1,0 +1,41 @@
+	### Chi tiết TTVT
+		1."STT" : counter
+		7. "Mã CSHT Cell", : Mã CSHT CỦA CELL ' CELL_3G26112025_091031.xlsx <- TÊN NE ' Report Alarm  = Tên trên hệ thống ' CELL_3G26112025_091031.xlsx
+		8. "Mã trạm", : từ TÊN NE
+		3. "LOẠI NE", : LOẠI NE ' Report Alarm
+		2. "TÊN NE", : TÊN NE ' Report Alarm
+		9. "TÊN GỢI NHỚ", : Tên CSHT ' CSHT_CCL.xlsx <- Mã CSHT ' CSHT_CCL.xlsx = "Mã CSHT Cell" ' BC chi tiết
+		4. "TG sự cố", : TG SỰ CỐ ' Report Alarm
+		5. "Nguyên nhân" : N.NHÂN ' Report Alarm
+		10. "TTVT", : Tên TTVT/Trạm viễn thông NETx ' CSHT_CCL.xlsx <- Mã CSHT ' CSHT_CCL.xlsx = "Mã CSHT Cell" ' BC chi tiết
+		11. "Tổ kỹ thuật" : Tổ kỹ thuật ' CSHT_TỔ KỸ THUẬT.xlsx <- TÊN NE ' Report Alarm = Tên trên hệ thống ' CSHT_TỔ KỸ THUẬT.xlsx
+		6. "Phân loại trạm" : PHÂN LOẠI TRẠM ' Report Alarm
+
+			TÊN NE -> Mã trạm : 4G-QNN057M11-BDH -> QNN057M
+								VNP-4G-HAN031M12-BDH -> VNP-4G-HAN031M
+								
+			Mã CSHT Cell = Mã CSHT CỦA CELL = Mã CSHT = Tên trên hệ thống
+
+	### TH CELL MLL theo CSHT
+		STT
+		Mã CSHT CỦA CELL :  "Mã CSHT Cell" ' Chi tiết TTVT
+		Vị trí cell so với vị trí đặt BBU :  So sánh Mã CSHT CỦA TRẠM vs Mã CSHT CỦA CELL ' CELL 2G
+		Mã trạm : Tên trên hệ thống ' CELL 2G
+		Cell 2G hiện có : đếm trong CELL2G
+		Cell 2G mll : đếm
+		Cell 3G hiện có : đếm trong CELL2G
+		Cell 3G mll : đếm
+		Cell 4G hiện có : đếm trong CELL4G
+		Cell 4G mll : đếm
+		Tổng cell : tổng đếm
+		Tổng cell mll : tổng đếm
+		Tên CSHT : Tên CSHT ' CSHT_CCL.xlsx <- "Mã CSHT Cell" ' Chi tiết TTVT = Mã CSHT ' CSHT_CCL.xlsx
+		Địa chỉ : Địa chỉ '  CELL 2G
+		TTVT : Tên TTVT/Trạm viễn thông NETx ' CSHT_CCL2.xlsx
+
+		more field: "Loại đối tượng" : "Loại đối tượng" ' CELL 2G
+	###TKT : deprecated
+		TTVT ' CSHT_TỔ KỸ THUẬT.xlsx =  <- Mã CSHT ' CSHT_CCL2.xlsx = Mã CSHT CỦA CELL ' CSHT_TỔ KỸ THUẬT.xlsx
+		
+
+##################################################################################
