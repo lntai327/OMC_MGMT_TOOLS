@@ -1,0 +1,140 @@
+name: omc_mgmt_tool
+
+version: '3.8'
+
+services:
+  postgres:
+    build:
+      context: ..
+      dockerfile: docker/postgres.Dockerfile
+    image: omc_mgmt_tool-postgres:latest
+    container_name: postgres
+    restart: always
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-omc_mgmt_tool}
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres} -d ${POSTGRES_DB:-omc_mgmt_tool}" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    build:
+      context: ..
+      dockerfile: docker/redis.Dockerfile
+    image: omc_mgmt_tool-redis:latest
+    container_name: redis
+    restart: always
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: [ "CMD", "redis-cli", "ping" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build:
+      context: ..
+      dockerfile: docker/backend.Dockerfile
+    image: omc_mgmt_tool-backend:latest
+    container_name: backend
+    restart: always
+    command: sh -c "alembic upgrade head && python -m app.core.seed && uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload"
+    env_file:
+      - ../.env
+    environment:
+      - DATABASE_URL=postgresql+asyncpg://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@postgres:5432/${POSTGRES_DB:-omc_mgmt_tool}
+      - CELERY_BROKER_URL=redis://redis:6379/1
+      - CELERY_RESULT_BACKEND=redis://redis:6379/2
+      - REDIS_URL=redis://redis:6379/0
+    volumes:
+      - ../backend:/app
+      - storage_data:/app/storage
+    ports:
+      - "8000:8000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+  celery_worker:
+    build:
+      context: ..
+      dockerfile: docker/worker.Dockerfile
+    image: omc_mgmt_tool-celery_worker:latest
+    container_name: celery_worker
+    restart: always
+    command: celery -A app.workers.celery_app.celery worker --loglevel=info --pool=threads --concurrency=4
+    env_file:
+      - ../.env
+    environment:
+      - DATABASE_URL=postgresql+asyncpg://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@postgres:5432/${POSTGRES_DB:-omc_mgmt_tool}
+      - CELERY_BROKER_URL=redis://redis:6379/1
+      - CELERY_RESULT_BACKEND=redis://redis:6379/2
+      - REDIS_URL=redis://redis:6379/0
+    volumes:
+      - ../backend:/app
+      - storage_data:/app/storage
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+  celery_beat:
+    build:
+      context: ..
+      dockerfile: docker/worker.Dockerfile
+    image: omc_mgmt_tool-celery_beat:latest
+    container_name: celery_beat
+    restart: always
+    command: celery -A app.workers.celery_app.celery beat --loglevel=info
+    env_file:
+      - ../.env
+    environment:
+      - DATABASE_URL=postgresql+asyncpg://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@postgres:5432/${POSTGRES_DB:-omc_mgmt_tool}
+      - CELERY_BROKER_URL=redis://redis:6379/1
+      - CELERY_RESULT_BACKEND=redis://redis:6379/2
+      - REDIS_URL=redis://redis:6379/0
+    volumes:
+      - ../backend:/app
+      - storage_data:/app/storage
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+  frontend:
+    build:
+      context: ..
+      dockerfile: docker/frontend.Dockerfile
+    image: omc_mgmt_tool-frontend:latest
+    container_name: frontend
+    restart: always
+    ports:
+      - "3000:3000"
+    volumes:
+      - ../frontend:/app
+      - /app/node_modules
+    environment:
+      - VITE_API_BASE_URL=http://localhost:8000/api/v1
+      - VITE_WS_BASE_URL=ws://localhost:8000/api/v1/ws
+    depends_on:
+      - backend
+
+volumes:
+  postgres_data:
+  redis_data:
+  storage_data:
+

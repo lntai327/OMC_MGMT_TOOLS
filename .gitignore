@@ -1,0 +1,51 @@
+# Flet
+.flet/
+storage/
+
+# IDE
+.idea/
+.vscode/
+
+# macOS
+.DS_Store
+
+# DEV
+venv/
+.venv/
+env/
+.env
+# **/login_page.py
+
+# BUILD
+build/
+*build/
+dist/
+*dist/
+release/
+*.pyc
+*.pdf
+__pycache__/
+*.py[cod]
+.mypy_cache/
+.ruff_cache/
+.pytest_cache/
+*.exe
+
+# celery
+celerybeat-schedule*
+backend/celerybeat-schedule*
+
+*.7z
+*.zip
+*.rar
+
+# APP
+**/cache/
+**/l/
+**/tmp/
+
+# WEB
+**/node_modules/
+
+# Keep
+!Báo cáo cell mất liên lạc-template.xlsx
