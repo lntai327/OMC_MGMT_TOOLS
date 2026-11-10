@@ -164,7 +164,7 @@ export const MegawanMetronetPage: React.FC<MegawanPageProps> = ({
         <div className="flex items-center gap-4">
           <Button variant="outline" size="md" onClick={onBack} className="font-bold">
             <ArrowLeft className="w-5 h-5 mr-1" />
-            Về Trang chủ
+            Trang chủ
           </Button>
           <div className="border-l-2 border-slate-200 pl-4">
             <h2 className="text-2xl font-black text-vnpt-900 tracking-tight flex items-center gap-2">
@@ -179,7 +179,7 @@ export const MegawanMetronetPage: React.FC<MegawanPageProps> = ({
             <Button variant="primary" size="md" onClick={openCreateModal}
               className="bg-vnpt-600 hover:bg-vnpt-700 shadow-md font-bold">
               <Plus className="w-5 h-5 mr-1.5" />
-              Thêm bản ghi mới
+              Thêm bản ghi
             </Button>
           )}
           {isOperator && (
@@ -191,7 +191,7 @@ export const MegawanMetronetPage: React.FC<MegawanPageProps> = ({
           )}
           <Button variant="success" size="md" onClick={handleExportExcel} className="font-bold shadow-md">
             <Download className="w-5 h-5 mr-1.5" />
-            Xuất file Excel
+            Xuất Excel
           </Button>
           <Button variant="outline" size="md" onClick={fetchRecords} disabled={loading}
             title="Làm mới dữ liệu" className="font-bold">
@@ -373,17 +373,17 @@ export const MegawanMetronetPage: React.FC<MegawanPageProps> = ({
         onClose={() => setIsFormModalOpen(false)}
         title={selectedRecord
           ? `Chỉnh sửa bản ghi ID #${selectedRecord.id}`
-          : 'Thêm mới bản ghi Megawan / Metronet'}
+          : 'Thêm bản ghi Megawan-Metronet'}
         maxWidth="2xl"
       >
         <form onSubmit={handleFormSubmit} className="space-y-5">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <Input label="Mã Thuê Bao (*)" value={formData.ma_tb || ''} required
+            <Input label="Mã Thuê Bao (*)" value={formData.ma_tb || ''}
               onChange={(e) => setFormData({ ...formData, ma_tb: e.target.value })} />
             <Input label="Mã LT / Mã TB Sub" value={formData.ma_lt_ma_tb_sub || ''}
               onChange={(e) => setFormData({ ...formData, ma_lt_ma_tb_sub: e.target.value })} />
             <div className="sm:col-span-2">
-              <Input label="Tên thuê bao (*)" value={formData.ten_th_bao || ''} required
+              <Input label="Tên thuê bao (*)" value={formData.ten_th_bao || ''}
                 onChange={(e) => setFormData({ ...formData, ten_th_bao: e.target.value })} />
             </div>
             <div className="sm:col-span-2">

@@ -1,26 +1,11 @@
 # TODO
 
-HS PON:
-- Format HS_SD_XGSPON : căn giữa chữ MPM
-- tách 3 file
-- "Tất cả site" : xuất ra cả 3 (Đông, Tây, 2 site)
-- thêm tìm "Tất cả" cho các trường : Tên hệ thống, IP, TTVT, Phường xã
-Vd: chọn tìm "Tất cả", ký tự tìm: "a", thì sẽ tìm trên các trường "Tên hệ thống, IP, TTVT, Phường xã" có ký tự "a"
-- export theo option checkbox
-
-BTS
-- DS Cảnh báo : 1 trạm thì các mã lỗi dồn thành 1 dòng theo thứ tự: Không tìm thấy NE trên RIMS, FMS chưa có phân loại trạm hoặc NE chưa gán CSHT trên RIMS, FMS chưa có phân loại trạm
-
-CELL
-- remove 2G branch Stable
-
 Megawan
-- complete each feature
-- chuyển sang web base
-- hoàn thiện chi tiết
+- trong file đầu vào chị gán sẵn UPE nhưng nếu e làm data theo file csht_upe có gì c chủ động thêm/xoá/sửa theo nguyên tắc ation là insert/delete -> đã thực hiện
+- Megawan à, chị làm gì thì cứ để đó đi,
+khi nào xong yêu cầu cũ -> thì e đọc yêu cầu mới rồi hỏi sau
 
 Release DB note:
-
 
 #
 py -3.13 --version
@@ -69,3 +54,26 @@ pyarmor gen -r src/
 run script
 
 ## build nuitka
+
+# make cer:
+mkdir certs
+cd certs
+mkcert -cert-file cert.pem -key-file key.pem localhost 127.0.0.1 ::1 192.168.1.200 10.53.67.140
+
+# 1. Chuyển mạng Wi-Fi sang chế độ Private
+## Get-NetConnectionProfile
+Set-NetConnectionProfile -InterfaceAlias "Wi-Fi" -NetworkCategory Private
+
+# 2. Mở Port 80 và 443 trên Windows Firewall
+## Get-NetFirewallPortFilter | Where-Object { $_.LocalPort -eq "80" -or $_.LocalPort -eq "443" } | Get-NetFirewallRule
+New-NetFirewallRule -DisplayName "OMC Web HTTP (80)" -Direction Inbound -LocalPort 80 -Protocol TCP -Action Allow
+New-NetFirewallRule -DisplayName "OMC Web HTTPS (443)" -Direction Inbound -LocalPort 443 -Protocol TCP -Action Allow
+
+# Cho phép lưu lượng Inbound qua lớp tường lửa Hyper-V của WSL
+Set-NetFirewallHyperVVMSetting -Name '{40E0AC32-46A5-438A-A0B2-2B479E8F2E90}' -DefaultInboundAction Allow
+
+[wsl2]
+networkingMode=mirrored
+firewall=false
+[experimental]
+hostAddressLoopback=true

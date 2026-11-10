@@ -1,3 +1,4 @@
+import os
 from typing import AsyncGenerator
 from sqlalchemy.ext.asyncio import (
     AsyncEngine,
@@ -12,9 +13,9 @@ from app.core.config import settings
 class DatabaseManager:
     """Database abstraction manager supporting PostgreSQL and MSSQL dialects."""
 
-    def __init__(self, db_url: str = settings.DATABASE_URL):
-        self.db_url = db_url
-        self.engine: AsyncEngine = self._create_engine(db_url)
+    def __init__(self, db_url: str = None):
+        self.db_url = db_url or os.getenv("DATABASE_URL") or settings.DATABASE_URL
+        self.engine: AsyncEngine = self._create_engine(self.db_url)
         self.session_factory = async_sessionmaker(
             bind=self.engine,
             class_=AsyncSession,

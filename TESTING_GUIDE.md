@@ -140,3 +140,46 @@ Bạn sẽ thấy 5 container đều ở trạng thái `running` (hoặc `health
 ```
 *(hoặc: `docker compose -f docker/docker-compose.yml down`)*
 
+##############################################
+
+
+### 5. Hướng dẫn sử dụng [run.ps1](file:///c:/_a_volumn/vnpt/a_vnpt_project/OMC_MGMT_TOOLS_WEB/run.ps1)
+
+#### 🚀 Chế độ Dev (Mặc định - Chạy script trực tiếp với reload):
+```powershell
+# Khởi động (tự động đảm bảo Postgres đã chạy)
+.\run.ps1 up -Mode dev
+
+# Rebuild dev container
+.\run.ps1 build -Mode dev
+```
+
+#### 📦 Chế độ Release (Dùng Nuitka backend + npm bundle frontend):
+```powershell
+# Build toàn bộ bundle và biên dịch Nuitka
+.\run.ps1 build -Mode release
+
+# Khởi chạy bản Release
+.\run.ps1 up -Mode release
+```
+
+#### 🛑 Dừng container:
+```powershell
+# Dừng application stack (PostgreSQL vẫn tiếp tục chạy)
+.\run.ps1 down
+
+# Dừng tất cả (bao gồm cả PostgreSQL container - dữ liệu trong storage/postgres_data vẫn an toàn)
+.\run.ps1 down -All
+```
+
+#### 🐘 Quản lý riêng PostgreSQL:
+```powershell
+.\run.ps1 postgres up
+.\run.ps1 postgres down
+.\run.ps1 postgres restart
+.\run.ps1 postgres logs
+```
+
+#### 🌐 Đường dẫn truy cập:
+- **Web App (HTTPS)**: [https://localhost](https://localhost) *(hoặc [http://localhost](http://localhost) sẽ tự động redirect sang HTTPS)*
+- **API Swagger Docs**: [https://localhost/docs](https://localhost/docs)

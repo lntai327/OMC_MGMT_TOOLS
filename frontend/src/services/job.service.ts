@@ -1,7 +1,8 @@
 import { apiClient } from './api.client';
 import { JobStatusResponse } from '../models/job.types';
 
-const WS_BASE_URL = import.meta.env.VITE_WS_BASE_URL || 'ws://localhost:8000/api/v1/ws';
+const defaultWsUrl = `${typeof window !== 'undefined' && window.location.protocol === 'https:' ? 'wss:' : 'ws:'}//${typeof window !== 'undefined' ? window.location.host : 'localhost'}/api/v1/ws`;
+const WS_BASE_URL = import.meta.env.VITE_WS_BASE_URL || defaultWsUrl;
 
 export const jobService = {
   async getJobStatus(jobId: string): Promise<JobStatusResponse> {

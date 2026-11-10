@@ -1,0 +1,113 @@
+name: omc_mgmt_tool_release
+
+services:
+  redis:
+    build:
+      context: ..
+      dockerfile: docker/redis.Dockerfile
+    image: omc_mgmt_tool-redis:latest
+    container_name: redis
+    restart: always
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: [ "CMD", "redis-cli", "ping" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - omc_network
+
+  backend:
+    build:
+      context: ..
+      dockerfile: docker/backend.release.Dockerfile
+    image: omc_mgmt_tool-backend:release
+    container_name: backend
+    restart: always
+    env_file:
+      - ../.env
+    environment:
+      - DATABASE_URL=postgresql+asyncpg://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@postgres:5432/${POSTGRES_DB:-omc_reports}
+      - CELERY_BROKER_URL=redis://redis:6379/1
+      - CELERY_RESULT_BACKEND=redis://redis:6379/2
+      - REDIS_URL=redis://redis:6379/0
+    volumes:
+      - backend_data:/app/storage
+    ports:
+      - "8000:8000"
+    depends_on:
+      redis:
+        condition: service_healthy
+    networks:
+      - omc_network
+
+  celery_worker:
+    image: omc_mgmt_tool-backend:release
+    container_name: celery_worker
+    restart: always
+    command: celery -A app.workers.celery_app.celery worker --loglevel=info --pool=threads --concurrency=4
+    env_file:
+      - ../.env
+    environment:
+      - DATABASE_URL=postgresql+asyncpg://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@postgres:5432/${POSTGRES_DB:-omc_reports}
+      - CELERY_BROKER_URL=redis://redis:6379/1
+      - CELERY_RESULT_BACKEND=redis://redis:6379/2
+      - REDIS_URL=redis://redis:6379/0
+    volumes:
+      - backend_data:/app/storage
+    depends_on:
+      redis:
+        condition: service_healthy
+    networks:
+      - omc_network
+
+  celery_beat:
+    image: omc_mgmt_tool-backend:release
+    container_name: celery_beat
+    restart: always
+    command: celery -A app.workers.celery_app.celery beat --loglevel=info
+    env_file:
+      - ../.env
+    environment:
+      - DATABASE_URL=postgresql+asyncpg://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@postgres:5432/${POSTGRES_DB:-omc_reports}
+      - CELERY_BROKER_URL=redis://redis:6379/1
+      - CELERY_RESULT_BACKEND=redis://redis:6379/2
+      - REDIS_URL=redis://redis:6379/0
+    volumes:
+      - backend_data:/app/storage
+    depends_on:
+      redis:
+        condition: service_healthy
+    networks:
+      - omc_network
+
+  frontend:
+    build:
+      context: ..
+      dockerfile: docker/frontend.release.Dockerfile
+    image: omc_mgmt_tool-frontend:release
+    container_name: frontend
+    restart: always
+    ports:
+      - "80:80"
+      - "443:443"
+      - "3000:80"
+    volumes:
+      - ../storage/certs:/etc/nginx/certs:ro
+    depends_on:
+      - backend
+    networks:
+      - omc_network
+
+volumes:
+  redis_data:
+  backend_data:
+
+networks:
+  omc_network:
+    name: omc_network
+    external: true
+
