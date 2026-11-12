@@ -1,3 +1,3 @@
 CFG = {
-  "app_version": "v1.0.4.1",
+  "app_version": "v1.0.0",
 }

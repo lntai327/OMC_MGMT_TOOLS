@@ -117,7 +117,7 @@ class LoginPage(BasePage):
                         ),
                         # App Title & Description
                         ft.Text(
-                            "OMC Report Tool",
+                            "OMC Management Tool",
                             size=22,
                             weight=ft.FontWeight.BOLD,
                             color=ft.Colors.PRIMARY,
@@ -140,7 +140,7 @@ class LoginPage(BasePage):
                         # Action Buttons (Vertical Stack)
                         self._login_btn,
                         self._guest_btn,
-                        self._admin_dev_btn, ############################################## DEV ONLY
+                        # self._admin_dev_btn, ############################################## DEV ONLY
                         self._config_btn,
                     ],
                     spacing=12,

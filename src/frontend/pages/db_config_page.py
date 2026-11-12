@@ -83,7 +83,7 @@ class DbConfigPage(BasePage):
                         ),
                         # App Title & Subtitle
                         ft.Text(
-                            "OMC Report Tool",
+                            "OMC Management Tool",
                             size=22,
                             weight=ft.FontWeight.BOLD,
                             color=ft.Colors.PRIMARY,

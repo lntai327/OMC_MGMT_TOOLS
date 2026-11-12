@@ -6,16 +6,17 @@ from frontend.component.common_view import safe_callback
 from frontend.component.explorer_ui_util import ExplorerUiUtil
 from frontend.component.loading_overlay import LoadingOverlay
 from frontend.component.update_db_dialog import UpdateDbDialog
-import frontend.constant.type as FET
+
 from frontend.pages.base_page import BasePage
 from frontend.viewmodels.megawan_metronet_vm import MegawanMetronetViewModel
 from share.constant import constant as SC
+from share.constant import type as ST
 from share.session import Session
 from share.util.logger_util import LoggerUtil
 
 
 class MegawanMetronetPage(BasePage):
-    title = FET.ReportTypeInfo.QLY_MEGAWAN.report_name
+    title = ST.ReportTypeInfo.QLY_MEGAWAN.report_name
     scroll = None
 
     def __init__(self, page: ft.Page, router, **kwargs):

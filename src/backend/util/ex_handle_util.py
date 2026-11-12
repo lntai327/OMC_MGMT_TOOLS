@@ -71,7 +71,7 @@ class ExcelHandleUtil:
                     if idx < len(row):
                         val = str(row[idx]).strip() if row[idx] != None else ''
                     else:
-                        val = 'N/A'
+                        val = ''
                     req_colums_value_list.append(val)
                 req_row_dic = dict(zip(req_header_val, req_colums_value_list))
                 items_list.append(req_row_dic)

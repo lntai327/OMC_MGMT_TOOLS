@@ -7,7 +7,6 @@ from frontend.component.loading_overlay import LoadingOverlay
 from frontend.component.rp_time_control import RpTimeControl
 from frontend.component.update_db_dialog import UpdateDbDialog
 from frontend.component.explorer_ui_util import ExplorerUiUtil
-import frontend.constant.type as FET
 from frontend.component.common_view import safe_callback
 from share.constant import constant as SC
 from share.constant import type as ST
@@ -192,7 +191,7 @@ class DsachLoiView(ft.Column):
         self._page.run_thread(_do_export)
 
 class BcBtsPage(BasePage):
-    title = FET.ReportTypeInfo.BC_BTS.report_name
+    title = ST.ReportTypeInfo.BC_BTS.report_name
     RpSiteControl = RpSiteControl
     DsachLoiView = DsachLoiView
 
@@ -227,13 +226,18 @@ class BcBtsPage(BasePage):
             on_change=self._on_rp_type_changed,
             content=ft.Row([
                 ft.Radio(
-                    value=FET.ReportTypeInfo.BC_CBAO_MLL.report_id.name,
-                    label=FET.ReportTypeInfo.BC_CBAO_MLL.report_name,
+                    value=ST.ReportTypeInfo.BC_CBAO_MLL.report_id.name,
+                    label=ST.ReportTypeInfo.BC_CBAO_MLL.report_name,
                     width=150,
                 ),
                 ft.Radio(
-                    value=FET.ReportTypeInfo.BC_MPD.report_id.name,
-                    label=FET.ReportTypeInfo.BC_MPD.report_name,
+                    value=ST.ReportTypeInfo.BC_MPD.report_id.name,
+                    label=ST.ReportTypeInfo.BC_MPD.report_name,
+                    width=150,
+                ),
+                ft.Radio(
+                    value=ST.ReportTypeInfo.TGHOP_BTS.report_id.name,
+                    label=ST.ReportTypeInfo.TGHOP_BTS.report_name,
                     width=150,
                 ),
             ], spacing=8),

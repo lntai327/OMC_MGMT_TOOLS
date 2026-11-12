@@ -6,7 +6,7 @@ from frontend.viewmodels.qly_hsuat_gpon_vm import QlyHsuatGponViewModel
 from frontend.component.explorer_ui_util import ExplorerUiUtil
 from frontend.component.loading_overlay import LoadingOverlay
 from frontend.component.common_view import safe_callback
-import frontend.constant.type as FET
+
 from share.session import Session
 from share.constant import constant as SC
 from share.constant import type as ST
@@ -15,7 +15,7 @@ from share.util.dynamic_info_util import DynamicInfoUtil
 from share.util.logger_util import LoggerUtil
 
 class QlyHsuatGponPage(BasePage):
-    title = FET.ReportTypeInfo.QLY_HSUAT_XGSPON.report_name
+    title = ST.ReportTypeInfo.QLY_HSUAT_XGSPON.report_name
     scroll = None
 
     def __init__(self, page: ft.Page, router, **kwargs):

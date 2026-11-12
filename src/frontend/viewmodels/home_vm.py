@@ -1,7 +1,6 @@
 """HomeViewModel — report list filter logic."""
 from frontend.viewmodels.base_vm import BaseViewModel
-import frontend.constant.type as FET
-
+from share.constant import type as ST
 
 class HomeViewModel(BaseViewModel):
     """ViewModel for the Home (report selection) page.
@@ -12,18 +11,18 @@ class HomeViewModel(BaseViewModel):
 
     # All available reports
     ALL_REPORTS: list[str] = [
-        FET.ReportTypeInfo.BC_CELL_MLL.report_name,
-        FET.ReportTypeInfo.BC_BTS.report_name,
-        FET.ReportTypeInfo.QLY_HSUAT_XGSPON.report_name,
-        # FET.ReportTypeInfo.QLY_MEGAWAN.report_name,
+        ST.ReportTypeInfo.BC_CELL_MLL.report_name,
+        ST.ReportTypeInfo.BC_BTS.report_name,
+        ST.ReportTypeInfo.QLY_HSUAT_XGSPON.report_name,
+        # ST.ReportTypeInfo.QLY_MEGAWAN.report_name,
     ]
 
     # Map report_name → route key
     REPORT_ROUTES: dict[str, str] = {
-        FET.ReportTypeInfo.BC_CELL_MLL.report_name: "bc_cell_mll",
-        FET.ReportTypeInfo.BC_BTS.report_name: "bc_bts",
-        FET.ReportTypeInfo.QLY_HSUAT_XGSPON.report_name: "qly_hsuat_xgspon",
-        # FET.ReportTypeInfo.QLY_MEGAWAN.report_name: "megawan_metronet",
+        ST.ReportTypeInfo.BC_CELL_MLL.report_name: "bc_cell_mll",
+        ST.ReportTypeInfo.BC_BTS.report_name: "bc_bts",
+        ST.ReportTypeInfo.QLY_HSUAT_XGSPON.report_name: "qly_hsuat_xgspon",
+        # ST.ReportTypeInfo.QLY_MEGAWAN.report_name: "megawan_metronet",
     }
 
     def __init__(self):

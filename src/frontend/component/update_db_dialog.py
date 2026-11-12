@@ -8,7 +8,7 @@ from backend.util.ex_handle_util import ExcelHandleUtil
 from backend.constant import excel_struct_info as ESI
 from frontend.component.explorer_ui_util import ExplorerUiUtil
 from frontend.component.background_task import run_background_task
-from frontend.constant import type as FET
+from share.constant import type as ST
 from share.constant import constant as SC
 from share.util.dynamic_info_util import DynamicInfoUtil
 from share.util.explorer_util import ExplorerUtil
@@ -56,7 +56,7 @@ class UpdateDbDialog:
             self._path_fields[key] = field
 
             try:
-                file_name = FET.FileInfoDict.get(key).file_name
+                file_name = ST.FileInfoDict.get(key).file_name
             except:
                 file_name = key
 

@@ -43,7 +43,7 @@ pip freeze > requirements.txt
 pip install -r requirements.txt
 
 #release note:
-nuitka --standalone --windows-console-mode=disable --windows-icon-from-ico=.\src\rs\cfg\rpt_icon.ico --include-windows-runtime-dlls=yes --include-data-dir=.\src\rs\cfg=rs\cfg --include-data-dir=.\src\rs\rpt=rs\rpt --include-data-dir=.\src\rs\font=rs\font --include-package=flet --include-package-data=flet --output-dir=dist --output-filename=OMC_QNN_Report_Tool_v1.0.4.1_t4.exe .\src\main.py
+nuitka --standalone --windows-console-mode=disable --windows-icon-from-ico=.\src\rs\cfg\rpt_icon.ico --include-windows-runtime-dlls=yes --include-data-dir=.\src\rs\cfg=rs\cfg --include-data-dir=.\src\rs\rpt=rs\rpt --include-data-dir=.\src\rs\font=rs\font --include-package=flet --include-package-data=flet --output-dir=dist --output-filename=OMC_Management_Tool_desktop_v1.0.0.exe .\src\main.py
 
 force / disable / attach / hide
 

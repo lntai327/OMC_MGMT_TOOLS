@@ -20,7 +20,7 @@ class HomePage(BasePage):
 
     def build(self) -> ft.Control:
         self._search_field = ft.TextField(
-            label=SC.K_UI_REPORT_TYPE,
+            label=SC.K_UI_FUNCTION,
             prefix_icon=ft.Icons.SEARCH,
             on_change=lambda e: self._vm.update_filter(e.control.value),
             on_submit=lambda _: self._select_top(),
@@ -35,7 +35,7 @@ class HomePage(BasePage):
             content=ft.Column(
                 controls=[
                     ft.Text(
-                        "OMC Report Tool",
+                        "OMC Management Tool",
                         size=20,
                         weight=ft.FontWeight.BOLD,
                         color=ft.Colors.PRIMARY,

@@ -9,7 +9,7 @@ from pathlib import Path
 import openpyxl
 from openpyxl.worksheet.worksheet import Worksheet
 from openpyxl.drawing.image import Image
-from openpyxl.styles import Font
+from openpyxl.styles import Font, PatternFill, Alignment
 from datetime import datetime, timedelta, timezone #date,
 from dateutil import parser
 import matplotlib
@@ -72,9 +72,7 @@ class BcCbaoMllService:
 
         # MLL CLR
         self._data_bc_cbao_mll_clr_xg_dict = \
-            defaultdict(
-                defaultdict(DataBcCbaoMllXgStruct)
-            )
+            defaultdict(DataBcCbaoMllXgStruct)
 
         # MLL NCLR
         self._data_bc_cbao_mll_bts_xg_nclr_list = []
@@ -88,13 +86,16 @@ class BcCbaoMllService:
 
         self._site: str = DynamicInfoUtil().get_value(2, SC.K_SCREEN_INPUT, SC.K_SITE1)
 
+        self._sel_rp_type: str = DynamicInfoUtil().get_value(2, SC.K_SCREEN_INPUT, SC.K_REPORT_TYPE) or ""
+
     def _prepare_data(self):
         self._nodeb3g_sheet_maker.load()
         self._enodeb4g_sheet_maker.load()
         self._gnodeb5g_sheet_maker.load()
         self._dmoi_qly_csht_maker.load()
         self._csht_ccl_service.load()
-        self._rp_al_cbao_mll_maker.load()
+        if self._sel_rp_type != ST.ReportTypeInfo.TGHOP_BTS.report_id.name:
+            self._rp_al_cbao_mll_maker.load()
         self._tht_ttvt_maker.load()
         self._cf_bts_maker.load()
         if self._need_cpare_nclr == '1':
@@ -231,28 +232,28 @@ class BcCbaoMllService:
 
     def _make_thgke_bts_chi_tiet_xg_item(self, xg_item_dict: dict, ttvt: str) -> dict:
         item = {
-            SC.K_TTVT: ttvt,
             SC.K_TO_HA_TANG: self._tht_ttvt_maker.ttvt_dict\
-                .get(ttvt.lower(), {})\
-                .get(SC.K_TO_HA_TANG, "N/A"),
+                .get(ttvt.strip().lower(), {})\
+                .get(SC.K_TO_HA_TANG, ""),
+            SC.K_TTVT: ttvt,
 
             SC.K_TRANG_THAI_HDONG: xg_item_dict.get(SC.K_TRANG_THAI_HDONG, "N/A"),
-            SC.K_MA_CSHT: xg_item_dict.get(SC.K_TRANG_THAI_HDONG, "N/A"),
-            SC.K_TEN_TREN_HE_THONG: xg_item_dict.get(SC.K_TRANG_THAI_HDONG, "N/A"),
-            SC.K_TEN_QUAN_LY: xg_item_dict.get(SC.K_TRANG_THAI_HDONG, "N/A"),
+            SC.K_MA_CSHT: xg_item_dict.get(SC.K_MA_CSHT, "N/A"),
+            SC.K_TEN_HE_THONG: xg_item_dict.get(SC.K_TEN_TREN_HE_THONG, "N/A"),
+            SC.K_TEN_QUAN_LY: xg_item_dict.get(SC.K_TEN_QUAN_LY, "N/A"),
 
-            SC.K_TRTHAI_DAT_MNO: xg_item_dict.get(SC.K_TRANG_THAI_HDONG, "N/A"),
+            SC.K_TRTHAI_DAT_MNO: xg_item_dict.get(SC.K_TRTHAI_DAT_MNO, "N/A"),
 
-            SC.K_LOAI_TRAM: xg_item_dict.get(SC.K_TRANG_THAI_HDONG, "N/A"),
-            SC.K_BG_TAN: xg_item_dict.get(SC.K_TRANG_THAI_HDONG, "N/A"),
-            SC.K_NGAY_DUYET: xg_item_dict.get(SC.K_TRANG_THAI_HDONG, "N/A"),
-            SC.K_SERVICE_IP: xg_item_dict.get(SC.K_TRANG_THAI_HDONG, "N/A"),
-            SC.K_OAM_IP: xg_item_dict.get(SC.K_TRANG_THAI_HDONG, "N/A"),
+            SC.K_LOAI_TRAM: xg_item_dict.get(SC.K_LOAI_TRAM, "N/A"),
+            SC.K_BG_TAN: xg_item_dict.get(SC.K_BG_TAN, "N/A"),
+            SC.K_NGAY_DUYET: xg_item_dict.get(SC.K_NGAY_DUYET, "N/A"),
+            SC.K_SERVICE_IP: xg_item_dict.get(SC.K_SERVICE_IP, "N/A"),
+            SC.K_OAM_IP: xg_item_dict.get(SC.K_OAM_IP, "N/A"),
 
-            SC.K_IP_GW_OAM: xg_item_dict.get(SC.K_TRANG_THAI_HDONG, ""),
-            SC.K_SERVICE_IP_GW: xg_item_dict.get(SC.K_TRANG_THAI_HDONG, ""),
-            SC.K_SERVICE_VLAN: xg_item_dict.get(SC.K_TRANG_THAI_HDONG, ""),
-            SC.K_OAM_VLAN: xg_item_dict.get(SC.K_TRANG_THAI_HDONG, ""),
+            SC.K_IP_GW_OAM: xg_item_dict.get(SC.K_IP_GW_OAM, ""),
+            SC.K_SERVICE_IP_GW: xg_item_dict.get(SC.K_SERVICE_IP_GW, ""),
+            SC.K_SERVICE_VLAN: xg_item_dict.get(SC.K_SERVICE_VLAN, ""),
+            SC.K_OAM_VLAN: xg_item_dict.get(SC.K_OAM_VLAN, ""),
         }
 
         return item
@@ -271,30 +272,57 @@ class BcCbaoMllService:
                         self._gnodeb5g_sheet_maker.gnodeb5g_items_list_all
 
             for item in bts_xg_items_list_latest:
+                ttvt = ""
+                ttvt_lower = ""
+                
+
                 try:
                     ttvt = str(
                                     self._csht_ccl_service.csht_mdsd_items_ma_csht_dict\
                                     [item[SC.K_MA_CSHT]][SC.K_TEN_TTVT_TRAM_VT_NETX]
-                                ).strip().lower()
+                                )
+                    ttvt_lower = ttvt.strip().lower()
 
-                    site: str = self._tht_ttvt_maker.ttvt_dict[str(ttvt).lower()][SC.K_SITE1]
+                    site: str = self._tht_ttvt_maker.ttvt_dict\
+                        [ttvt_lower][SC.K_SITE1]
                     if self._site.lower() == ST.Site.ALL_SITE.value:
                         pass
                     elif self._site.lower() not in str(site).lower():
                         continue
-
-                    ret_xg_item = self._make_thgke_bts_chi_tiet_xg_item(
-                        item, ttvt
-                    )
-                    self._data_tghop_bts_xg_dict[he_thong].append(ret_xg_item)
-                    self._bts_counter_by_ttvt_dict[he_thong][ttvt] += 1
 
                 except KeyError as e:
                     LoggerUtil.get_logger().warning(
                         f'BcCbaoMllService tghop_bts failed {e}'
                     )
 
-    def _make_thgke_tghop(self):
+                ret_xg_item = self._make_thgke_bts_chi_tiet_xg_item(
+                    item, ttvt
+                )
+                self._data_tghop_bts_xg_dict[he_thong].append(ret_xg_item)
+
+                self._bts_counter_by_ttvt_dict[ttvt_lower][he_thong] += 1
+
+                if he_thong == T.HeThong._5G.value:
+                    bang_tan = item[SC.K_BG_TAN]
+                    match str(bang_tan).strip().lower():
+                        case "nr3700":
+                            self._bts_counter_by_ttvt_dict[ttvt_lower]["nr3700"] +=1
+                        case "nr700":
+                            self._bts_counter_by_ttvt_dict[ttvt_lower]["nr700"] +=1
+                        case _:
+                            self._bts_counter_by_ttvt_dict[ttvt_lower]["nrkxd"] +=1
+
+        for he_thong in [T.HeThong._3G.value, T.HeThong._4G.value, T.HeThong._5G.value]:
+            self._data_tghop_bts_xg_dict[he_thong].sort(
+                key=lambda x: (
+                    safe_sort_str(locale.strxfrm(x.get(SC.K_TO_HA_TANG, ""))),
+                    safe_sort_str(locale.strxfrm(x.get(SC.K_TTVT, ""))),
+                    safe_sort_str(locale.strxfrm(x.get(SC.K_MA_CSHT, ""))),
+                    safe_sort_str(locale.strxfrm(x.get(SC.K_TEN_HE_THONG, ""))),
+                )
+            )
+
+    def _make_thgke_tghop(self) -> None:
         for ttvt_dict in self._tht_ttvt_maker.ttvt_list:
             if self._site.lower() == ST.Site.ALL_SITE.value:
                 pass
@@ -305,17 +333,60 @@ class BcCbaoMllService:
 
             item = {
                 SC.K_TO_HA_TANG: ttvt_dict[SC.K_TO_HA_TANG],
-                SC.TTVT: ttvt_dict[SC.K_TTVT],
-                SC.K_3G: self._bts_counter_by_ttvt_dict[T.HeThong._3G.value][ttvt],
-                SC.K_4G: self._bts_counter_by_ttvt_dict[T.HeThong._4G.value][ttvt],
-                SC.K_5G: self._bts_counter_by_ttvt_dict[T.HeThong._5G.value][ttvt],
+                SC.K_TTVT: ttvt_dict[SC.K_TTVT],
+                SC.K_3G: self._bts_counter_by_ttvt_dict[ttvt][T.HeThong._3G.value],
+                SC.K_4G: self._bts_counter_by_ttvt_dict[ttvt][T.HeThong._4G.value],
+                SC.K_5G: self._bts_counter_by_ttvt_dict[ttvt][T.HeThong._5G.value],
             }
 
             self._data_tghop_bts_list.append(item)
+
+        self._data_tghop_bts_list.sort(
+            key=lambda x: (
+                safe_sort_str(locale.strxfrm(x.get(SC.K_TO_HA_TANG, ""))),
+                safe_sort_str(locale.strxfrm(x.get(SC.K_TTVT, ""))),
+            )
+        )
+
+        # Unknown TTVT
+        unknown_ttvt = [
+            x for x in self._bts_counter_by_ttvt_dict.keys() \
+            if x not in self._tht_ttvt_maker.ttvt_dict.keys()
+        ]
+
+        item = {
+            SC.K_TO_HA_TANG: "Chưa gán CSHT nên chưa có ĐVQL",
+            SC.K_TTVT: "",
+            SC.K_3G: 0,
+            SC.K_4G: 0,
+            SC.K_5G: 0,
+        }
+
+        for x in unknown_ttvt:
+            item[SC.K_3G] = self._bts_counter_by_ttvt_dict[x][T.HeThong._3G.value]
+            item[SC.K_4G] = self._bts_counter_by_ttvt_dict[x][T.HeThong._4G.value]
+            item[SC.K_5G] = self._bts_counter_by_ttvt_dict[x][T.HeThong._5G.value]
+
+        self._data_tghop_bts_list.append(item)
+
+        # row tong
+        item = {
+            SC.K_TO_HA_TANG: "Tổng",
+            SC.K_TTVT: "",
+            SC.K_3G: 0,
+            SC.K_4G: 0,
+            SC.K_5G: 0,
+        }
+
+        for row in self._data_tghop_bts_list:
+            item[SC.K_3G] += row[SC.K_3G]
+            item[SC.K_4G] += row[SC.K_4G]
+            item[SC.K_5G] += row[SC.K_5G]
+
+        self._data_tghop_bts_list.append(item)
     
     def _count_info_mll_of_ttvt_x_clr(
                             self,
-                            bts_xg_items_list_latest: list,
                             bc_chi_tiet_mll_x_item_list: list,
                             ttvt: str
     ) -> tuple[int, int]:
@@ -343,9 +414,9 @@ class BcCbaoMllService:
         ttvt = ttvt.strip().lower()
 
         tong_so_bts = \
-            self._bts_counter_by_ttvt_dict[T.HeThong._3G.value][ttvt] \
-            + self._bts_counter_by_ttvt_dict[T.HeThong._4G.value][ttvt] \
-            + self._bts_counter_by_ttvt_dict[T.HeThong._5G.value][ttvt]
+            self._bts_counter_by_ttvt_dict[ttvt][T.HeThong._3G.value] \
+            + self._bts_counter_by_ttvt_dict[ttvt][T.HeThong._4G.value] \
+            + self._bts_counter_by_ttvt_dict[ttvt][T.HeThong._5G.value]
 
         mll_3g = 0
         mll_4g = 0
@@ -563,8 +634,8 @@ class BcCbaoMllService:
         item[SC.K_TTVT_2] = ttvt_dict[SC.K_TTVT]
 
         item[SC.K_UI_TONG_SO_BTS] = self._bts_counter_by_ttvt_dict\
-            [T.HeThong._3G.value]\
-            [str(item[SC.K_TTVT_2]).strip().lower()]
+            [str(item[SC.K_TTVT_2]).strip().lower()]\
+            [he_thong]
 
         item[SC.K_UI_SCO_MLL_LAN], item[SC.K_UI_TGIAN_CBAO_PHUT] = \
             self._count_info_mll_of_ttvt_x_clr(
@@ -675,6 +746,7 @@ class BcCbaoMllService:
             db_row_cpare: list = self._db_adapter.get_rows_list_by_value(
                 SC.K_TABLE_BC_BTS_MLL_TGHOP_DA_LOAI_TRU, db_row_cpare)
             item = self._make_bc_tghop_item_clr(
+                he_thong,
                 data_bc_cbao_mll_xg.bc_mll_nguon_td_item_list,
                 ttvt_dict,
                 db_row_cpare
@@ -1050,7 +1122,36 @@ class BcCbaoMllService:
 
         ### THONG KE BTS
         self._make_thgke_bts_chi_tiet_xg()
+
         self._make_thgke_tghop()
+
+        nr3700 = sum(
+            values.get("nr3700", 0)
+            for values in self._bts_counter_by_ttvt_dict.values()
+        )
+        nr700 = sum(
+            values.get("nr700", 0)
+            for values in self._bts_counter_by_ttvt_dict.values()
+        )
+        nrkxd =  sum(
+            values.get("nrkxd", 0)
+            for values in self._bts_counter_by_ttvt_dict.values()
+        )
+
+        ghi_chu: str = (
+            f'5G Băng tần 3700: {nr3700}\n'
+            f'5G Băng tần 700: {nr700}\n'
+            f'5G Băng tần "Trống": {nrkxd}\n'
+        )
+
+        ret_path = writer.write_excel_tghop_bts(
+            self._data_tghop_bts_xg_dict,
+            self._data_tghop_bts_list,
+            ghi_chu
+        )
+
+        if self._sel_rp_type == ST.ReportTypeInfo.TGHOP_BTS.report_id.name:
+            return ret_path
 
         ################################# MLL CLR
         # make data BC chi tiết MLL_tất cả các NN XG & make BC MLL_nguồn(trừL3_KoMPĐ)-TD
@@ -1123,6 +1224,8 @@ class ExcelBcCbaoMllWriter:
         self._db_adapter = DatabaseFactory.create_adapter()
         self._tht_ttvt_maker = ExcelThtTtvtMaker()
         self._tht_ttvt_maker.load()
+
+        self._site: str = DynamicInfoUtil().get_value(2, SC.K_SCREEN_INPUT, SC.K_SITE1)
 
         self._output_folder_path = ExplorerUtil().create_outfolder_fromtotime()
 
@@ -1888,6 +1991,205 @@ class ExcelBcCbaoMllWriter:
         self._write_excel_cbao_mat_ac_nclr(excel_path, data_bc_cbao_mat_ac_list)
         self._write_excel_csht_mll_nclr(excel_path, data_bc_csht_mll_nclr_list)
         self._write_excel_bc_tghop_nclr(excel_path, data_bc_tghop_nclr_list)
+
+    def _write_excel_tghop_bts_xg(self, he_thong, ws: Worksheet, data_list):
+        HEADER = []
+
+        if he_thong in [T.HeThong._3G.value, T.HeThong._4G.value]:
+            HEADER = [
+                SC.K_TO_HA_TANG,
+                SC.K_TTVT,
+
+                SC.K_TRANG_THAI_HDONG,
+                SC.K_MA_CSHT,
+                SC.K_TEN_HE_THONG,
+                SC.K_TEN_QUAN_LY,
+
+                SC.K_TRTHAI_DAT_MNO,
+
+                SC.K_LOAI_TRAM,
+                SC.K_BG_TAN,
+                SC.K_NGAY_DUYET,
+                SC.K_SERVICE_IP,
+                SC.K_OAM_IP,
+            ]
+        else:
+            HEADER = [
+                SC.K_TO_HA_TANG,
+                SC.K_TTVT,
+
+                SC.K_TRANG_THAI_HDONG,
+                SC.K_MA_CSHT,
+                SC.K_TEN_HE_THONG,
+                SC.K_TEN_QUAN_LY,
+
+                SC.K_LOAI_TRAM,
+                SC.K_BG_TAN,
+                SC.K_NGAY_DUYET,
+                SC.K_SERVICE_IP,
+                SC.K_OAM_IP,
+
+                SC.K_IP_GW_OAM,
+                SC.K_SERVICE_IP_GW,
+                SC.K_SERVICE_VLAN,
+                SC.K_OAM_VLAN,
+            ]
+
+        for row_idx, item in enumerate(data_list, start=2):
+            for col_idx, key in enumerate(HEADER, start=1):
+                value = item.get(key, "N/A")
+
+                if key in [SC.K_NGAY_DUYET, SC.K_SERVICE_VLAN, SC.K_OAM_VLAN]:
+                    value = to_int(value, force=False)
+
+                cell = ws.cell(row=row_idx, column=col_idx, value=value)
+                cell.border = T.EX_FORMAT_THIN_BORDER
+
+    def _write_excel_tghop_bts(self, ws: Worksheet, data_list, ghi_chu):
+        HEADER = [
+            SC.K_TO_HA_TANG,
+            SC.K_TTVT,
+            SC.K_3G,
+            SC.K_4G,
+            SC.K_5G,
+        ]
+
+        RED_FONT = Font(color="FF0000")
+        YELLOW_FILL = PatternFill(
+            start_color="FFF2CC",
+            end_color="FFF2CC",
+            fill_type="solid"
+        )
+
+        ghi_chu_col_idx = 6
+
+        last_row_idx = 2
+
+        for row_idx, item in enumerate(data_list, start=2):
+            row_kxd_ttvt = False
+            row_tong_idx = False
+            cells = []
+
+            for col_idx, key in enumerate(HEADER, start=1):
+                value = item.get(key, "N/A")
+
+                cell = ws.cell(
+                    row=row_idx,
+                    column=col_idx,
+                    value=value
+                )
+                cell.border = T.EX_FORMAT_THIN_BORDER
+                cells.append(cell)
+
+                value_lower = str(value).lower()
+
+                if 'đvql' in value_lower:
+                    row_kxd_ttvt = True
+                elif value_lower == 'tổng':
+                    row_tong_idx = True
+
+            if row_kxd_ttvt:
+                for cell in cells:
+                    cell.font = RED_FONT
+
+            elif row_tong_idx:
+                for col_idx in range(1, ghi_chu_col_idx+1):
+                    cell = ws.cell(
+                        row=row_idx,
+                        column=col_idx
+                    )
+                    cell.fill = YELLOW_FILL
+                    cell.font = Font( # Bold
+                        bold=True
+                    )
+
+            last_row_idx = row_idx
+
+        ### Ghi chu
+        ws.merge_cells(
+            start_row=2,
+            end_row=last_row_idx-1,
+            start_column=ghi_chu_col_idx,
+            end_column=ghi_chu_col_idx
+        )
+
+        # Set value vào ô đầu tiên của merged range
+        cell = ws.cell(row=2, column=ghi_chu_col_idx)
+        cell.value = str(ghi_chu)
+
+        # Center + Wrap Text
+        cell.alignment = Alignment(
+            horizontal="center",
+            vertical="center",
+            wrap_text=True
+        )
+
+        # Apply border cho merged range
+        for row in ws.iter_rows(
+            min_row=2,
+            max_row=last_row_idx,
+            min_col=ghi_chu_col_idx,
+            max_col=ghi_chu_col_idx
+        ):
+            for cell in row:
+                cell.border = T.EX_FORMAT_THIN_BORDER
+
+    def write_excel_tghop_bts(
+                            self,
+                            data_tghop_bts_chtiet_xg_dict: dict,
+                            data_tghop_bts_list: list,
+                            ghi_chu: str
+                        ) -> None|str:
+        site: str = self._site
+        if site.lower() == ST.Site.ALL_SITE.value:
+            site = "2Site"
+
+        excel_output_template_path = \
+                    ExplorerUtil().get_output_template_file_path("Tổng hợp BTS-template.xlsx")
+
+        excel_bc_cbao_mll_xg_name = \
+            "Tổng hợp BTS" + \
+            f"_{site}" + \
+            f"_{self._cr_time}" + \
+            ".xlsx"
+
+        excel_path = os.path.join(
+            self._output_folder_path, excel_bc_cbao_mll_xg_name
+        )
+
+        shutil.copy(
+            excel_output_template_path, excel_path
+        )
+
+        #
+        try:
+            wb = openpyxl.load_workbook(excel_path)
+
+            for he_thong in [T.HeThong._3G.value, T.HeThong._4G.value, T.HeThong._5G.value]:
+                ws = wb[str(he_thong)]
+                self._write_excel_tghop_bts_xg(he_thong, ws, data_tghop_bts_chtiet_xg_dict[he_thong])
+
+            #
+            ws = wb["TONGHOP"]
+            self._write_excel_tghop_bts(ws, data_tghop_bts_list, ghi_chu)
+
+        except Exception as e:
+            LoggerUtil.get_logger().error(
+                f"QlyHsuatGponService export_to_excel tghop_bts failed: {e}"
+            )
+            raise RuntimeError
+        finally:
+            try:
+                wb.save(excel_path)
+                wb.close()
+            except Exception as e:
+                LoggerUtil.get_logger().error(
+                    f'QlyHsuatGponService: unable to close workbook tghop_bts: {e}'
+                )
+                raise RuntimeError
+
+        return self._output_folder_path
+
 class ExcelDsachLoiWriter:
     def __init__(self):
         pass

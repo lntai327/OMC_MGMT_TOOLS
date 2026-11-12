@@ -125,7 +125,7 @@ EXCEL_STRUCT_INFO = {
       "sheet_gnodeb_5g": {
         "start_cell": "Trạng thái hoạt động",
         "require_col": [
-          "Trạng thái hoạt động", "Mã CSHT", "Tên trên hệ thống", "Tên quản lý"
+          "Trạng thái hoạt động", "Mã CSHT", "Tên trên hệ thống", "Tên quản lý",
           "Loại trạm",
           "Băng tần",	"Ngày kiểm duyệt", "Service IP", "OAM IP",
           "IP GW OAM 5G", "SERVICE_IP_GW", "5G service VLAN",	"OAM_VLAN",

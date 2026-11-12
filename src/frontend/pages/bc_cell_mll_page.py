@@ -9,14 +9,15 @@ from frontend.component.rp_site_control import RpSiteControl
 from frontend.component.rp_time_control import RpTimeControl
 from frontend.component.update_db_dialog import UpdateDbDialog
 from frontend.component.explorer_ui_util import ExplorerUiUtil
-import frontend.constant.type as FET
 from frontend.component.common_view import safe_callback
+
 from share.session import Session
 from share.constant import constant as SC
 from share.util.logger_util import LoggerUtil
+from share.constant import type as ST
 
 class BcCellMllPage(BasePage):
-    title = FET.ReportTypeInfo.BC_CELL_MLL.report_name
+    title = ST.ReportTypeInfo.BC_CELL_MLL.report_name
 
     def __init__(self, page: ft.Page, router, **kwargs):
         super().__init__(page, router)

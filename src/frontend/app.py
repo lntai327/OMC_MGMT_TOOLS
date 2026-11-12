@@ -35,7 +35,7 @@ async def app_main(page: ft.Page):
         ExplorerUtil().get_config_file_path("rpt_icon.ico")
     )
     page.title = (
-        f"OMC Report Tool {CFG.get(SC.K_APP_VERSION, '')} "
+        f"OMC Management Tool {CFG.get(SC.K_APP_VERSION, '')} "
         # f"{Session.get_role()}"
     )
     # page.window.maximized = True

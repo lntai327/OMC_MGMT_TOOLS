@@ -10,7 +10,6 @@ from share.util.dynamic_info_util import DynamicInfoUtil
 from share.util.explorer_util import ExplorerUtil
 from share.util.time_util import TimeUtil
 from share.constant import type as ST
-import frontend.constant.type as FET
 from share.constant import constant as SC
 
 class BcBtsViewModel(BaseViewModel):
@@ -214,13 +213,14 @@ class BcBtsViewModel(BaseViewModel):
             f"BcBtsViewModel.get_db_update_list: sel_rp_type={self._sel_rp_type}"
         )
         match self._sel_rp_type:
-            case FET.ReportTypeInfo.BC_MPD.report_id.name:
+            case ST.ReportTypeInfo.BC_MPD.report_id.name:
                 return [
                     SC.K_EXCEL_NODEB3G_KEY,
                     SC.K_EXCEL_ENODEB4G_KEY, SC.K_EXCEL_GNODEB5G_KEY,
                     SC.K_EXCEL_THT_TTVT_KEY,
                 ]
-            case FET.ReportTypeInfo.BC_CBAO_MLL.report_id.name:
+            case (ST.ReportTypeInfo.BC_CBAO_MLL.report_id.name | \
+                    ST.ReportTypeInfo.TGHOP_BTS.report_id.name):
                 excel_dmoi = (SC.K_EXCEL_DMOI_QLY_CSHT_KEY
                               if self._loai_dmoi_qly == "0"
                               else SC.K_EXCEL_DMOI_QLY_CSHT_KEY_1
@@ -240,37 +240,42 @@ class BcBtsViewModel(BaseViewModel):
 
         self.clear_errors()
         self.file_report_result_path = SC.K_EMPTY
-        if not self._selected_file_dict.get(SC.K_EXCEL_RP_ALARM_KEY):
-            self.notify("no_alarm_file")
-            return False
 
-        try:
-            if self._dynamic_info_util.update_selected_excel_info(
-                    SC.K_EXCEL_RP_ALARM_KEY,
-                    self._selected_file_dict[SC.K_EXCEL_RP_ALARM_KEY]
-                    ) is False:
-                LoggerUtil.get_logger().error(
-                    f'BcBtsViewModel make_report: required sheet not found in AL RP file: {self._selected_file_dict[SC.K_EXCEL_RP_ALARM_KEY]}'
-                )
-                self.notify("invalid_alarm_file")
+        if self._sel_rp_type != ST.ReportTypeInfo.TGHOP_BTS.report_id.name:
+            if not self._selected_file_dict.get(SC.K_EXCEL_RP_ALARM_KEY):
+                self.notify("no_alarm_file")
                 return False
 
-            self._explorer_util.cp_file_to_cache_by_filekey(SC.K_EXCEL_RP_ALARM_KEY)
-            self._dynamic_info_util.set_value(self._report_src_data, 2, SC.K_SCREEN_INPUT, SC.K_SRC_DATA)
+            try:
+                if self._dynamic_info_util.update_selected_excel_info(
+                        SC.K_EXCEL_RP_ALARM_KEY,
+                        self._selected_file_dict[SC.K_EXCEL_RP_ALARM_KEY]
+                        ) is False:
+                    LoggerUtil.get_logger().error(
+                        f'BcBtsViewModel make_report: required sheet not found in AL RP file: {self._selected_file_dict[SC.K_EXCEL_RP_ALARM_KEY]}'
+                    )
+                    self.notify("invalid_alarm_file")
+                    return False
 
-            if self._dynamic_info_util.get_value(2, SC.K_EXCEL_BC_CPARE_KEY, SC.K_SELECT) == "1":
-                self._explorer_util.cp_file_to_cache_by_filekey(SC.K_EXCEL_BC_CPARE_KEY)
-        except Exception as e:
-            LoggerUtil.get_logger().error(f"BcBtsViewModel make_report prep error: {e}")
-            return False
-        finally:
-            self._selected_file_dict.pop(SC.K_EXCEL_RP_ALARM_KEY, None)
-            self._dynamic_info_util.set_value("0", 2, SC.K_EXCEL_RP_ALARM_KEY, SC.K_SELECT)
+                self._explorer_util.cp_file_to_cache_by_filekey(SC.K_EXCEL_RP_ALARM_KEY)
+                self._dynamic_info_util.set_value(self._report_src_data, 2, SC.K_SCREEN_INPUT, SC.K_SRC_DATA)
+
+                if self._dynamic_info_util.get_value(2, SC.K_EXCEL_BC_CPARE_KEY, SC.K_SELECT) == "1":
+                    self._explorer_util.cp_file_to_cache_by_filekey(SC.K_EXCEL_BC_CPARE_KEY)
+            except Exception as e:
+                LoggerUtil.get_logger().error(f"BcBtsViewModel make_report prep error: {e}")
+                return False
+            finally:
+                self._selected_file_dict.pop(SC.K_EXCEL_RP_ALARM_KEY, None)
+                self._dynamic_info_util.set_value("0", 2, SC.K_EXCEL_RP_ALARM_KEY, SC.K_SELECT)
 
         try:
-            if self._sel_rp_type == FET.ReportTypeInfo.BC_MPD.report_id.name:
+            if self._sel_rp_type == ST.ReportTypeInfo.BC_MPD.report_id.name:
                 ret_path = self._bc_chay_mpd_qua_bgs_maker.make_bc_chay_mpd_qua_bgs()
-            elif self._sel_rp_type == FET.ReportTypeInfo.BC_CBAO_MLL.report_id.name:
+            elif self._sel_rp_type in (
+                ST.ReportTypeInfo.BC_CBAO_MLL.report_id.name,
+                ST.ReportTypeInfo.TGHOP_BTS.report_id.name
+            ):
                 ret_path = self._bc_cbao_mll_maker.make_bc()
             else:
                 LoggerUtil.get_logger().error(f"BcBtsViewModel: unknown rp type {self._sel_rp_type}")
