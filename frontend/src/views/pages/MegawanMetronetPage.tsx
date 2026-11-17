@@ -27,29 +27,29 @@ interface MegawanPageProps {
 
 // Column definitions: label + default width (px)
 const COLUMNS: { label: string; width: number }[] = [
-  { label: 'ID',               width: 70  },
-  { label: 'Mã TB',            width: 130 },
+  { label: 'ID', width: 70 },
+  { label: 'Mã TB', width: 130 },
   { label: 'Mã LT / Mã TB Sub', width: 155 },
-  { label: 'Tên thuê bao',     width: 220 },
+  { label: 'Tên thuê bao', width: 220 },
   { label: 'Địa chỉ lắp đặt', width: 240 },
-  { label: 'Điểm cuối',        width: 150 },
-  { label: 'IP Src',           width: 120 },
-  { label: 'IP Des',           width: 120 },
-  { label: 'SVLAN / CVLAN',    width: 130 },
-  { label: 'Cap ADSL',         width: 110 },
-  { label: 'Cap ODF',          width: 110 },
-  { label: 'Ghi chú',          width: 160 },
-  { label: 'IP / Subnet',      width: 140 },
-  { label: 'Hệ thống',         width: 130 },
-  { label: 'Port Switch',      width: 120 },
-  { label: 'UPE',              width: 100 },
-  { label: 'Loại hình TB',     width: 130 },
-  { label: 'Trạng thái',       width: 120 },
-  { label: 'Tốc độ',           width: 100 },
-  { label: 'Đơn vị',           width: 90  },
-  { label: 'Loại kênh',        width: 120 },
-  { label: 'Cập nhật lúc',     width: 150 },
-  { label: 'Thao tác',         width: 112 }, // sticky action col – not resizable
+  { label: 'Điểm cuối', width: 150 },
+  { label: 'IP Src', width: 120 },
+  { label: 'IP Des', width: 120 },
+  { label: 'SVLAN / CVLAN', width: 130 },
+  { label: 'Cap ADSL', width: 110 },
+  { label: 'Cap ODF', width: 110 },
+  { label: 'Ghi chú', width: 160 },
+  { label: 'IP / Subnet', width: 140 },
+  { label: 'Hệ thống', width: 130 },
+  { label: 'Port Switch', width: 120 },
+  { label: 'UPE', width: 100 },
+  { label: 'Loại hình TB', width: 130 },
+  { label: 'Trạng thái', width: 120 },
+  { label: 'Tốc độ', width: 100 },
+  { label: 'Đơn vị', width: 90 },
+  { label: 'Loại kênh', width: 120 },
+  { label: 'Cập nhật lúc', width: 150 },
+  { label: 'Thao tác', width: 112 }, // sticky action col – not resizable
 ];
 
 export const MegawanMetronetPage: React.FC<MegawanPageProps> = ({
@@ -154,7 +154,7 @@ export const MegawanMetronetPage: React.FC<MegawanPageProps> = ({
   };
 
   const totalTableW = colWidths.reduce((a, b) => a + b, 0);
-  const colSpanAll  = COLUMNS.length;
+  const colSpanAll = COLUMNS.length;
 
   return (
     <div className="max-w-[1750px] mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-5">
@@ -167,8 +167,8 @@ export const MegawanMetronetPage: React.FC<MegawanPageProps> = ({
             Trang chủ
           </Button>
           <div className="border-l-2 border-slate-200 pl-4">
-            <h2 className="text-2xl font-black text-vnpt-900 tracking-tight flex items-center gap-2">
-              <Database className="w-7 h-7 text-vnpt-600" />
+            <h2 className="text-2xl font-black text-brand-900 tracking-tight flex items-center gap-2">
+              <Database className="w-7 h-7 text-brand-600" />
               QUẢN LÝ DỮ LIỆU MEGAWAN &amp; METRONET
             </h2>
           </div>
@@ -177,15 +177,15 @@ export const MegawanMetronetPage: React.FC<MegawanPageProps> = ({
         <div className="flex flex-wrap items-center gap-3 w-full lg:w-auto justify-end">
           {isOperator && (
             <Button variant="primary" size="md" onClick={openCreateModal}
-              className="bg-vnpt-600 hover:bg-vnpt-700 shadow-md font-bold">
+              className="bg-brand-600 hover:bg-brand-700 shadow-md font-bold">
               <Plus className="w-5 h-5 mr-1.5" />
               Thêm bản ghi
             </Button>
           )}
           {isOperator && (
             <Button variant="outline" size="md" onClick={() => setIsImportModalOpen(true)}
-              className="text-vnpt-700 border-vnpt-300 hover:bg-vnpt-50 hover:border-vnpt-500 font-bold">
-              <Upload className="w-5 h-5 mr-1.5 text-vnpt-600" />
+              className="text-brand-700 border-brand-300 hover:bg-brand-50 hover:border-brand-500 font-bold">
+              <Upload className="w-5 h-5 mr-1.5 text-brand-600" />
               Nhập Excel
             </Button>
           )}
@@ -195,7 +195,7 @@ export const MegawanMetronetPage: React.FC<MegawanPageProps> = ({
           </Button>
           <Button variant="outline" size="md" onClick={fetchRecords} disabled={loading}
             title="Làm mới dữ liệu" className="font-bold">
-            <RotateCcw className={`w-5 h-5 ${loading ? 'animate-spin text-vnpt-600' : ''}`} />
+            <RotateCcw className={`w-5 h-5 ${loading ? 'animate-spin text-brand-600' : ''}`} />
           </Button>
         </div>
       </div>
@@ -203,12 +203,12 @@ export const MegawanMetronetPage: React.FC<MegawanPageProps> = ({
       {/* 2. KHUNG TÌM KIẾM & BỘ LỌC DỮ LIỆU */}
       <div className="bg-white p-6 rounded-2xl border-2 border-slate-200 shadow-sm space-y-4">
         <div className="flex items-center justify-between pb-3 border-b border-slate-200">
-          <div className="flex items-center gap-2.5 text-base font-black uppercase tracking-wide text-vnpt-800">
-            <Filter className="w-5 h-5 text-vnpt-600" />
+          <div className="flex items-center gap-2.5 text-base font-black uppercase tracking-wide text-brand-800">
+            <Filter className="w-5 h-5 text-brand-600" />
             BỘ LỌC TÌM KIẾM DỮ LIỆU CHI TIẾT
           </div>
           <button onClick={clearFilters}
-            className="text-sm text-vnpt-600 hover:text-vnpt-800 font-bold underline cursor-pointer transition-colors">
+            className="text-sm text-brand-600 hover:text-brand-800 font-bold underline cursor-pointer transition-colors">
             Hủy bộ lọc
           </button>
         </div>
@@ -217,7 +217,7 @@ export const MegawanMetronetPage: React.FC<MegawanPageProps> = ({
             <Input label="Tìm kiếm Tất cả" placeholder="Nhập từ khóa cần tìm..."
               value={filters.all_search || ''}
               onChange={(e) => updateFilter('all_search', e.target.value)}
-              className="border-vnpt-300 focus:border-vnpt-600 font-medium" />
+              className="border-brand-300 focus:border-brand-600 font-medium" />
           </div>
           <Input label="Loại hình TB" placeholder="Loại hình..."
             value={filters.loai_hinh_tb || ''} onChange={(e) => updateFilter('loai_hinh_tb', e.target.value)} />
@@ -251,16 +251,15 @@ export const MegawanMetronetPage: React.FC<MegawanPageProps> = ({
               {colWidths.map((w, i) => <col key={i} style={{ width: w }} />)}
             </colgroup>
 
-            <thead className="bg-vnpt-50 text-vnpt-900 font-bold uppercase tracking-wide border-b-2 border-vnpt-200 sticky top-0 z-10 select-none">
+            <thead className="bg-brand-50 text-brand-900 font-bold uppercase tracking-wide border-b-2 border-brand-200 sticky top-0 z-10 select-none">
               <tr>
                 {COLUMNS.map((col, i) => {
                   const isAction = i === COLUMNS.length - 1;
                   return (
                     <th
                       key={i}
-                      className={`py-4 px-3 whitespace-nowrap overflow-hidden text-ellipsis relative${
-                        isAction ? ' text-center sticky right-0 bg-vnpt-50 shadow-l' : ''
-                      }`}
+                      className={`py-4 px-3 whitespace-nowrap overflow-hidden text-ellipsis relative${isAction ? ' text-center sticky right-0 bg-brand-50 shadow-l' : ''
+                        }`}
                       style={{ width: colWidths[i] }}
                     >
                       {col.label}
@@ -272,7 +271,7 @@ export const MegawanMetronetPage: React.FC<MegawanPageProps> = ({
                           style={{ userSelect: 'none' }}
                           className="absolute top-0 right-0 h-full w-2 cursor-col-resize flex items-center justify-center group z-20"
                         >
-                          <span className="w-[2px] h-5 bg-vnpt-300 group-hover:bg-vnpt-600 rounded transition-colors" />
+                          <span className="w-[2px] h-5 bg-brand-300 group-hover:bg-brand-600 rounded transition-colors" />
                         </span>
                       )}
                     </th>
@@ -286,7 +285,7 @@ export const MegawanMetronetPage: React.FC<MegawanPageProps> = ({
                 <tr>
                   <td colSpan={colSpanAll} className="py-16 text-center text-slate-500 text-base font-medium">
                     <div className="flex flex-col items-center justify-center gap-3">
-                      <div className="w-10 h-10 border-4 border-vnpt-600 border-t-transparent rounded-full animate-spin" />
+                      <div className="w-10 h-10 border-4 border-brand-600 border-t-transparent rounded-full animate-spin" />
                       <span>Đang tải dữ liệu...</span>
                     </div>
                   </td>
@@ -301,12 +300,11 @@ export const MegawanMetronetPage: React.FC<MegawanPageProps> = ({
                 records.map((row, idx) => (
                   <tr
                     key={row.id}
-                    className={`transition-colors cursor-default ${
-                      idx % 2 === 0 ? 'bg-white' : 'bg-slate-50/60'
-                    } hover:bg-vnpt-50/70 group`}
+                    className={`transition-colors cursor-default ${idx % 2 === 0 ? 'bg-white' : 'bg-slate-50/60'
+                      } hover:bg-brand-50/70 group`}
                   >
                     <td className="py-3 px-3 overflow-hidden text-ellipsis whitespace-nowrap text-slate-500 font-mono text-[13px]">{row.id}</td>
-                    <td className="py-3 px-3 overflow-hidden text-ellipsis whitespace-nowrap font-bold text-vnpt-800 font-mono">{row.ma_tb || '—'}</td>
+                    <td className="py-3 px-3 overflow-hidden text-ellipsis whitespace-nowrap font-bold text-brand-800 font-mono">{row.ma_tb || '—'}</td>
                     <td className="py-3 px-3 overflow-hidden text-ellipsis whitespace-nowrap text-slate-700 font-medium">{row.ma_lt_ma_tb_sub || '—'}</td>
                     <td className="py-3 px-3 overflow-hidden text-ellipsis whitespace-nowrap font-bold text-slate-900">{row.ten_th_bao || '—'}</td>
                     <td className="py-3 px-3 overflow-hidden text-ellipsis whitespace-nowrap text-slate-700 font-medium" title={row.dia_chi || ''}>{row.dia_chi || '—'}</td>
@@ -322,7 +320,7 @@ export const MegawanMetronetPage: React.FC<MegawanPageProps> = ({
                     <td className="py-3 px-3 overflow-hidden text-ellipsis whitespace-nowrap text-slate-700 font-medium">{row.port_switch || '—'}</td>
                     <td className="py-3 px-3 overflow-hidden text-ellipsis whitespace-nowrap text-slate-700 font-mono font-semibold">{row.upe || '—'}</td>
                     <td className="py-3 px-3 overflow-hidden whitespace-nowrap">
-                      <span className="inline-block px-2.5 py-1 rounded-md text-xs font-bold bg-vnpt-100 text-vnpt-800 border border-vnpt-200">
+                      <span className="inline-block px-2.5 py-1 rounded-md text-xs font-bold bg-brand-100 text-brand-800 border border-brand-200">
                         {row.loai_hinh_tb || '—'}
                       </span>
                     </td>
@@ -331,11 +329,11 @@ export const MegawanMetronetPage: React.FC<MegawanPageProps> = ({
                     <td className="py-3 px-3 overflow-hidden text-ellipsis whitespace-nowrap text-slate-700 font-medium">{row.don_vi || '—'}</td>
                     <td className="py-3 px-3 overflow-hidden text-ellipsis whitespace-nowrap text-slate-700 font-medium">{row.loai_kenh || '—'}</td>
                     <td className="py-3 px-3 overflow-hidden text-ellipsis whitespace-nowrap text-slate-500 text-xs font-medium">{row.last_update || '—'}</td>
-                    <td className="py-3 px-3 text-center sticky right-0 bg-white group-hover:bg-vnpt-50/70 transition-colors shadow-l">
+                    <td className="py-3 px-3 text-center sticky right-0 bg-white group-hover:bg-brand-50/70 transition-colors shadow-l">
                       <div className="flex items-center justify-center gap-2">
                         {isOperator && (
                           <button onClick={() => openEditModal(row)}
-                            className="p-2 text-vnpt-600 hover:text-white hover:bg-vnpt-600 rounded-lg transition-colors border border-vnpt-200"
+                            className="p-2 text-brand-600 hover:text-white hover:bg-brand-600 rounded-lg transition-colors border border-brand-200"
                             title="Chỉnh sửa bản ghi">
                             <Edit2 className="w-4 h-4" />
                           </button>
@@ -445,15 +443,15 @@ export const MegawanMetronetPage: React.FC<MegawanPageProps> = ({
         maxWidth="lg"
       >
         <form onSubmit={handleImportSubmit} className="space-y-6 text-center py-2">
-          <div className="border-3 border-dashed border-vnpt-300 rounded-2xl p-10 hover:border-vnpt-600 transition-colors bg-vnpt-50/40">
-            <FileSpreadsheet className="w-16 h-16 text-vnpt-600 mx-auto mb-4" />
+          <div className="border-3 border-dashed border-brand-300 rounded-2xl p-10 hover:border-brand-600 transition-colors bg-brand-50/40">
+            <FileSpreadsheet className="w-16 h-16 text-brand-600 mx-auto mb-4" />
             <h4 className="text-lg font-bold text-slate-800 mb-1">
               {selectedFile ? selectedFile.name : 'Chọn file Excel từ máy tính (.xlsx, .xls)'}
             </h4>
             <input type="file" id="excel-file-input" accept=".xlsx, .xls" className="hidden"
               onChange={(e) => { if (e.target.files?.[0]) setSelectedFile(e.target.files[0]); }} />
             <label htmlFor="excel-file-input"
-              className="inline-flex items-center px-6 py-3 bg-vnpt-600 text-white rounded-xl text-base font-bold hover:bg-vnpt-700 cursor-pointer shadow-md shadow-vnpt-600/30 transition-all hover:scale-[1.02]">
+              className="inline-flex items-center px-6 py-3 bg-brand-600 text-white rounded-xl text-base font-bold hover:bg-brand-700 cursor-pointer shadow-md shadow-brand-600/30 transition-all hover:scale-[1.02]">
               Chọn tệp tin Excel...
             </label>
           </div>
@@ -462,7 +460,7 @@ export const MegawanMetronetPage: React.FC<MegawanPageProps> = ({
               Hủy
             </Button>
             <Button variant="primary" size="md" type="submit" disabled={!selectedFile}
-              className="font-bold bg-vnpt-600 hover:bg-vnpt-700">
+              className="font-bold bg-brand-600 hover:bg-brand-700">
               Bắt đầu nhập dữ liệu
             </Button>
           </div>

@@ -1,4 +1,4 @@
-name: omc_mgmt_tool_release
+name: omc_mgmt_tool_build_release
 
 services:
   redis:
@@ -30,7 +30,7 @@ services:
     env_file:
       - ../.env
     environment:
-      - DATABASE_URL=postgresql+asyncpg://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@postgres:5432/${POSTGRES_DB:-omc_reports}
+      - DATABASE_URL=postgresql+asyncpg://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@postgres:5432/${POSTGRES_DB:-omc_mgmt}
       - CELERY_BROKER_URL=redis://redis:6379/1
       - CELERY_RESULT_BACKEND=redis://redis:6379/2
       - REDIS_URL=redis://redis:6379/0
@@ -52,7 +52,7 @@ services:
     env_file:
       - ../.env
     environment:
-      - DATABASE_URL=postgresql+asyncpg://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@postgres:5432/${POSTGRES_DB:-omc_reports}
+      - DATABASE_URL=postgresql+asyncpg://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@postgres:5432/${POSTGRES_DB:-omc_mgmt}
       - CELERY_BROKER_URL=redis://redis:6379/1
       - CELERY_RESULT_BACKEND=redis://redis:6379/2
       - REDIS_URL=redis://redis:6379/0
@@ -72,7 +72,7 @@ services:
     env_file:
       - ../.env
     environment:
-      - DATABASE_URL=postgresql+asyncpg://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@postgres:5432/${POSTGRES_DB:-omc_reports}
+      - DATABASE_URL=postgresql+asyncpg://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@postgres:5432/${POSTGRES_DB:-omc_mgmt}
       - CELERY_BROKER_URL=redis://redis:6379/1
       - CELERY_RESULT_BACKEND=redis://redis:6379/2
       - REDIS_URL=redis://redis:6379/0
@@ -95,8 +95,6 @@ services:
       - "80:80"
       - "443:443"
       - "3000:80"
-    volumes:
-      - ../storage/certs:/etc/nginx/certs:ro
     depends_on:
       - backend
     networks:
@@ -110,4 +108,3 @@ networks:
   omc_network:
     name: omc_network
     external: true
-

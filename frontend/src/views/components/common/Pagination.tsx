@@ -29,7 +29,7 @@ export const Pagination: React.FC<PaginationProps> = ({
         <select
           value={pageSize}
           onChange={(e) => onPageSizeChange(Number(e.target.value))}
-          className="border-2 border-slate-300 rounded-lg px-3 py-1.5 bg-white text-base font-bold text-slate-900 focus:border-vnpt-600 focus:ring-2 focus:ring-vnpt-300 focus:outline-none cursor-pointer"
+          className="border-2 border-slate-300 rounded-lg px-3 py-1.5 bg-white text-base font-bold text-slate-900 focus:border-brand-600 focus:ring-2 focus:ring-brand-300 focus:outline-none cursor-pointer"
         >
           <option value={10}>10</option>
           <option value={20}>20</option>
@@ -37,7 +37,7 @@ export const Pagination: React.FC<PaginationProps> = ({
           <option value={100}>100</option>
         </select>
         <span className="text-slate-600 font-medium">
-          (Bản ghi <strong className="font-bold text-slate-900">{startItem}</strong> - <strong className="font-bold text-slate-900">{endItem}</strong> / Tổng cộng <strong className="text-vnpt-700 font-bold">{totalItems}</strong> bản ghi)
+          (Bản ghi <strong className="font-bold text-slate-900">{startItem}</strong> - <strong className="font-bold text-slate-900">{endItem}</strong> / Tổng cộng <strong className="text-brand-700 font-bold">{totalItems}</strong> bản ghi)
         </span>
       </div>
 
@@ -52,7 +52,7 @@ export const Pagination: React.FC<PaginationProps> = ({
           <ChevronLeft className="w-5 h-5 mr-1" />
           Trước
         </Button>
-        <span className="px-4 py-1.5 font-bold text-base text-vnpt-900 bg-white border border-slate-300 rounded-lg shadow-sm">
+        <span className="px-4 py-1.5 font-bold text-base text-brand-900 bg-white border border-slate-300 rounded-lg shadow-sm">
           {currentPage} / {Math.max(1, totalPages)}
         </span>
         <Button

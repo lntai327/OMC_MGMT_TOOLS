@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { Lock, User, AlertCircle, ShieldCheck } from 'lucide-react';
-import { VnptLogo } from '../components/common/VnptLogo';
+import { Lock, User, AlertCircle, ShieldCheck, Eye, EyeOff } from 'lucide-react';
+import { BrandLogo } from '../components/common/BrandLogo';
 import { Button } from '../components/common/Button';
 import { Input } from '../components/common/Input';
 
@@ -11,8 +11,14 @@ interface LoginPageProps {
 }
 
 export const LoginPage: React.FC<LoginPageProps> = ({ onLogin, loading, error }) => {
-  const [username, setUsername] = useState('admin');
-  const [password, setPassword] = useState('demo');
+  let df_user = "";
+  let df_pw = "";
+  df_user = "dev"
+  df_pw = "" /*dev only*/
+
+  const [username, setUsername] = useState(df_user);
+  const [password, setPassword] = useState(df_pw);
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -20,12 +26,12 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLogin, loading, error })
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-100 via-vnpt-50 to-slate-200 flex flex-col justify-between p-4 sm:p-6">
-      {/* Top Banner VNPT Branding */}
+    <div className="min-h-screen bg-gradient-to-br from-slate-100 via-brand-50 to-slate-200 flex flex-col justify-between p-4 sm:p-6">
+      {/* Top Banner Branding */}
       <header className="max-w-6xl w-full mx-auto flex items-center justify-center py-4">
         <div className="flex items-center gap-4">
           <div className="bg-white p-1 rounded-xl shadow-sm border border-slate-200">
-            <VnptLogo height={48} />
+            <BrandLogo height={48} />
           </div>
           <div className="border-l-2 border-slate-300 pl-3.5">
             <div className="text-2xl font-bold text-slate-800 tracking-tight">VNPT GIA LAI</div>
@@ -35,8 +41,8 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLogin, loading, error })
 
       {/* Main Login Card */}
       <main className="w-full max-w-lg mx-auto bg-white rounded-2xl shadow-xl border-2 border-slate-200 overflow-hidden my-auto">
-        {/* Card Header với dải màu xanh VNPT */}
-        <div className="bg-gradient-to-r from-vnpt-700 via-vnpt-600 to-vnpt-700 px-8 py-7 text-center text-white relative">
+        {/* Card Header */}
+        <div className="bg-gradient-to-r from-brand-700 via-brand-600 to-brand-700 px-8 py-7 text-center text-white relative">
           <h2 className="text-2xl font-black tracking-tight uppercase">OMC MANAGEMENT TOOL</h2>
         </div>
 
@@ -64,12 +70,27 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLogin, loading, error })
           <div className="space-y-2">
             <Input
               label="Mật khẩu bảo mật"
-              type="password"
+              type={showPassword ? 'text' : 'password'}
               placeholder="Nhập mật khẩu"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
               className="text-lg py-3"
+              rightAction={
+                <button
+                  type="button"
+                  onClick={() => setShowPassword((prev) => !prev)}
+                  className="text-slate-400 hover:text-slate-600 focus:outline-none transition-colors p-1"
+                  title={showPassword ? 'Ẩn mật khẩu' : 'Hiện mật khẩu'}
+                  tabIndex={-1}
+                >
+                  {showPassword ? (
+                    <EyeOff className="w-5 h-5" />
+                  ) : (
+                    <Eye className="w-5 h-5" />
+                  )}
+                </button>
+              }
             />
           </div>
 
@@ -77,7 +98,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLogin, loading, error })
             type="submit"
             variant="primary"
             size="lg"
-            className="w-full py-3.5 text-lg font-bold shadow-lg shadow-vnpt-600/30"
+            className="w-full py-3.5 text-lg font-bold shadow-lg shadow-brand-600/30"
             loading={loading}
           >
             ĐĂNG NHẬP VÀO HỆ THỐNG

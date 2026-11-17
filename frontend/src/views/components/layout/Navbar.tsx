@@ -1,6 +1,6 @@
 import React from 'react';
 import { LogOut, User as UserIcon, ShieldCheck, Home, Network, FileSpreadsheet, Activity, HelpCircle } from 'lucide-react';
-import { VnptLogo } from '../common/VnptLogo';
+import { BrandLogo } from '../common/BrandLogo';
 import { Button } from '../common/Button';
 
 interface NavbarProps {
@@ -28,7 +28,7 @@ export const Navbar: React.FC<NavbarProps> = ({
 
   return (
     <header className="sticky top-0 z-40 shadow-md">
-      {/* 1. TOP BAR: Màu trắng, Logo VNPT, Tên chi nhánh, Tìm kiếm nhanh & Tài khoản */}
+      {/* 1. TOP BAR: Màu trắng, Logo, Tên chi nhánh, Tìm kiếm nhanh & Tài khoản */}
       <div className="bg-white border-b border-slate-200">
         <div className="max-w-[1650px] mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
           {/* Logo & Brand Info */}
@@ -38,7 +38,7 @@ export const Navbar: React.FC<NavbarProps> = ({
               className="flex items-center gap-4 cursor-pointer select-none group"
             >
               <div className="bg-white p-1 rounded-lg">
-                <VnptLogo height={44} className="transition-transform group-hover:scale-105" />
+                <BrandLogo height={44} className="transition-transform group-hover:scale-105" />
               </div>
               <div className="border-l-2 border-slate-200 pl-3.5">
                 <div className="flex items-baseline gap-2">
@@ -55,15 +55,15 @@ export const Navbar: React.FC<NavbarProps> = ({
           {currentUser && (
             <div className="flex items-center gap-4">
               <div className="flex items-center gap-3 px-4 py-2 bg-slate-50 rounded-xl border border-slate-200 shadow-sm">
-                <div className="w-9 h-9 rounded-full bg-vnpt-100 text-vnpt-700 flex items-center justify-center font-bold">
+                <div className="w-9 h-9 rounded-full bg-brand-100 text-brand-700 flex items-center justify-center font-bold">
                   <UserIcon className="w-5 h-5" />
                 </div>
                 <div className="text-left">
                   <div className="text-sm font-bold text-slate-900 leading-tight">
                     {currentUser.username}
                   </div>
-                  <div className="flex items-center gap-1.5 text-xs font-semibold text-vnpt-700 mt-0.5">
-                    <ShieldCheck className="w-3.5 h-3.5 text-vnpt-600" />
+                  <div className="flex items-center gap-1.5 text-xs font-semibold text-brand-700 mt-0.5">
+                    <ShieldCheck className="w-3.5 h-3.5 text-brand-600" />
                     <span>Quyền: {currentUser.role}</span>
                   </div>
                 </div>
@@ -83,18 +83,17 @@ export const Navbar: React.FC<NavbarProps> = ({
         </div>
       </div>
 
-      {/* 2. MAIN BLUE MENU BAR (Đúng chuẩn nhận diện VNPT với dải menu xanh đậm) */}
-      <div className="bg-gradient-to-r from-vnpt-700 via-vnpt-600 to-vnpt-700 text-white shadow-inner">
+      {/* 2. MAIN BLUE MENU BAR */}
+      <div className="bg-gradient-to-r from-brand-700 via-brand-600 to-brand-700 text-white shadow-inner">
         <div className="max-w-[1650px] mx-auto px-4 sm:px-6 lg:px-8">
           <nav className="flex items-center space-x-1 overflow-x-auto py-1">
             {/* Tab Trang chủ */}
             <button
               onClick={() => handleNav('home')}
-              className={`flex items-center gap-2.5 px-5 py-3 rounded-lg font-bold text-base transition-all duration-150 whitespace-nowrap ${
-                currentView === 'home'
-                  ? 'bg-white text-vnpt-700 shadow-md transform scale-[1.02]'
-                  : 'text-white/90 hover:bg-white/15 hover:text-white'
-              }`}
+              className={`flex items-center gap-2.5 px-5 py-3 rounded-lg font-bold text-base transition-all duration-150 whitespace-nowrap ${currentView === 'home'
+                ? 'bg-white text-brand-700 shadow-md transform scale-[1.02]'
+                : 'text-white/90 hover:bg-white/15 hover:text-white'
+                }`}
             >
               <Home className="w-5 h-5" />
               <span>TRANG CHỦ</span>
@@ -103,11 +102,10 @@ export const Navbar: React.FC<NavbarProps> = ({
             {/* Tab Quản lý Megawan / Metronet */}
             <button
               onClick={() => handleNav('megawan')}
-              className={`flex items-center gap-2.5 px-5 py-3 rounded-lg font-bold text-base transition-all duration-150 whitespace-nowrap ${
-                currentView === 'megawan'
-                  ? 'bg-white text-vnpt-700 shadow-md transform scale-[1.02]'
-                  : 'text-white/90 hover:bg-white/15 hover:text-white'
-              }`}
+              className={`flex items-center gap-2.5 px-5 py-3 rounded-lg font-bold text-base transition-all duration-150 whitespace-nowrap ${currentView === 'megawan'
+                ? 'bg-white text-brand-700 shadow-md transform scale-[1.02]'
+                : 'text-white/90 hover:bg-white/15 hover:text-white'
+                }`}
             >
               <Network className="w-5 h-5" />
               <span>MEGAWAN &amp; METRONET</span>

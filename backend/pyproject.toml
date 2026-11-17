@@ -1,9 +1,9 @@
 [project]
-name = "omc-report-tools-backend"
+name = "omc-mgmt-tools-backend"
 version = "0.1.0"
-description = "FastAPI backend for OMC Report Tools"
+description = "FastAPI backend for OMC Mgmt Tools"
 authors = [
-    {name = "VNPT OMC Team"}
+    {name = "tailn.gli"}
 ]
 requires-python = ">=3.13"
 dependencies = [

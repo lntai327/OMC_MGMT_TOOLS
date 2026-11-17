@@ -1,6 +1,4 @@
 # Hướng Dẫn Kiểm Thử Thủ Công (User Manual Testing Guide)
-## VNPT TPNV OMC Report Tools Platform
-
 Tài liệu này cung cấp các bước chi tiết để bạn kiểm thử toàn bộ hệ thống sau khi khởi chạy ứng dụng web.
 
 ---
@@ -67,7 +65,7 @@ Bạn sẽ thấy 5 container đều ở trạng thái `running` (hoặc `health
    - Bấm nút **"Thêm mới"** ở thanh công cụ góc phải.
    - Nhập thông tin thử nghiệm:
      - *Mã Thuê Bao:* `TB_TEST_001`
-     - *Tên thuê bao:* `Khách hàng VNPT Test 01`
+     - *Tên thuê bao:* `Khách hàng Test 01`
      - *Địa chỉ:* `123 Đường Trần Phú, Quy Nhơn`
      - *Loại hình TB:* `MEGAWAN`
      - *Loại kênh:* `FTTH`
@@ -82,7 +80,7 @@ Bạn sẽ thấy 5 container đều ở trạng thái `running` (hoặc `health
    - Xóa bộ lọc hoặc nhập cụ thể vào ô **Tên hệ thống**: bảng phản hồi lọc dữ liệu chính xác.
 4. **Sửa bản ghi:**
    - Bấm biểu tượng cây bút (Sửa) tại dòng vừa tạo.
-   - Đổi tên thuê bao thành `Khách hàng VNPT Test Đã Sửa` và bấm **Lưu bản ghi**.
+   - Đổi tên thuê bao thành `Khách hàng Test Đã Sửa` và bấm **Lưu bản ghi**.
    - Kiểm tra dòng tương ứng đã được cập nhật nội dung.
 5. **Xóa bản ghi:**
    - Bấm biểu tượng thùng rác (Xóa).
@@ -143,7 +141,7 @@ Bạn sẽ thấy 5 container đều ở trạng thái `running` (hoặc `health
 ##############################################
 
 
-### 5. Hướng dẫn sử dụng [run.ps1](file:///c:/_a_volumn/vnpt/a_vnpt_project/OMC_MGMT_TOOLS_WEB/run.ps1)
+### 5. Hướng dẫn sử dụng [run.ps1]
 
 #### 🚀 Chế độ Dev (Mặc định - Chạy script trực tiếp với reload):
 ```powershell

@@ -59,17 +59,17 @@ export const JobProgressModal: React.FC<JobProgressModalProps> = ({
         <div className="w-full bg-slate-100 rounded-full h-5 mb-2 overflow-hidden border-2 border-slate-200 shadow-inner">
           <div
             className={`h-full transition-all duration-300 rounded-full ${isCompleted
-                ? 'bg-emerald-500'
-                : isFailed
-                  ? 'bg-rose-500'
-                  : 'bg-vnpt-600'
+              ? 'bg-emerald-500'
+              : isFailed
+                ? 'bg-rose-500'
+                : 'bg-brand-600'
               }`}
             style={{ width: `${Math.min(100, Math.max(5, job.progress))}%` }}
           />
         </div>
         <div className="flex justify-between text-sm font-bold text-slate-700 mb-6">
           <span>Tiến độ xử lý</span>
-          <span className="text-vnpt-700">{job.progress}%</span>
+          <span className="text-brand-700">{job.progress}%</span>
         </div>
 
         {/* Result Metadata / Error info */}
@@ -84,11 +84,10 @@ export const JobProgressModal: React.FC<JobProgressModalProps> = ({
                 <span className="font-medium text-slate-900 text-base whitespace-pre-wrap">Lỗi:</span>
 
                 <span
-                  className={`font-medium text-base ${
-                    job.result_meta.failed_counter > 0
+                  className={`font-medium text-base ${job.result_meta.failed_counter > 0
                       ? "text-rose-900"
                       : "text-green-900"
-                  }`}
+                    }`}
                 >
                   {job.result_meta.failed_counter}
                 </span>

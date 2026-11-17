@@ -15,7 +15,7 @@ class Settings(BaseSettings):
     DEBUG: bool = True
     SECRET_KEY: str = "replace-with-a-secure-random-secret-key-32-chars-minimum"
     ALGORITHM: str = "HS256"
-    ACCESS_TOKEN_EXPIRE_MINUTES: int = 480
+    ACCESS_TOKEN_EXPIRE_MINUTES: int = 240
 
     BACKEND_HOST: str = "0.0.0.0"
     BACKEND_PORT: int = 8000
@@ -33,7 +33,7 @@ class Settings(BaseSettings):
     ]
 
     # Database
-    DATABASE_URL: str = os.getenv("DATABASE_URL", "postgresql+asyncpg://postgres:postgres@postgres:5432/omc_reports")
+    DATABASE_URL: str = os.getenv("DATABASE_URL", "postgresql+asyncpg://postgres:postgres@postgres:5432/omc_mgmt")
     DB_ECHO: bool = False
     DB_POOL_SIZE: int = 20
     DB_MAX_OVERFLOW: int = 10
@@ -52,7 +52,7 @@ class Settings(BaseSettings):
     LOGS_PATH: str = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../../storage/logs"))
 
     # Initial Superuser Seed
-    FIRST_SUPERUSER_USERNAME: str = "admin"
+    FIRST_SUPERUSER_USERNAME: str = "demo"
     FIRST_SUPERUSER_PASSWORD: str = "demo"
 
     @field_validator("CORS_ORIGINS", mode="before")

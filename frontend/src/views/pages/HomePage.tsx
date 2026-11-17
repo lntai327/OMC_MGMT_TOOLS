@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Search, Network, FileSpreadsheet, Activity, ChevronRight, CheckCircle2 } from 'lucide-react';
-import { VnptLogo } from '../components/common/VnptLogo';
+import { BrandLogo } from '../components/common/BrandLogo';
 
 interface HomePageProps {
   onSelectReport: (route: string) => void;
@@ -29,7 +29,7 @@ export const HomePage: React.FC<HomePageProps> = ({ onSelectReport }) => {
       category: 'QNN',
       route: 'megawan',
       active: true,
-      highlight: 'Demo',
+      highlight: '',
     },
   ];
 
@@ -42,10 +42,10 @@ export const HomePage: React.FC<HomePageProps> = ({ onSelectReport }) => {
   return (
     <div className="max-w-[1650px] mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
       {/* Banner Chào mừng & Tìm kiếm */}
-      <div className="bg-gradient-to-r from-vnpt-700 via-vnpt-600 to-vnpt-800 rounded-2xl p-8 sm:p-10 text-white shadow-xl relative overflow-hidden">
+      <div className="bg-gradient-to-r from-brand-700 via-brand-600 to-brand-800 rounded-2xl p-8 sm:p-10 text-white shadow-xl relative overflow-hidden">
         <div className="relative z-10 max-w-3xl space-y-3">
-          <div className="inline-flex items-center gap-2.5 px-4 py-2 bg-white/95 backdrop-blur-md rounded-full text-xs font-bold uppercase tracking-wider text-vnpt-800 border border-white shadow-sm">
-            <VnptLogo height={20} />
+          <div className="inline-flex items-center gap-2.5 px-4 py-2 bg-white/95 backdrop-blur-md rounded-full text-xs font-bold uppercase tracking-wider text-brand-800 border border-white shadow-sm">
+            <BrandLogo height={20} />
             <span className="border-l border-slate-300 pl-2">Công cụ quản lý &amp; Báo cáo số liệu</span>
           </div>
           <h2 className="text-3xl sm:text-4xl font-black tracking-tight leading-tight">
@@ -61,7 +61,7 @@ export const HomePage: React.FC<HomePageProps> = ({ onSelectReport }) => {
                 placeholder="Tìm kiếm chức năng..."
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                className="w-full pl-12 pr-4 py-3.5 bg-white text-slate-900 border-2 border-transparent rounded-xl text-lg font-medium placeholder-slate-400 focus:outline-none focus:ring-4 focus:ring-vnpt-300 shadow-lg"
+                className="w-full pl-12 pr-4 py-3.5 bg-white text-slate-900 border-2 border-transparent rounded-xl text-lg font-medium placeholder-slate-400 focus:outline-none focus:ring-4 focus:ring-brand-300 shadow-lg"
               />
             </div>
           </div>
@@ -69,7 +69,7 @@ export const HomePage: React.FC<HomePageProps> = ({ onSelectReport }) => {
 
         {/* Trang trí nền mờ */}
         <div className="absolute -right-10 -bottom-10 opacity-15 pointer-events-none filter drop-shadow-xl">
-          <VnptLogo height={240} className="rounded-2xl" />
+          <BrandLogo height={240} className="rounded-2xl" />
         </div>
       </div>
 
@@ -91,16 +91,16 @@ export const HomePage: React.FC<HomePageProps> = ({ onSelectReport }) => {
                 key={item.id}
                 onClick={() => item.active && onSelectReport(item.route)}
                 className={`relative bg-white rounded-2xl border-2 p-7 transition-all duration-200 flex flex-col justify-between ${item.active
-                    ? 'border-vnpt-200 hover:border-vnpt-600 hover:shadow-xl cursor-pointer group hover:-translate-y-1'
-                    : 'border-slate-200 opacity-60 cursor-not-allowed bg-slate-50'
+                  ? 'border-brand-200 hover:border-brand-600 hover:shadow-xl cursor-pointer group hover:-translate-y-1'
+                  : 'border-slate-200 opacity-60 cursor-not-allowed bg-slate-50'
                   }`}
               >
                 <div>
                   <div className="flex items-center justify-between mb-5">
                     <div
                       className={`w-14 h-14 rounded-2xl flex items-center justify-center transition-colors shadow-sm ${item.active
-                          ? 'bg-vnpt-100 text-vnpt-700 group-hover:bg-vnpt-600 group-hover:text-white'
-                          : 'bg-slate-200 text-slate-400'
+                        ? 'bg-brand-100 text-brand-700 group-hover:bg-brand-600 group-hover:text-white'
+                        : 'bg-slate-200 text-slate-400'
                         }`}
                     >
                       <Icon className="w-8 h-8" />
@@ -117,10 +117,10 @@ export const HomePage: React.FC<HomePageProps> = ({ onSelectReport }) => {
                     )}
                   </div>
 
-                  <div className="text-xs font-bold uppercase tracking-wider text-vnpt-600 mb-1">
+                  <div className="text-xs font-bold uppercase tracking-wider text-brand-600 mb-1">
                     {item.category}
                   </div>
-                  <h4 className="text-xl font-bold text-slate-900 mb-2.5 group-hover:text-vnpt-700 transition-colors">
+                  <h4 className="text-xl font-bold text-slate-900 mb-2.5 group-hover:text-brand-700 transition-colors">
                     {item.name}
                   </h4>
                   <p className="text-base text-slate-600 leading-relaxed mb-6 font-normal">
@@ -130,7 +130,7 @@ export const HomePage: React.FC<HomePageProps> = ({ onSelectReport }) => {
 
                 <div className="pt-5 border-t-2 border-slate-100 flex items-center justify-between">
                   {item.active ? (
-                    <span className="inline-flex items-center font-bold text-base text-vnpt-600 group-hover:text-vnpt-800 transition-colors">
+                    <span className="inline-flex items-center font-bold text-base text-brand-600 group-hover:text-brand-800 transition-colors">
                       Mở chức năng
                       <ChevronRight className="w-5 h-5 ml-1.5 group-hover:translate-x-1 transition-transform" />
                     </span>

@@ -7,15 +7,15 @@ export default {
   theme: {
     extend: {
       colors: {
-        vnpt: {
+        brand: {
           50: '#f0f7ff',
           100: '#e0effe',
           200: '#bae0fd',
           300: '#7cc5fb',
           400: '#38a5f8',
-          500: '#0072bc', // VNPT Bright Blue
-          600: '#0066cc', // VNPT Primary Blue
-          700: '#0052a3', // VNPT Deep Blue
+          500: '#0072bc', // Bright Blue
+          600: '#0066cc', // Primary Blue
+          700: '#0052a3', // Deep Blue
           800: '#004282',
           900: '#00386c',
         },

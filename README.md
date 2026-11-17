@@ -1,6 +1,6 @@
-# VNPT TPNV OMC Report Tools Web Platform
+# Management Tools Web Platform
 
-Modern, distributed web application refactored from desktop Flet application for VNPT OMC. Built with **FastAPI**, **React + Vite + Tailwind CSS**, **PostgreSQL**, **Redis**, and **Celery**.
+Modern, distributed web application Built with **FastAPI**, **React + Vite + Tailwind CSS**, **PostgreSQL**, **Redis**, and **Celery**.
 
 ---
 
@@ -48,6 +48,19 @@ Run in PowerShell:
 ### 3. Default Login Credentials
 - **Username:** `admin`
 - **Password:** `demo`
+
+---
+
+## Server Deployment (Standalone Export)
+To build and package a completely standalone release bundle to deploy onto a target Linux/Windows server:
+```powershell
+.\run.ps1 export
+```
+The output zip archive in `dist/` contains all Docker images and deployment scripts (`deploy.sh` / `deploy.ps1`). On the server, run:
+```bash
+./deploy.sh load
+./deploy.sh up
+```
 
 ---
 

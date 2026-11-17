@@ -460,7 +460,7 @@ TPNV_RPT_TOOLS/
     - `useMegawanViewModel`: Record list, pagination state, search queries, filter states, CRUD dialog controls.
     - `useJobViewModel`: Real-time job tracker, WebSocket listener with 3-second polling fallback, download trigger.
   - **Views**:
-    - `LoginPage`: Clean VNPT/OMC branded login card with credential validation.
+    - `LoginPage`: Clean branded login card with credential validation.
     - `HomePage`: Selection dashboard highlighting Megawan/Metronet management.
     - `MegawanMetronetPage`:
       - Filter toolbar with exact filter fields and global `ALL` search input.
@@ -537,22 +537,22 @@ Rather than automated testing scripts, use this step-by-step verification guide 
 
 #############################################################################
 
-The refactoring of the Flet desktop app into the modern web application has been completed according to all requirements in [`_dev/project_description.md`](file:///c:/_a_volumn/vnpt/a_vnpt_project/OMC_REPORT_TOOL_WEB/TPNV_RPT_TOOLS/_dev/project_description.md) and your approved plan:
+The refactoring of the Flet desktop app into the modern web application has been completed according to all requirements in [`_dev/project_description.md`] and your approved plan:
 
 ### 1. Fresh Dedicated Architecture
-- [**`docker/`**](file:///c:/_a_volumn/vnpt/a_vnpt_project/OMC_REPORT_TOOL_WEB/TPNV_RPT_TOOLS/docker): Docker Compose configuration orchestrating **PostgreSQL 16**, **Redis 7**, **FastAPI backend**, **Celery Worker**, **Celery Beat (Watchdog & Cleanup)**, and **React Frontend**.
-- [**`backend/`**](file:///c:/_a_volumn/vnpt/a_vnpt_project/OMC_REPORT_TOOL_WEB/TPNV_RPT_TOOLS/backend):
+- [**`docker/`**]: Docker Compose configuration orchestrating **PostgreSQL 16**, **Redis 7**, **FastAPI backend**, **Celery Worker**, **Celery Beat (Watchdog & Cleanup)**, and **React Frontend**.
+- [**`backend/`**]:
   - **Clean Architecture**: Decoupled `models/`, `schemas/`, `repositories/`, `services/`, and `api/v1/`.
   - **Security & RBAC**: OAuth2 JWT authentication with Role-Based Access Control (`admin`, `operator`, `viewer`).
   - **Database Abstraction**: Async SQLAlchemy 2.0 engine compatible with PostgreSQL and adaptable to Microsoft SQL Server.
   - **Async Celery Pipeline**: Row-level locking concurrency safety via `FOR UPDATE SKIP LOCKED`.
   - **Memory-Efficient Streaming**: `openpyxl` chunked reading (`read_only=True`) and template streaming (`write_only=True`).
   - **Watchdog & File Lifecycle**: Stalled job timeout detector (`timeout_at < NOW()`) and automated 24h file purging.
-- [**`frontend/`**](file:///c:/_a_volumn/vnpt/a_vnpt_project/OMC_REPORT_TOOL_WEB/TPNV_RPT_TOOLS/frontend):
+- [**`frontend/`**]:
   - **MVVM Pattern**: ViewModels (`useAuthViewModel`, `useMegawanViewModel`, `useJobViewModel`) encapsulating state and business logic.
   - **Real-Time Job Tracker**: Dual-mode WebSocket connection with 3-second polling fallback.
   - **Tech Stack**: React 18, Vite, TypeScript, and Tailwind CSS.
-- [**`storage/`**](file:///c:/_a_volumn/vnpt/a_vnpt_project/OMC_REPORT_TOOL_WEB/TPNV_RPT_TOOLS/storage): Dedicated storage for Excel templates, temporary uploads, and generated reports.
+- [**`storage/`**]: Dedicated storage for Excel templates, temporary uploads, and generated reports.
 
 ### 2. Megawan / Metronet Module Focus
 - **Interactive Data Grid**: 22-column table with pagination and sorting.
@@ -563,7 +563,7 @@ The refactoring of the Flet desktop app into the modern web application has been
 ---
 
 ### How to Run & Test
-Refer to the created [**`TESTING_GUIDE.md`**](file:///c:/_a_volumn/vnpt/a_vnpt_project/OMC_REPORT_TOOL_WEB/TPNV_RPT_TOOLS/TESTING_GUIDE.md) and helper script [**`run.ps1`**](file:///c:/_a_volumn/vnpt/a_vnpt_project/OMC_REPORT_TOOL_WEB/TPNV_RPT_TOOLS/run.ps1):
+Refer to the created [**`TESTING_GUIDE.md`**] and helper script [**`run.ps1`**]:
 
 1. **Start the system**:
    ```powershell
@@ -573,12 +573,12 @@ Refer to the created [**`TESTING_GUIDE.md`**](file:///c:/_a_volumn/vnpt/a_vnpt_p
    - **Frontend UI**: [http://localhost:3000](http://localhost:3000)
    - **FastAPI Docs**: [http://localhost:8000/docs](http://localhost:8000/docs)
 3. **Default Credentials**: `admin` / `demo`
-4. **Follow the step-by-step test cases** in [`TESTING_GUIDE.md`](file:///c:/_a_volumn/vnpt/a_vnpt_project/OMC_REPORT_TOOL_WEB/TPNV_RPT_TOOLS/TESTING_GUIDE.md) to test health checks, authentication, Megawan operations, and async Excel import/export.
+4. **Follow the step-by-step test cases** in [`TESTING_GUIDE.md`] to test health checks, authentication, Megawan operations, and async Excel import/export.
 
 
 
 #################################################################################FLOW PROCESS
-Dưới đây là luồng xử lý toàn diện (End-to-End Flow) từ lúc bạn click nút **"Bắt đầu nhập dữ liệu"** trên giao diện [MegawanMetronetPage.tsx](file:///c:/_a_volumn/vnpt/a_vnpt_project/OMC_REPORT_TOOL_WEB/TPNV_RPT_TOOLS/frontend/src/views/pages/MegawanMetronetPage.tsx) cho đến khi dữ liệu vào DB và hiển thị trên bảng:
+Dưới đây là luồng xử lý toàn diện (End-to-End Flow) từ lúc bạn click nút **"Bắt đầu nhập dữ liệu"** trên giao diện [MegawanMetronetPage.tsx] cho đến khi dữ liệu vào DB và hiển thị trên bảng:
 
 ```
 [Người dùng Click "Bắt đầu nhập dữ liệu"]
@@ -669,14 +669,14 @@ Worker độc lập lấy task từ Redis và thực hiện trong hàm `_run_imp
 ##################################################### DOCKER FILE
 
 1. **Thống nhất 1 thư mục duy nhất (`/app/storage`)**:
-   - Trong [`backend.Dockerfile`](file:///c:/_a_volumn/vnpt/a_vnpt_project/OMC_REPORT_TOOL_WEB/TPNV_RPT_TOOLS/docker/backend.Dockerfile) và [`worker.Dockerfile`](file:///c:/_a_volumn/vnpt/a_vnpt_project/OMC_REPORT_TOOL_WEB/TPNV_RPT_TOOLS/docker/worker.Dockerfile):
+   - Trong [`backend.Dockerfile`] và [`worker.Dockerfile`]:
      - Xóa lệnh tạo `/storage` ở thư mục gốc.
      - Dùng `COPY storage /app/storage` để copy tài nguyên (templates) vào đúng thư mục `/app/storage`.
 2. **Loại bỏ host mount, dùng Docker Named Volume (`storage_data`)**:
-   - Trong [`docker/docker-compose.yml`](file:///c:/_a_volumn/vnpt/a_vnpt_project/OMC_REPORT_TOOL_WEB/TPNV_RPT_TOOLS/docker/docker-compose.yml):
+   - Trong [`docker/docker-compose.yml`]:
      - Bỏ toàn bộ mount host `../storage:/app/storage`.
      - Thay thế bằng `storage_data:/app/storage` cho cả `backend`, `celery_worker`, và `celery_beat`.
      - Khai báo volume `storage_data:` ở cuối file.
      - Khi container khởi động lần đầu, Docker sẽ tự động copy toàn bộ nội dung từ image (`/app/storage/templates`) vào volume này.
 3. **Đồng bộ biến môi trường**:
-   - Thêm `LOGS_PATH=/app/storage/logs` vào file [`.env`](file:///c:/_a_volumn/vnpt/a_vnpt_project/OMC_REPORT_TOOL_WEB/TPNV_RPT_TOOLS/.env) và [`.env.example`](file:///c:/_a_volumn/vnpt/a_vnpt_project/OMC_REPORT_TOOL_WEB/TPNV_RPT_TOOLS/.env.example) để đồng bộ 5 đường dẫn lưu trữ (`STORAGE_PATH`, `TEMPLATES_PATH`, `UPLOADS_PATH`, `EXPORTS_PATH`, `LOGS_PATH`) đều trỏ vào `/app/storage/...`.
+   - Thêm `LOGS_PATH=/app/storage/logs` vào file [`.env`] và [`.env.example`] để đồng bộ 5 đường dẫn lưu trữ (`STORAGE_PATH`, `TEMPLATES_PATH`, `UPLOADS_PATH`, `EXPORTS_PATH`, `LOGS_PATH`) đều trỏ vào `/app/storage/...`.

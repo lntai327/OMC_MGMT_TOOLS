@@ -21,8 +21,8 @@ async def lifespan(app: FastAPI):
 
 
 app = FastAPI(
-    title="VNPT OMC Management Tools API",
-    description="High-performance backend API with Celery asynchronous pipeline and WebSockets for VNPT OMC.",
+    title="VNPT GLI OMC Management Tools API",
+    description="High-performance backend API with Celery asynchronous pipeline and WebSockets for VNPT GLI OMC.",
     version="1.0.0",
     lifespan=lifespan,
     docs_url="/docs",
@@ -45,7 +45,7 @@ app.include_router(api_v1_router)
 @app.get("/", tags=["Root"])
 async def root():
     return {
-        "app": "VNPT OMC Management Tools API",
+        "app": "VNPT GLI OMC Management Tools API",
         "version": "1.0.0",
         "status": "online",
         "docs": "/docs",

@@ -1,6 +1,6 @@
 import React from 'react';
 
-interface VnptLogoProps {
+interface BrandLogoProps {
   className?: string;
   size?: number;
   height?: number;
@@ -8,10 +8,10 @@ interface VnptLogoProps {
 }
 
 /**
- * Hiển thị logo VNPT từ thư mục /public (chuẩn Vite web static asset)
+ * Hiển thị logo từ thư mục /public (chuẩn Vite web static asset)
  * Không phụ thuộc vào đường dẫn tương đối import của TypeScript
  */
-export const VnptLogo: React.FC<VnptLogoProps> = ({
+export const BrandLogo: React.FC<BrandLogoProps> = ({
   className = '',
   size = 46,
   height,
@@ -20,8 +20,8 @@ export const VnptLogo: React.FC<VnptLogoProps> = ({
 
   return (
     <img
-      src="/logo-vnpt.jpg"
-      alt="VNPT Logo"
+      src="/logo-brand.jpg"
+      alt="Brand Logo"
       style={{
         height: `${calculatedHeight}px`,
         width: 'auto',

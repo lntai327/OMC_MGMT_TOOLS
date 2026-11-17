@@ -18,12 +18,12 @@ export const Button: React.FC<ButtonProps> = ({
   const baseStyles = 'inline-flex items-center justify-center font-semibold rounded-lg transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed select-none';
 
   const variants = {
-    primary: 'bg-vnpt-600 text-white hover:bg-vnpt-700 active:bg-vnpt-800 focus:ring-vnpt-500 shadow-md shadow-vnpt-600/20',
+    primary: 'bg-brand-600 text-white hover:bg-brand-700 active:bg-brand-800 focus:ring-brand-500 shadow-md shadow-brand-600/20',
     secondary: 'bg-slate-700 text-white hover:bg-slate-800 focus:ring-slate-500 shadow-sm',
     success: 'bg-emerald-600 text-white hover:bg-emerald-700 active:bg-emerald-800 focus:ring-emerald-500 shadow-md shadow-emerald-600/20',
     danger: 'bg-rose-600 text-white hover:bg-rose-700 focus:ring-rose-500 shadow-sm',
-    outline: 'border-2 border-slate-300 bg-white text-slate-700 hover:bg-vnpt-50 hover:text-vnpt-700 hover:border-vnpt-300 focus:ring-vnpt-500 shadow-sm',
-    ghost: 'text-slate-700 hover:bg-slate-100 hover:text-vnpt-700 focus:ring-slate-400',
+    outline: 'border-2 border-slate-300 bg-white text-slate-700 hover:bg-brand-50 hover:text-brand-700 hover:border-brand-300 focus:ring-brand-500 shadow-sm',
+    ghost: 'text-slate-700 hover:bg-slate-100 hover:text-brand-700 focus:ring-slate-400',
   };
 
   // Kích thước chữ và padding lớn hơn giúp người lớn tuổi bấm chính xác, dễ nhìn

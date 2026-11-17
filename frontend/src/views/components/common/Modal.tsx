@@ -55,8 +55,8 @@ export const Modal: React.FC<ModalProps> = ({
           className={`relative w-full ${maxWidths[maxWidth]} bg-white rounded-xl shadow-2xl border border-slate-200 overflow-hidden transform transition-all`}
         >
           {/* Header */}
-          <div className="flex items-center justify-between px-6 py-4 border-b-2 border-slate-200 bg-vnpt-50/60">
-            <h3 className="text-xl font-black text-vnpt-900 tracking-tight">{title}</h3>
+          <div className="flex items-center justify-between px-6 py-4 border-b-2 border-slate-200 bg-brand-50/60">
+            <h3 className="text-xl font-black text-brand-900 tracking-tight">{title}</h3>
             <button
               onClick={onClose}
               className="text-slate-400 hover:text-rose-600 rounded-lg p-1.5 hover:bg-slate-100 transition-colors"
