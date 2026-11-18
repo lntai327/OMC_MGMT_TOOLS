@@ -48,7 +48,7 @@ services:
     image: omc_mgmt_tool-backend:release
     container_name: celery_worker
     restart: always
-    command: celery -A app.workers.celery_app.celery worker --loglevel=info --pool=threads --concurrency=4
+    command: celery -A app.workers.celery_app.celery worker --loglevel=info --pool=threads --concurrency=${CELERY_CONCURRENCY:-4}
     env_file:
       - ../.env
     environment:
@@ -58,6 +58,11 @@ services:
       - REDIS_URL=redis://redis:6379/0
     volumes:
       - backend_data:/app/storage
+    deploy:
+      resources:
+        limits:
+          cpus: '2.0'
+          memory: 2048M
     depends_on:
       redis:
         condition: service_healthy

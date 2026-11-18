@@ -26,7 +26,7 @@ param (
 )
 
 $ComposeFile = "docker-compose.prod.yml"
-$PostgresCompose = "docker-compose.postgres.yml"
+$PostgresCompose = "docker-compose.postgres.prod.yml"
 $ImageDir = "images"
 $NetworkName = "omc_network"
 

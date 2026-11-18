@@ -22,6 +22,15 @@ celery.conf.update(
     timezone="Asia/Ho_Chi_Minh",
     enable_utc=True,
     task_track_started=True,
+    # Chống overload RAM & CPU:
+    # 1. Chỉ nhận 1 task tại một thời điểm cho mỗi slot, không gom trước task nặng vào bộ nhớ
+    worker_prefetch_multiplier=1,
+    # 2. Chỉ xác nhận (ACK) khi task đã xử lý xong để tránh mất task khi worker crash
+    task_acks_late=True,
+    task_reject_on_worker_lost=True,
+    # 3. Giới hạn thời gian tối đa tránh treo tiến trình vĩnh viễn (9 phút cảnh báo mềm, 10 phút ngắt cưỡng bức)
+    task_soft_time_limit=540,
+    task_time_limit=600,
     # Periodic schedules via Celery Beat
     beat_schedule={
         "watchdog-stalled-jobs": {

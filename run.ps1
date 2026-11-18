@@ -52,7 +52,7 @@ if ($Action -eq "postgres") {
 
 $DevCompose = "docker/docker-compose.dev.yml"
 $ReleaseCompose = "docker/docker-compose.release.yml"
-$PostgresCompose = "docker/docker-compose.postgres.yml"
+$PostgresCompose = "docker/docker-compose.postgres.prod.yml"
 $NetworkName = "omc_network"
 
 function Ensure-DockerNetwork {
@@ -227,7 +227,7 @@ switch ($Action) {
         # 4. Copy config and deploy scripts
         Write-Host "[3/4] Copying deployment configurations & scripts..." -ForegroundColor Cyan
         Copy-Item "docker\docker-compose.prod.yml" "$packageDir\docker-compose.prod.yml"
-        Copy-Item "docker\docker-compose.postgres.yml" "$packageDir\docker-compose.postgres.yml"
+        Copy-Item "docker\docker-compose.postgres.prod.yml" "$packageDir\docker-compose.postgres.prod.yml"
         Copy-Item ".env.example" "$packageDir\.env.example"
         Copy-Item "docker\deploy.sh" "$packageDir\deploy.sh"
         Copy-Item "docker\deploy.ps1" "$packageDir\deploy.ps1"

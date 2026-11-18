@@ -26,7 +26,7 @@ export const HomePage: React.FC<HomePageProps> = ({ onSelectReport }) => {
       name: 'Quản lý Megawan & Metronet',
       description: '',
       icon: Network,
-      category: 'QNN',
+      category: 'OMC',
       route: 'megawan',
       active: true,
       highlight: '',
@@ -44,12 +44,12 @@ export const HomePage: React.FC<HomePageProps> = ({ onSelectReport }) => {
       {/* Banner Chào mừng & Tìm kiếm */}
       <div className="bg-gradient-to-r from-brand-700 via-brand-600 to-brand-800 rounded-2xl p-8 sm:p-10 text-white shadow-xl relative overflow-hidden">
         <div className="relative z-10 max-w-3xl space-y-3">
-          <div className="inline-flex items-center gap-2.5 px-4 py-2 bg-white/95 backdrop-blur-md rounded-full text-xs font-bold uppercase tracking-wider text-brand-800 border border-white shadow-sm">
+          <div className="inline-flex items-center gap-2.5 px-4 py-2 bg-white/95 backdrop-blur-md rounded-full text-xs font-bold uppercase tracking-wider text-slate-800 border border-white shadow-sm">
             <BrandLogo height={20} />
-            <span className="border-l border-slate-300 pl-2">Công cụ quản lý &amp; Báo cáo số liệu</span>
+            <span className="border-l border-slate-300 pl-2">Công cụ quản lý &amp; Báo cáo</span>
           </div>
           <h2 className="text-3xl sm:text-4xl font-black tracking-tight leading-tight">
-            VNPT GIA LAI — OMC MANAGEMENT TOOL
+            VNPT GLI — OMC MANAGEMENT TOOL
           </h2>
 
           {/* Search Input lớn, dễ nhìn */}
@@ -108,7 +108,7 @@ export const HomePage: React.FC<HomePageProps> = ({ onSelectReport }) => {
                     {item.active ? (
                       <span className="flex items-center gap-1.5 text-xs font-bold px-3 py-1 bg-emerald-100 text-emerald-800 rounded-full border border-emerald-200">
                         <CheckCircle2 className="w-3.5 h-3.5" />
-                        {item.highlight}
+                        {/* {item.highlight} */}
                       </span>
                     ) : (
                       <span className="text-xs font-bold px-3 py-1 bg-slate-200 text-slate-600 rounded-full">

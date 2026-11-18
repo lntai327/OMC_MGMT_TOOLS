@@ -25,7 +25,7 @@ export const Pagination: React.FC<PaginationProps> = ({
   return (
     <div className="flex flex-col sm:flex-row items-center justify-between gap-4 px-6 py-4 bg-slate-50 border-t-2 border-slate-200 text-base text-slate-700">
       <div className="flex items-center gap-3">
-        <span className="font-medium text-slate-700">Hiển thị:</span>
+        <span className="font-medium text-slate-700">SL:</span>
         <select
           value={pageSize}
           onChange={(e) => onPageSizeChange(Number(e.target.value))}
@@ -37,7 +37,7 @@ export const Pagination: React.FC<PaginationProps> = ({
           <option value={100}>100</option>
         </select>
         <span className="text-slate-600 font-medium">
-          (Bản ghi <strong className="font-bold text-slate-900">{startItem}</strong> - <strong className="font-bold text-slate-900">{endItem}</strong> / Tổng cộng <strong className="text-brand-700 font-bold">{totalItems}</strong> bản ghi)
+          (<strong className="font-bold text-slate-900">{startItem}</strong> - <strong className="font-bold text-slate-900">{endItem}</strong> / <strong className="text-brand-700 font-bold">{totalItems}</strong>)
         </span>
       </div>
 
@@ -50,7 +50,7 @@ export const Pagination: React.FC<PaginationProps> = ({
           className="font-bold"
         >
           <ChevronLeft className="w-5 h-5 mr-1" />
-          Trước
+          {/* Trước */}
         </Button>
         <span className="px-4 py-1.5 font-bold text-base text-brand-900 bg-white border border-slate-300 rounded-lg shadow-sm">
           {currentPage} / {Math.max(1, totalPages)}
@@ -62,7 +62,7 @@ export const Pagination: React.FC<PaginationProps> = ({
           disabled={currentPage >= totalPages}
           className="font-bold"
         >
-          Sau
+          {/* Sau */}
           <ChevronRight className="w-5 h-5 ml-1" />
         </Button>
       </div>

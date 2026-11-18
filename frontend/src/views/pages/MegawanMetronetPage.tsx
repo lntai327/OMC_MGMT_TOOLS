@@ -162,16 +162,10 @@ export const MegawanMetronetPage: React.FC<MegawanPageProps> = ({
       {/* 1. THANH TIÊU ĐỀ & THAO TÁC CHÍNH */}
       <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4 bg-white p-5 rounded-2xl border-2 border-slate-200 shadow-sm">
         <div className="flex items-center gap-4">
-          <Button variant="outline" size="md" onClick={onBack} className="font-bold">
-            <ArrowLeft className="w-5 h-5 mr-1" />
-            Trang chủ
-          </Button>
-          <div className="border-l-2 border-slate-200 pl-4">
-            <h2 className="text-2xl font-black text-brand-900 tracking-tight flex items-center gap-2">
-              <Database className="w-7 h-7 text-brand-600" />
-              QUẢN LÝ DỮ LIỆU MEGAWAN &amp; METRONET
-            </h2>
-          </div>
+          <h2 className="text-2xl font-black text-brand-900 tracking-tight flex items-center gap-2">
+            <Database className="w-7 h-7 text-brand-600" />
+            QUẢN LÝ MEGAWAN &amp; METRONET
+          </h2>
         </div>
 
         <div className="flex flex-wrap items-center gap-3 w-full lg:w-auto justify-end">
@@ -205,7 +199,7 @@ export const MegawanMetronetPage: React.FC<MegawanPageProps> = ({
         <div className="flex items-center justify-between pb-3 border-b border-slate-200">
           <div className="flex items-center gap-2.5 text-base font-black uppercase tracking-wide text-brand-800">
             <Filter className="w-5 h-5 text-brand-600" />
-            BỘ LỌC TÌM KIẾM DỮ LIỆU CHI TIẾT
+            BỘ LỌC
           </div>
           <button onClick={clearFilters}
             className="text-sm text-brand-600 hover:text-brand-800 font-bold underline cursor-pointer transition-colors">
@@ -376,12 +370,12 @@ export const MegawanMetronetPage: React.FC<MegawanPageProps> = ({
       >
         <form onSubmit={handleFormSubmit} className="space-y-5">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <Input label="Mã Thuê Bao (*)" value={formData.ma_tb || ''}
+            <Input label="Mã Thuê Bao" value={formData.ma_tb || ''}
               onChange={(e) => setFormData({ ...formData, ma_tb: e.target.value })} />
             <Input label="Mã LT / Mã TB Sub" value={formData.ma_lt_ma_tb_sub || ''}
               onChange={(e) => setFormData({ ...formData, ma_lt_ma_tb_sub: e.target.value })} />
             <div className="sm:col-span-2">
-              <Input label="Tên thuê bao (*)" value={formData.ten_th_bao || ''}
+              <Input label="Tên thuê bao" value={formData.ten_th_bao || ''}
                 onChange={(e) => setFormData({ ...formData, ten_th_bao: e.target.value })} />
             </div>
             <div className="sm:col-span-2">

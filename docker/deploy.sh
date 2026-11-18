@@ -5,7 +5,7 @@
 set -e
 
 APP_COMPOSE="docker-compose.prod.yml"
-PG_COMPOSE="docker-compose.postgres.yml"
+PG_COMPOSE="docker-compose.postgres.prod.yml"
 IMAGE_DIR="images"
 NETWORK_NAME="omc_network"
 

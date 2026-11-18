@@ -4,8 +4,6 @@ import { Modal } from '../common/Modal';
 import { Button } from '../common/Button';
 import { JobStatusResponse } from '../../../models/job.types';
 
-const API_BASE = import.meta.env.VITE_API_BASE_URL?.replace('/api/v1', '') || 'http://localhost:8000';
-
 interface JobProgressModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -85,8 +83,8 @@ export const JobProgressModal: React.FC<JobProgressModalProps> = ({
 
                 <span
                   className={`font-medium text-base ${job.result_meta.failed_counter > 0
-                      ? "text-rose-900"
-                      : "text-green-900"
+                    ? "text-rose-900"
+                    : "text-green-900"
                     }`}
                 >
                   {job.result_meta.failed_counter}
@@ -105,10 +103,18 @@ export const JobProgressModal: React.FC<JobProgressModalProps> = ({
         {/* Actions */}
         <div className="flex justify-center gap-3 pt-2">
           {isCompleted && job.download_url && (() => {
-            // Resolve relative paths against the backend API origin
-            const href = job.download_url.startsWith('http')
-              ? job.download_url
-              : `${API_BASE}${job.download_url}`;
+            // When download_url is relative (e.g. /api/v1/downloads/...), use it directly
+            // so browser automatically resolves against the current host/port/protocol (IP, domain, localhost).
+            // Only prepend host if VITE_API_BASE_URL is explicitly set to an absolute URL.
+            let href = job.download_url;
+            if (!href.startsWith('http://') && !href.startsWith('https://')) {
+              const envBase = import.meta.env.VITE_API_BASE_URL;
+              if (envBase && (envBase.startsWith('http://') || envBase.startsWith('https://'))) {
+                const origin = envBase.replace(/\/api\/v1\/?$/, '');
+                href = `${origin}${href.startsWith('/') ? '' : '/'}${href}`;
+              }
+            }
+
             return (
               <a
                 href={href}

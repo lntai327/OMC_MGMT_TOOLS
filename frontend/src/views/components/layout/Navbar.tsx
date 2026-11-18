@@ -53,27 +53,20 @@ export const Navbar: React.FC<NavbarProps> = ({
 
           {/* User Status & Logout */}
           {currentUser && (
-            <div className="flex items-center gap-4">
-              <div className="flex items-center gap-3 px-4 py-2 bg-slate-50 rounded-xl border border-slate-200 shadow-sm">
-                <div className="w-9 h-9 rounded-full bg-brand-100 text-brand-700 flex items-center justify-center font-bold">
-                  <UserIcon className="w-5 h-5" />
+            <div className="flex items-center gap-3">
+              <div className="h-11 flex items-center gap-2.5 px-3.5 bg-slate-50 rounded-xl border border-slate-200 shadow-sm">
+                <div className="w-7 h-7 rounded-full bg-brand-100 text-brand-700 flex items-center justify-center font-bold flex-shrink-0">
+                  <UserIcon className="w-4 h-4" />
                 </div>
-                <div className="text-left">
-                  <div className="text-sm font-bold text-slate-900 leading-tight">
-                    {currentUser.username}
-                  </div>
-                  <div className="flex items-center gap-1.5 text-xs font-semibold text-brand-700 mt-0.5">
-                    <ShieldCheck className="w-3.5 h-3.5 text-brand-600" />
-                    <span>Quyền: {currentUser.role}</span>
-                  </div>
+                <div className="text-sm font-bold text-slate-800 leading-none">
+                  {currentUser.username} <span className="text-xs font-semibold text-slate-500">({currentUser.role})</span>
                 </div>
               </div>
 
               <Button
                 variant="outline"
-                size="sm"
                 onClick={onLogout}
-                className="text-rose-700 border-rose-200 hover:bg-rose-50 hover:border-rose-300 font-bold"
+                className="h-11 px-4 rounded-xl text-rose-700 border-rose-200 hover:bg-rose-50 hover:border-rose-300 font-bold text-sm inline-flex items-center"
               >
                 <LogOut className="w-4 h-4 mr-1.5" />
                 Đăng xuất
@@ -100,7 +93,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             </button>
 
             {/* Tab Quản lý Megawan / Metronet */}
-            <button
+            {/* <button
               onClick={() => handleNav('megawan')}
               className={`flex items-center gap-2.5 px-5 py-3 rounded-lg font-bold text-base transition-all duration-150 whitespace-nowrap ${currentView === 'megawan'
                 ? 'bg-white text-brand-700 shadow-md transform scale-[1.02]'
@@ -109,7 +102,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             >
               <Network className="w-5 h-5" />
               <span>MEGAWAN &amp; METRONET</span>
-            </button>
+            </button> */}
           </nav>
         </div>
       </div>

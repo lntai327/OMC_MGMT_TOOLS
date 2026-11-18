@@ -562,22 +562,7 @@ The refactoring of the Flet desktop app into the modern web application has been
 
 ---
 
-### How to Run & Test
-Refer to the created [**`TESTING_GUIDE.md`**] and helper script [**`run.ps1`**]:
-
-1. **Start the system**:
-   ```powershell
-   .\run.ps1 build
-   ```
-2. **Access URLs**:
-   - **Frontend UI**: [http://localhost:3000](http://localhost:3000)
-   - **FastAPI Docs**: [http://localhost:8000/docs](http://localhost:8000/docs)
-3. **Default Credentials**: `admin` / `demo`
-4. **Follow the step-by-step test cases** in [`TESTING_GUIDE.md`] to test health checks, authentication, Megawan operations, and async Excel import/export.
-
-
-
-#################################################################################FLOW PROCESS
+## FLOW PROCESS
 Dưới đây là luồng xử lý toàn diện (End-to-End Flow) từ lúc bạn click nút **"Bắt đầu nhập dữ liệu"** trên giao diện [MegawanMetronetPage.tsx] cho đến khi dữ liệu vào DB và hiển thị trên bảng:
 
 ```
