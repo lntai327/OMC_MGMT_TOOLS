@@ -1,6 +1,6 @@
-from backend.repositories.bc_cell_mll.excel_cell3g.excel_cell3g_maker import ExcelCell3gSheetMaker
-from backend.repositories.bc_cell_mll.excel_cell4g.excel_cell4g_maker import ExcelCell4gSheetMaker
-from backend.repositories.bc_cell_mll.excel_cell5g.excel_cell5g_maker import ExcelCell5gSheetMaker
+from backend.repositories.bc_cell_mll.excel_cell3g_repo import ExcelCell3gService
+from backend.repositories.bc_cell_mll.excel_cell4g_repo import ExcelCell4gService
+from backend.repositories.bc_cell_mll.excel_cell5g_repo import ExcelCell5gService
 
 from backend.repositories.bc_bts.excel_nodeb3g_repo import ExcelNodeb3gService
 from backend.repositories.bc_bts.excel_enodeb4g_repo import ExcelEnodeb4gService
@@ -39,11 +39,11 @@ class DbUpdate:
 
             #
             case SC.K_EXCEL_CELL3G_KEY:
-                ExcelCell3gSheetMaker().update_db()
+                ExcelCell3gService().update_db()
             case SC.K_EXCEL_CELL4G_KEY:
-                ExcelCell4gSheetMaker().update_db()
+                ExcelCell4gService().update_db()
             case SC.K_EXCEL_CELL5G_KEY:
-                ExcelCell5gSheetMaker().update_db()
+                ExcelCell5gService().update_db()
 
             #
             case SC.K_EXCEL_NODEB3G_KEY:

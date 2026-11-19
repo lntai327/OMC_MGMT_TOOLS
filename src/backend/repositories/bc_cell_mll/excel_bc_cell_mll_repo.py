@@ -3,7 +3,6 @@ import openpyxl
 
 from share.util.dynamic_info_util import DynamicInfoUtil
 from share.util.explorer_util import ExplorerUtil
-
 from share.constant import constant as SC
 
 class BcTgHopSheet:
@@ -88,3 +87,16 @@ class ExcellBcCellMllLoader:
             all_items_list.append(req_row_dic)
 
         return [BcTgHopSheet().load(x) for x in all_items_list]
+
+class ExcelBcCellMllService():
+    def __init__(self):
+        self.bc_tghop_ttvt_dict = {}
+
+    def load(self):
+        self._loadFromExcel()
+
+    def _loadFromExcel(self):
+        bc_tghop_items_list: list = ExcellBcCellMllLoader().load_items()
+
+        for item in bc_tghop_items_list:
+            self.bc_tghop_ttvt_dict[item[SC.K_TTVT]] = item.to_dict()

@@ -26,10 +26,11 @@ EXCEL_STRUCT_INFO = {
   "excel_cell_3g": {
     "sheet_info": {
       "sheet_cell3g": {
-        "start_cell": "Trạng thái hoạt động",
-        "require_col": ["Trạng thái hoạt động", "Tên trên hệ thống", "Mã CSHT CỦA CELL",
-                        "Mã CSHT CỦA TRẠM", "Loại đối tượng", "Địa chỉ", "Tên quản lý",
-                        "Tên đơn vị"]
+        "start_cell": "Tên trên hệ thống",
+        "require_col": [
+          "Trạng thái hoạt động", "Tên trên hệ thống", "Mã CSHT của cell",
+          "Mã CSHT của trạm", "Địa chỉ",
+        ]
       }
     },
     "hint": "ex: CELL_3G(abc).xlsx | sheet: CELL_3G(abc)"
@@ -38,10 +39,11 @@ EXCEL_STRUCT_INFO = {
   "excel_cell_4g": {
     "sheet_info": {
       "sheet_cell4g": {
-        "start_cell": "Loại đối tượng",
-        "require_col": ["Loại đối tượng", "Tên trên hệ thống", "Mã CSHT CỦA CELL",
-                        "Mã CSHT CỦA TRẠM", "Địa chỉ", "Tên quản lý", "Tên đơn vị",
-                        "Trạng thái hoạt động"]
+        "start_cell": "Tên trên hệ thống",
+        "require_col": [
+          "Trạng thái hoạt động", "Tên trên hệ thống", "Mã CSHT của cell",
+          "Mã CSHT của trạm", "Địa chỉ",
+        ]
       }
     },
     "hint": "ex: CELL_4G(abc).xlsx | sheet: CELL_4G(abc)"
@@ -50,9 +52,11 @@ EXCEL_STRUCT_INFO = {
   "excel_cell_5g": {
     "sheet_info": {
       "sheet_cell5g": {
-        "start_cell": "Loại đối tượng",
-        "require_col": ["Loại đối tượng", "Tên trên hệ thống", "Mã CSHT",
-                        "Địa chỉ", "Tên quản lý", "Trạng thái hoạt động", "Tên đơn vị"]
+        "start_cell": "Tên trên hệ thống",
+        "require_col": [
+          "Trạng thái hoạt động", "Tên trên hệ thống", "Mã CSHT của cell",
+          "Mã CSHT của trạm", "Địa chỉ",
+        ]
       }
     },
     "hint": "ex: CELL5G(abc).xlsx | sheet: CELL5G(abc)"
