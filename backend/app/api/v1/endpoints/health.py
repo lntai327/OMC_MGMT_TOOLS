@@ -1,9 +1,8 @@
 import time
-import redis
 from fastapi import APIRouter
 from sqlalchemy import text
-from app.core.config import settings
 from app.core.database import db_manager
+from app.core.redis_client import get_async_redis_client
 
 router = APIRouter(prefix="/health", tags=["Health & Diagnostics"])
 
@@ -19,7 +18,7 @@ async def health_check():
         "redis_latency_ms": None,
     }
 
-    # Test Database
+    # Test Database (Non-blocking async)
     try:
         t0 = time.time()
         async with db_manager.engine.connect() as conn:
@@ -30,11 +29,12 @@ async def health_check():
         health["database"] = f"error: {str(e)}"
         health["status"] = "degraded"
 
-    # Test Redis
+    # Test Redis (Non-blocking async using shared connection pool)
     try:
         t0 = time.time()
-        r = redis.from_url(settings.REDIS_URL)
-        if r.ping():
+        redis_client = get_async_redis_client()
+        pong = await redis_client.ping()
+        if pong:
             health["redis_latency_ms"] = round((time.time() - t0) * 1000, 2)
             health["redis"] = "connected"
         else:
@@ -45,4 +45,5 @@ async def health_check():
         health["status"] = "degraded"
 
     return health
+
 

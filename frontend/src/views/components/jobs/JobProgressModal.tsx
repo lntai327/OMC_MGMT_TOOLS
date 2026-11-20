@@ -115,6 +115,13 @@ export const JobProgressModal: React.FC<JobProgressModalProps> = ({
               }
             }
 
+            // Append JWT token so browser direct download is authorized
+            const token = localStorage.getItem('omc_access_token');
+            if (token && href) {
+              const sep = href.includes('?') ? '&' : '?';
+              href = `${href}${sep}token=${encodeURIComponent(token)}`;
+            }
+
             return (
               <a
                 href={href}

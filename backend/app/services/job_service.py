@@ -5,10 +5,12 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from fastapi import HTTPException, status
 from app.core.config import settings
 from app.models.job import Job, JobType, JobStatus
+from app.models.user import User
 from app.repositories.job_repo import job_repo
 from app.schemas.job import JobCreateResponse, JobStatusResponse
 from app.workers.tasks.import_tasks import process_import
 from app.workers.tasks.export_tasks import process_export
+from app.core.timezone import isoformat_vietnam
 
 
 class JobService:
@@ -67,6 +69,7 @@ class JobService:
         self,
         session: AsyncSession,
         job_id: str,
+        current_user: Optional[User] = None,
         base_download_url: str = "/api/v1/downloads",
     ) -> JobStatusResponse:
         try:
@@ -77,6 +80,13 @@ class JobService:
         job = await job_repo.get_by_uuid(session, job_uuid)
         if not job:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Job not found")
+
+        # Multi-user data isolation: Non-admin can only check their own jobs
+        if current_user and current_user.role != "admin" and job.user_id != current_user.id:
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="Not authorized to access this job",
+            )
 
         # Always return a relative download path so the frontend can resolve it
         # against its own configured API base URL — avoids Docker-internal hostname leakage.
@@ -92,8 +102,8 @@ class JobService:
             download_url=download_url,
             result_meta=job.result_meta,
             error_message=job.error_message,
-            created_at=job.created_at.isoformat() if job.created_at else None,
-            updated_at=job.updated_at.isoformat() if job.updated_at else None,
+            created_at=isoformat_vietnam(job.created_at) if job.created_at else None,
+            updated_at=isoformat_vietnam(job.updated_at) if job.updated_at else None,
         )
 
 

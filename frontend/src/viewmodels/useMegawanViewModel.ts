@@ -83,7 +83,10 @@ export function useMegawanViewModel(onJobStarted?: (jobId: string, title: string
     setLoading(true);
     try {
       if (selectedRecord?.id) {
-        await megawanService.update(selectedRecord.id, data);
+        await megawanService.update(selectedRecord.id, {
+          ...data,
+          expected_last_update: selectedRecord.last_update,
+        });
       } else {
         await megawanService.create(data);
       }

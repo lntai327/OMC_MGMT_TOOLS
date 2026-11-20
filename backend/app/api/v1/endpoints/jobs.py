@@ -15,5 +15,5 @@ async def get_job_status(
     session: AsyncSession = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
-    return await job_service.get_job_status(session, job_id)
+    return await job_service.get_job_status(session, job_id, current_user=current_user)
 

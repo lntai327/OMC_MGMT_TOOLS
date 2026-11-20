@@ -15,6 +15,7 @@ from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.types import JSON
 from sqlalchemy.orm import Mapped, mapped_column
 from app.models.base import Base, GUID
+from app.core.timezone import isoformat_vietnam, now_vietnam
 
 
 class JobType(str, enum.Enum):
@@ -60,13 +61,15 @@ class Job(Base):
 
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
+        default=now_vietnam,
         server_default=func.now(),
         nullable=False,
     )
     updated_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
+        default=now_vietnam,
+        onupdate=now_vietnam,
         server_default=func.now(),
-        onupdate=func.now(),
         nullable=False,
     )
 
@@ -86,8 +89,8 @@ class Job(Base):
             "output_file_path": self.output_file_path,
             "result_meta": self.result_meta,
             "error_message": self.error_message,
-            "timeout_at": self.timeout_at.isoformat() if self.timeout_at else None,
-            "created_at": self.created_at.isoformat() if self.created_at else None,
-            "updated_at": self.updated_at.isoformat() if self.updated_at else None,
+            "timeout_at": isoformat_vietnam(self.timeout_at) if self.timeout_at else None,
+            "created_at": isoformat_vietnam(self.created_at) if self.created_at else None,
+            "updated_at": isoformat_vietnam(self.updated_at) if self.updated_at else None,
         }
 

@@ -1,6 +1,7 @@
 export interface MegawanRecord {
   id: number;
   last_update?: string | null;
+  expected_last_update?: string | null;
   ma_tb?: string | null;
   ma_lt_ma_tb_sub?: string | null;
   ten_th_bao?: string | null;

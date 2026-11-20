@@ -7,6 +7,7 @@ import redis
 from app.core.config import settings
 from app.core.database import get_worker_session
 from app.core.logging import get_logger
+from app.core.timezone import now_vietnam
 from app.repositories.job_repo import job_repo
 from app.services.module_registry import get_module_config
 from app.workers.celery_app import celery
@@ -77,7 +78,7 @@ async def _run_export(job_id_str: str, filter_dict: dict, file_key: str):
         publish_progress_event(job_id_str, 40, "processing", {"fetched_rows": len(records)})
 
         # 3. Chuẩn bị đường dẫn xuất file
-        time_suffix = datetime.now().strftime("%Y%m%d_%H%M%S")
+        time_suffix = now_vietnam().strftime("%Y%m%d_%H%M%S")
         export_filename = f"{prefix}_{time_suffix}_{job_id_str[:8]}.xlsx"
         output_full_path = os.path.join(settings.EXPORTS_PATH, export_filename)
         template_full_path = os.path.join(settings.TEMPLATES_PATH, template_name)

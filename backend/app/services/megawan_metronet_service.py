@@ -1,7 +1,7 @@
-from datetime import datetime
 from typing import Optional, List, Dict, Any
 from sqlalchemy.ext.asyncio import AsyncSession
 from fastapi import HTTPException, status
+from app.core.timezone import format_vietnam, now_vietnam
 from app.models.megawan_metronet import MegawanMetronet
 from app.repositories.megawan_metronet_repo import megawan_metronet_repo
 from app.schemas.megawan_metronet import (
@@ -48,7 +48,7 @@ class MegawanMetronetService:
 
     async def create(self, session: AsyncSession, data: MegawanCreate) -> MegawanResponse:
         record_dict = data.model_dump(exclude_unset=True)
-        record_dict["last_update"] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        record_dict["last_update"] = now_vietnam().strftime("%Y-%m-%d %H:%M:%S")
 
         created = await megawan_metronet_repo.create(session, record_dict)
         return MegawanResponse.model_validate(created)
@@ -58,8 +58,22 @@ class MegawanMetronetService:
         if not record:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Record not found")
 
-        record_dict = data.model_dump(exclude_unset=True)
-        record_dict["last_update"] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        # Optimistic locking check to prevent lost updates when concurrent users edit the same record
+        if (
+            data.expected_last_update
+            and record.last_update
+            and record.last_update != data.expected_last_update
+        ):
+            raise HTTPException(
+                status_code=status.HTTP_409_CONFLICT,
+                detail="Bản ghi đã được người dùng khác cập nhật trước đó. Tải lại dữ liệu trước khi sửa đổi.",
+            )
+
+        record_dict = data.model_dump(
+            exclude_unset=True,
+            exclude={"expected_last_update", "expected_updated_at"}
+        )
+        record_dict["last_update"] = now_vietnam().strftime("%Y-%m-%d %H:%M:%S")
 
         updated = await megawan_metronet_repo.update(session, record_id, record_dict)
         return MegawanResponse.model_validate(updated)

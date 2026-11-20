@@ -73,6 +73,7 @@ mkcert -cert-file cert.pem -key-file key.pem localhost 127.0.0.1 ::1 192.168.1.2
 docker network create "omc_network" | Out-Null
 docker build -f .\docker\postgres.Dockerfile -t omc-postgres:latest .
 docker compose --env-file .env -f .\docker\docker-compose.postgres.prod.yml up -d
+
 docker compose -f .\docker\docker-compose.release.yml build
 docker compose --env-file .env -f .\docker\docker-compose.prod.yml up -d
 

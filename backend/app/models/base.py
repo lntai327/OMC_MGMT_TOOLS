@@ -4,6 +4,7 @@ from sqlalchemy import DateTime, func
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 from sqlalchemy.types import TypeDecorator, CHAR, String
 from sqlalchemy.dialects.postgresql import UUID as PG_UUID
+from app.core.timezone import now_vietnam
 
 
 class Base(DeclarativeBase):
@@ -47,13 +48,15 @@ class TimestampMixin:
     """Mixin providing created_at and updated_at timestamps."""
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
+        default=now_vietnam,
         server_default=func.now(),
-        nullable=False
+        nullable=False,
     )
     updated_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
+        default=now_vietnam,
+        onupdate=now_vietnam,
         server_default=func.now(),
-        onupdate=func.now(),
-        nullable=False
+        nullable=False,
     )
 

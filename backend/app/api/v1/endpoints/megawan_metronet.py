@@ -11,6 +11,7 @@ from fastapi import (
     UploadFile,
     status,
 )
+from starlette.concurrency import run_in_threadpool
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.core.config import settings
 from app.core.database import get_db
@@ -117,8 +118,12 @@ async def import_megawan_excel(
     temp_filename = f"upload_{uuid.uuid4()}_{file.filename}"
     temp_file_path = os.path.join(settings.UPLOADS_PATH, temp_filename)
 
-    with open(temp_file_path, "wb") as buffer:
-        shutil.copyfileobj(file.file, buffer)
+    def _save_file(upload_file: UploadFile, dest_path: str):
+        with open(dest_path, "wb") as buffer:
+            shutil.copyfileobj(upload_file.file, buffer)
+
+    # Offload blocking disk I/O to threadpool so event loop remains responsive
+    await run_in_threadpool(_save_file, file, temp_file_path)
 
     return await job_service.create_import_job(
         session=session,

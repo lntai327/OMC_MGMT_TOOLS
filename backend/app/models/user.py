@@ -1,6 +1,7 @@
 from sqlalchemy import BigInteger, Boolean, String
 from sqlalchemy.orm import Mapped, mapped_column
 from app.models.base import Base, TimestampMixin
+from app.core.timezone import isoformat_vietnam
 
 
 class User(Base, TimestampMixin):
@@ -18,7 +19,7 @@ class User(Base, TimestampMixin):
             "username": self.username,
             "role": self.role,
             "is_active": self.is_active,
-            "created_at": self.created_at.isoformat() if self.created_at else None,
-            "updated_at": self.updated_at.isoformat() if self.updated_at else None,
+            "created_at": isoformat_vietnam(self.created_at) if self.created_at else None,
+            "updated_at": isoformat_vietnam(self.updated_at) if self.updated_at else None,
         }
 

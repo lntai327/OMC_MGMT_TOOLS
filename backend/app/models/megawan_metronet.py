@@ -60,7 +60,5 @@ class MegawanMetronet(Base, TimestampMixin):
             SC.K_TOC_DO: self.toc_do,
             SC.K_DVI: self.don_vi,
             SC.K_LOAI_KENH: self.loai_kenh,
-            # "created_at": self.created_at.isoformat() if self.created_at else None,
-            # "updated_at": self.updated_at.isoformat() if self.updated_at else None,
         }
 

@@ -78,7 +78,9 @@ export const jobService = {
 
     // 2. Try WebSocket for real-time instant push
     try {
-      ws = new WebSocket(`${WS_BASE_URL}/jobs/${jobId}`);
+      const token = localStorage.getItem('omc_access_token');
+      const tokenQuery = token ? `?token=${encodeURIComponent(token)}` : '';
+      ws = new WebSocket(`${WS_BASE_URL}/jobs/${jobId}${tokenQuery}`);
 
       ws.onmessage = (event) => {
         try {

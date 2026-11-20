@@ -440,7 +440,7 @@ export const MegawanMetronetPage: React.FC<MegawanPageProps> = ({
           <div className="border-3 border-dashed border-brand-300 rounded-2xl p-10 hover:border-brand-600 transition-colors bg-brand-50/40">
             <FileSpreadsheet className="w-16 h-16 text-brand-600 mx-auto mb-4" />
             <h4 className="text-lg font-bold text-slate-800 mb-1">
-              {selectedFile ? selectedFile.name : 'Chọn file Excel từ máy tính (.xlsx, .xls)'}
+              {selectedFile ? selectedFile.name : 'Chọn file Excel (.xlsx, .xls)'}
             </h4>
             <input type="file" id="excel-file-input" accept=".xlsx, .xls" className="hidden"
               onChange={(e) => { if (e.target.files?.[0]) setSelectedFile(e.target.files[0]); }} />

@@ -1,6 +1,7 @@
 from datetime import datetime
 from typing import Optional
 from pydantic import BaseModel, Field, field_serializer
+from app.core.timezone import isoformat_vietnam
 
 
 class MegawanBase(BaseModel):
@@ -31,7 +32,9 @@ class MegawanCreate(MegawanBase):
 
 
 class MegawanUpdate(MegawanBase):
-    pass
+    expected_last_update: Optional[str] = None
+    expected_updated_at: Optional[datetime] = None
+
 
 
 class MegawanResponse(MegawanBase):
@@ -44,7 +47,7 @@ class MegawanResponse(MegawanBase):
 
     @field_serializer("created_at", "updated_at")
     def serialize_dt(self, v: Optional[datetime]) -> Optional[str]:
-        return v.isoformat() if v else None
+        return isoformat_vietnam(v) if v else None
 
 
 class MegawanFilterParams(BaseModel):
