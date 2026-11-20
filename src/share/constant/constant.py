@@ -313,7 +313,6 @@ K_SHEET_ENODEB4G_KEY = 'sheet_enodeb_4g'
 K_SHEET_GNODEB5G_KEY = 'sheet_gnodeb_5g'
 K_SHEET_INFO = 'sheet_info'
 K_SHEET_NODEB3G_KEY = 'sheet_nodeb_3g'
-K_SHEET_TH_CELL_MLL_THEO_CSHT = "TH CELL MLL theo CSHT"
 K_SHEET_TTVT_KEY = 'sheet_ttvt'
 K_SITE = "Site"
 K_SITE1 = "site"
@@ -436,3 +435,5 @@ K_3G = "3g"
 K_4G = "4g"
 K_5G = "5g"
 K_UI_FUNCTION = "Chức năng"
+
+K_KXD = "KXĐ"

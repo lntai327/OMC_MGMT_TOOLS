@@ -4,7 +4,6 @@ from frontend.pages.base_page import BasePage
 from frontend.viewmodels.bc_cell_mll_vm import BcCellMllViewModel
 from frontend.component.background_task import run_background_task
 from frontend.component.loading_overlay import LoadingOverlay
-from frontend.component.dsach_loi_view import DsachLoiView
 from frontend.component.rp_site_control import RpSiteControl
 from frontend.component.rp_time_control import RpTimeControl
 from frontend.component.update_db_dialog import UpdateDbDialog
@@ -15,6 +14,158 @@ from share.session import Session
 from share.constant import constant as SC
 from share.util.logger_util import LoggerUtil
 from share.constant import type as ST
+
+class DsachLoiView(ft.Column):
+    def __init__(self, page: ft.Page | BasePage, parent: BasePage | None = None):
+        if isinstance(page, BasePage):
+            self._parent_page: BasePage | None = page
+            self._page: ft.Page = page.page
+        else:
+            self._page: ft.Page = page
+            self._parent_page: BasePage | None = parent
+        self._errors: list[dict] = []
+
+        self._list_view = ft.ListView(
+            expand=False,
+            height=120,
+            spacing=2,
+        )
+
+        # Loading spinner shown during Excel export
+        self._export_loading = ft.ProgressRing(
+            width=16, height=16, stroke_width=2,
+            visible=False,
+        )
+
+        self._export_btn = ft.TextButton(
+            content=ft.Text(SC.K_UI_EXPORT_EXCEL),
+            on_click=lambda _: self._export_to_excel(),
+        )
+
+        self._header = ft.Row(
+            controls=[
+                ft.Text(SC.K_UI_DSACH_LOI, weight=ft.FontWeight.W_600),
+                self._export_btn,
+                self._export_loading,
+            ],
+            spacing=8,
+            vertical_alignment=ft.CrossAxisAlignment.CENTER,
+        )
+
+        # Bordered container wrapping the list
+        _bordered_list = ft.Container(
+            content=self._list_view,
+            border=ft.Border.all(1, ft.Colors.OUTLINE_VARIANT),
+            border_radius=6,
+            padding=4,
+        )
+
+        super().__init__(
+            controls=[
+                ft.Divider(),
+                self._header,
+                _bordered_list,
+            ],
+            spacing=4,
+        )
+
+    def _show_dialog(self, title: str, message: str, path: str | None = None):
+        def _invoke():
+            if self._parent_page is not None:
+                self._parent_page.show_dialog(title=title, message=message, path=path)
+            else:
+                BasePage(self._page, None).show_dialog(title=title, message=message, path=path)
+
+        try:
+            async def _apply():
+                try:
+                    _invoke()
+                except Exception as e:
+                    LoggerUtil.get_logger().error(f"DsachLoiView _show_dialog error: {e}")
+
+            self._page.run_task(_apply)
+        except Exception:
+            try:
+                _invoke()
+            except Exception as e:
+                LoggerUtil.get_logger().error(f"DsachLoiView _show_dialog sync error: {e}")
+
+    def _safe_update(self):
+        try:
+            async def _do_update():
+                try:
+                    self.update()
+                except Exception:
+                    pass
+                try:
+                    self._page.update()
+                except Exception:
+                    pass
+
+            self._page.run_task(_do_update)
+        except Exception as e:
+            LoggerUtil.get_logger().error(f"DsachLoiView _safe_update error: {e}")
+
+    def add_error(self, error_key: str, error_des: str):
+        """Append one error row and refresh the UI."""
+        item = {SC.K_UI_ERROR: error_key, SC.K_UI_DESCRIPTION: error_des}
+        if item in self._errors:
+            return
+
+        self._errors.append(item)
+
+        self._list_view.controls.append(
+            ft.Container(
+                content=ft.Text(
+                    f"{error_key} : {error_des}",
+                    selectable=True,
+                    color=ft.Colors.ERROR,
+                ),
+                padding=ft.Padding.symmetric(horizontal=4, vertical=2),
+            )
+        )
+
+        self._safe_update()
+
+    def clear_errors(self):
+        """Clear all errors and reset the list."""
+        self._errors.clear()
+        self._list_view.controls.clear()
+        self._safe_update()
+
+    @property
+    def error_list(self) -> list[dict]:
+        return self._errors
+
+    def has_errors(self) -> bool:
+        return len(self._errors) > 0
+
+    def _set_loading(self, loading: bool):
+        self._export_btn.disabled = loading
+        self._export_loading.visible = loading
+        self._safe_update()
+
+    def _export_to_excel(self):
+        if not self._errors:
+            self._show_dialog(title="Thông báo", message="Không có lỗi để xuất")
+            return
+
+        def _do_export():
+            self._set_loading(True)
+            try:
+                ret_excel_path = BcCellMllViewModel().write_excel_dsach_loi(data=self._errors)
+                self._show_dialog(
+                    title="Thông báo",
+                    message=f"Đã xuất Excel: {ret_excel_path}",
+                    path=ret_excel_path,
+                )
+            except Exception as e:
+                LoggerUtil.get_logger().error(f"DsachLoiView _export_to_excel error: {e}")
+                self._show_dialog(title="Thông báo", message=f"Lỗi xuất Excel")
+            finally:
+                self._set_loading(False)
+
+        self._page.run_thread(_do_export)
 
 class BcCellMllPage(BasePage):
     title = ST.ReportTypeInfo.BC_CELL_MLL.report_name

@@ -1,4 +1,6 @@
 from collections import defaultdict
+import locale
+from openpyxl.worksheet.worksheet import Worksheet
 from pubsub import pub
 import os
 import re
@@ -25,6 +27,7 @@ from share.constant import type as ST
 from share.util.dynamic_info_util import DynamicInfoUtil
 from share.util.explorer_util import ExplorerUtil
 from share.util.time_util import TimeUtil
+from share.util.convert import safe_sort_num, safe_sort_value
 
 class BcCellMllService:
     def __init__(self):
@@ -73,8 +76,11 @@ class BcCellMllService:
         return None
 
     def _get_vi_tri_cell(self, ma_csht_cua_cell: str, ma_csht_cua_tram: str):
-        if ma_csht_cua_tram == SC.K_UI_MSG_MISS_DB: #CELL5G
-            return SC.K_UI_MSG_MISS_DB
+        if ma_csht_cua_cell in [SC.K_UI_MSG_MISS_DB, "", None]:
+            return SC.K_KXD
+        if ma_csht_cua_tram in [SC.K_UI_MSG_MISS_DB, "", None]:
+            return SC.K_KXD
+
         elif ma_csht_cua_cell.lower() == ma_csht_cua_tram.lower():
             return SC.K_UI_CELL_TAI_TRAM
         else:
@@ -190,13 +196,13 @@ class BcCellMllService:
     def _make_data_bc_chi_tiet_ttvt_x_item(self, rp_al_item):
         item_mll = {}
         item_mll[SC.K_STT] = 0 #later
-        item_mll[SC.K_UI_TEN_NE] = rp_al_item[SC.K_TEN_NE]
-        item_mll[SC.K_UI_LOAI_NE] = rp_al_item[SC.K_LOAI_NE]
-        item_mll[SC.K_UI_TG_SU_CO] = rp_al_item[SC.K_TG_SU_CO_1]
-        item_mll[SC.K_UI_NGUYEN_NHAN2] = rp_al_item[SC.K_NGUYEN_NHAN]
-        item_mll[SC.K_UI_PHAN_LOAI_TRAM] = rp_al_item[SC.K_PHAN_LOAI_TRAM]
+        item_mll[SC.K_TEN_NE] = rp_al_item[SC.K_TEN_NE]
+        item_mll[SC.K_LOAI_NE] = rp_al_item[SC.K_LOAI_NE]
+        item_mll[SC.K_TG_SU_CO_1] = rp_al_item[SC.K_TG_SU_CO_1]
+        item_mll[SC.K_NGUYEN_NHAN] = rp_al_item[SC.K_NGUYEN_NHAN]
+        item_mll[SC.K_PHAN_LOAI_TRAM] = rp_al_item[SC.K_PHAN_LOAI_TRAM]
         try:
-            item_mll[SC.K_UI_MA_CSHT_CELL] = \
+            item_mll[SC.K_MA_CSHT_CUA_CELL] = \
                 self._cellxg_item_ten_tren_he_thong_dict[rp_al_item[SC.K_TEN_NE]]\
                     [SC.K_MA_CSHT_CUA_CELL]
         except KeyError as e:
@@ -209,23 +215,23 @@ class BcCellMllService:
                 noti_key=rp_al_item[SC.K_TEN_NE],
                 noti_val=SC.K_UI_MSG_KTTHAY_NE,
             )
-            item_mll[SC.K_UI_MA_CSHT_CELL] = SC.K_UI_MSG_MISS_DB
-            item_mll[SC.K_UI_TEN_GOI_NHO] = SC.K_UI_MSG_MISS_DB
-            item_mll[SC.K_TTVT_2] = SC.K_UI_MSG_MISS_DB
-            item_mll[SC.K_UI_TO_KY_THUAT] = SC.K_UI_MSG_MISS_DB
+            item_mll[SC.K_MA_CSHT_CUA_CELL] = SC.K_UI_MSG_MISS_DB
+            item_mll[SC.K_TEN_CSHT] = SC.K_UI_MSG_MISS_DB
+            item_mll[SC.K_TTVT] = SC.K_UI_MSG_MISS_DB
+            item_mll[SC.K_TEN_DVI_QLY] = SC.K_UI_MSG_MISS_DB
 
             return item_mll
 
         try:
-            item_mll[SC.K_UI_TEN_GOI_NHO] = \
+            item_mll[SC.K_TEN_CSHT] = \
                 self._csht_ccl_server.csht_mdsd_items_ma_csht_dict\
-                    [item_mll[SC.K_UI_MA_CSHT_CELL]][SC.K_TEN_CSHT]
-            item_mll[SC.K_TTVT_2] = \
+                    [item_mll[SC.K_MA_CSHT_CUA_CELL]][SC.K_TEN_CSHT]
+            item_mll[SC.K_TTVT] = \
                 self._csht_ccl_server.csht_mdsd_items_ma_csht_dict\
-                    [item_mll[SC.K_UI_MA_CSHT_CELL]][SC.K_TEN_TTVT_TRAM_VT_NETX]
-            item_mll[SC.K_UI_TO_HA_TANG] = \
+                    [item_mll[SC.K_MA_CSHT_CUA_CELL]][SC.K_TEN_TTVT_TRAM_VT_NETX]
+            item_mll[SC.K_TEN_DVI_QLY] = \
                 self._csht_ccl_server.csht_mdsd_items_ma_csht_dict\
-                    [item_mll[SC.K_UI_MA_CSHT_CELL]][SC.K_TEN_DVI_QLY]
+                    [item_mll[SC.K_MA_CSHT_CUA_CELL]][SC.K_TEN_DVI_QLY]
         except KeyError as e:
             LoggerUtil.get_logger().warning(
                 f'BcCellMllService _make_data_bc_chi_tiet_ttvt_x_item csht ccl '
@@ -236,16 +242,16 @@ class BcCellMllService:
                 noti_key=rp_al_item[SC.K_TEN_NE],
                 noti_val=SC.K_UI_MSG_KTTHAY_CSHT,
             )
-            item_mll[SC.K_UI_TEN_GOI_NHO] = SC.K_UI_MSG_MISS_DB
-            item_mll[SC.K_TTVT_2] = SC.K_UI_MSG_MISS_DB
-            item_mll[SC.K_UI_TO_HA_TANG] = SC.K_UI_MSG_MISS_DB
+            item_mll[SC.K_TEN_CSHT] = SC.K_UI_MSG_MISS_DB
+            item_mll[SC.K_TTVT] = SC.K_UI_MSG_MISS_DB
+            item_mll[SC.K_TEN_DVI_QLY] = SC.K_UI_MSG_MISS_DB
 
         return item_mll
 
     def _make_data_bc_chi_tiet_ttvt_x_items_list(self):
         for item in self._excel_report_alarm_maker_instance.report_alarm_items_list:
             item_mll = self._make_data_bc_chi_tiet_ttvt_x_item(item)
-            self.bc_chi_tiet_ttvt_dict[item_mll[SC.K_TTVT_2]]\
+            self.bc_chi_tiet_ttvt_dict[item_mll[SC.K_TTVT]]\
                 .append(item_mll)
 
     ###########
@@ -279,7 +285,7 @@ class BcCellMllService:
 
         try:
             for cell in self._cellxg_mll_ma_csht_cell_dict_ma_tram_dict[ma_csht_cell][ma_tram]:
-                match cell[SC.K_UI_LOAI_NE]:
+                match cell[SC.K_LOAI_NE]:
                     case T.LoaiNE.CELL3G.name:
                         count3g += 1
                     case T.LoaiNE.CELL4G.name:
@@ -298,9 +304,9 @@ class BcCellMllService:
     def _make_bc_th_cell_mll_theo_csht_item(self, ma_csht_cell, ma_tram):
         item = defaultdict(list)
         item[SC.K_STT] = 0
-        item[SC.K_UI_MA_CSHT_CUA_CELL] = ma_csht_cell
+        item[SC.K_MA_CSHT_CUA_CELL] = ma_csht_cell
 
-        item[SC.K_UI_MA_TRAM] = ma_tram
+        item[SC.K_MA_TRAM] = ma_tram
 
         item[SC.K_UI_CELL_3G_HIEN_CO], \
         item[SC.K_UI_CELL_4G_HIEN_CO], item[SC.K_UI_CELL_5G_HIEN_CO] = \
@@ -319,27 +325,28 @@ class BcCellMllService:
             item[SC.K_UI_CELL_3G_MLL] + item[SC.K_UI_CELL_4G_MLL] + item[SC.K_UI_CELL_5G_MLL]
 
         try:
-            item[SC.K_UI_TEN_CSHT] = self._csht_ccl_server.csht_mdsd_items_ma_csht_dict[ma_csht_cell] \
+            item[SC.K_TEN_CSHT] = self._csht_ccl_server.csht_mdsd_items_ma_csht_dict[ma_csht_cell] \
                     [SC.K_TEN_CSHT]
-            item[SC.K_TTVT_2] = self._csht_ccl_server.csht_mdsd_items_ma_csht_dict[ma_csht_cell]\
+            item[SC.K_TTVT] = self._csht_ccl_server.csht_mdsd_items_ma_csht_dict[ma_csht_cell]\
                 [SC.K_TEN_TTVT_TRAM_VT_NETX]
         except KeyError as e:
             LoggerUtil.get_logger().warning(
                 f'_make_bc_th_cell_mll_theo_csht_item failed csht_ccl ma_csht_cell {ma_csht_cell}')
-            item[SC.K_UI_TEN_CSHT] = SC.K_UI_MSG_MISS_DB
-            item[SC.K_TTVT_2] = SC.K_UI_MSG_MISS_DB
+            item[SC.K_TEN_CSHT] = SC.K_UI_MSG_MISS_DB
+            item[SC.K_TTVT] = SC.K_UI_MSG_MISS_DB
 
         try:
             item[SC.K_UI_VTRI_CELL_SO_VOI_VTRI_DAT_BBU] = self._get_vi_tri_cell(
                 self._cellxg_item_ma_csht_cell_dict[ma_csht_cell][SC.K_MA_CSHT_CUA_CELL],
                 self._cellxg_item_ma_csht_cell_dict[ma_csht_cell][SC.K_MA_CSHT_CUA_TRAM]
             )
-            item[SC.K_UI_DIA_CHI_CSHT] = self._cellxg_item_ma_csht_cell_dict[ma_csht_cell][SC.K_DIA_CHI]
+            item[SC.K_DIA_CHI] = self._cellxg_item_ma_csht_cell_dict[ma_csht_cell][SC.K_DIA_CHI]
         except KeyError as e:
             LoggerUtil.get_logger().warning(
-                f'_make_bc_th_cell_mll_theo_csht_item failed cellxg ma_csht_cell {ma_csht_cell}')
-            item[SC.K_UI_VTRI_CELL_SO_VOI_VTRI_DAT_BBU] = SC.K_UI_MSG_MISS_DB
-            item[SC.K_UI_DIA_CHI_CSHT] = SC.K_UI_MSG_MISS_DB
+                f'_make_bc_th_cell_mll_theo_csht_item failed cellxg ma_csht_cell {ma_csht_cell}'
+            )
+            item[SC.K_UI_VTRI_CELL_SO_VOI_VTRI_DAT_BBU] = SC.K_KXD
+            item[SC.K_DIA_CHI] = SC.K_UI_MSG_MISS_DB
 
         return item
 
@@ -347,8 +354,8 @@ class BcCellMllService:
         #
         for items_list in self.bc_chi_tiet_ttvt_dict.values():
             for item in items_list:
-                ma_csht_cell = item[SC.K_UI_MA_CSHT_CELL]
-                ma_tram = self._extract_ma_tram_from_ten_ne(item[SC.K_UI_TEN_NE])
+                ma_csht_cell = item[SC.K_MA_CSHT_CUA_CELL]
+                ma_tram = self._extract_ma_tram_from_ten_ne(item[SC.K_TEN_NE])
 
                 if ma_csht_cell not in self._cellxg_mll_ma_csht_cell_dict_ma_tram_dict.keys():
                     self._cellxg_mll_ma_csht_cell_dict_ma_tram_dict[ma_csht_cell] = defaultdict(list)
@@ -358,9 +365,10 @@ class BcCellMllService:
         #
         for ma_csht_cell, ma_tram_dict in self._cellxg_mll_ma_csht_cell_dict_ma_tram_dict.items():
             for ma_tram, cell_mll_list_theo_ma_tram in ma_tram_dict.items():
-                bc_th_cell_mll_theo_csht_item = self._make_bc_th_cell_mll_theo_csht_item(
-                    ma_csht_cell, ma_tram
-                )
+                bc_th_cell_mll_theo_csht_item = \
+                    self._make_bc_th_cell_mll_theo_csht_item(
+                        ma_csht_cell, ma_tram
+                    )
 
                 self.bc_th_cell_mll_theo_csht_item_list.append(bc_th_cell_mll_theo_csht_item)
 
@@ -376,7 +384,7 @@ class BcCellMllService:
         tong_cell_5g_mll = 0
         for item_list in self.bc_chi_tiet_ttvt_dict.values():
             for item in item_list:
-                match item[SC.K_UI_LOAI_NE]:
+                match item[SC.K_LOAI_NE]:
                     case T.LoaiNE.CELL3G.name:
                         tong_cell_3g_mll += 1
                     case T.LoaiNE.CELL4G.name:
@@ -386,7 +394,7 @@ class BcCellMllService:
                     case _:
                         LoggerUtil.get_logger().error(
                             f'_make_data_bc_tghop_tong_cell_row '
-                            f'unknow {item[SC.K_UI_LOAI_NE]}'
+                            f'unknow {item[SC.K_LOAI_NE]}'
                         )
 
         #
@@ -429,8 +437,8 @@ class BcCellMllService:
 
         for item_mll in self.bc_chi_tiet_ttvt_dict[ttvt]:
             try:
-                if str(item_mll[SC.K_TTVT_2]).lower() == ttvt.lower():
-                    match item_mll[SC.K_UI_LOAI_NE]:
+                if str(item_mll[SC.K_TTVT]).lower() == ttvt.lower():
+                    match item_mll[SC.K_LOAI_NE]:
                         case T.LoaiNE.CELL3G.name:
                             mll_3g += 1
                         case T.LoaiNE.CELL4G.name:
@@ -441,7 +449,7 @@ class BcCellMllService:
                             pass
             except KeyError as e:
                 LoggerUtil.get_logger().warning(
-                    f'_count_xg_mll_theo_ttvt failed KeyError {item_mll[SC.K_UI_TEN_NE]} {e}')
+                    f'_count_xg_mll_theo_ttvt failed KeyError {item_mll[SC.K_TEN_NE]} {e}')
                 continue
 
         return mll_3g, mll_4g, mll_5g
@@ -515,8 +523,8 @@ class BcCellMllService:
 
         # bc tghop theo csht
         self._make_data_bc_th_cell_mll_theo_csht()
-        writer.write_data_to_excel_all_header_list(
-            self.bc_th_cell_mll_theo_csht_item_list, SC.K_SHEET_TH_CELL_MLL_THEO_CSHT
+        writer.write_data_to_th_cell_mll_theo_csht(
+            self.bc_th_cell_mll_theo_csht_item_list, "TH CELL MLL theo CSHT"
         )
 
         # bc tong hop
@@ -548,31 +556,72 @@ class ExcelBcCellMllWriter:
             SC.K_EXCEL_BC_CELL_MLL_TEMPLATE)
         shutil.copy(excel_output_template_path, self.excel_output_path)
 
-    def write_data_to_excel_all_header_list(self, data_list, sheet_name, gen_stt = True):
+    def write_data_to_th_cell_mll_theo_csht(self, data_list, sheet_name):
         wb = openpyxl.load_workbook(self.excel_output_path)
         ws = wb[sheet_name]
-        if re.search("Chi tiết", sheet_name, re.IGNORECASE):
-            sheet_info_name = 'Chi tiết TTVT X'
-        else:
-            sheet_info_name = sheet_name
 
-        sheet_info = ESI.EXCEL_STRUCT_INFO[SC.K_EXCEL_BC_CELL_MLL_KEY]\
-            [SC.K_SHEET_INFO][sheet_info_name]
-
-        (start_row, start_col, start_header_list, start_req_header_list, \
-                start_req_header_indices_list) = \
-            ExcelHandleUtil().get_start_row_info(ws, sheet_info)
+        header_list = [
+            SC.K_STT,
+            SC.K_MA_CSHT_CUA_CELL,
+            SC.K_UI_VTRI_CELL_SO_VOI_VTRI_DAT_BBU,
+            SC.K_MA_TRAM,
+            SC.K_UI_CELL_3G_HIEN_CO,
+            SC.K_UI_CELL_3G_MLL,
+            SC.K_UI_CELL_4G_HIEN_CO,
+            SC.K_UI_CELL_4G_MLL,
+            SC.K_UI_CELL_5G_HIEN_CO,
+            SC.K_UI_CELL_5G_MLL,
+            SC.K_UI_TONG_CELL,
+            SC.K_UI_TONG_CELL_MLL,
+            SC.K_TEN_CSHT,
+            SC.K_DIA_CHI,
+            SC.K_TTVT,
+        ]
 
         counter = 0
         for item in data_list:
-            if gen_stt:
-                counter += 1
-                item[SC.K_STT] = counter
-            row_data = [item.get(header, SC.K_UI_MSG_MISS_DB) for header in start_header_list]
+            counter += 1
+            item[SC.K_STT] = counter
+
+            row_data = [item.get(header, 'N/A') for header in header_list]
             ws.append(row_data)
 
         # --- set format ---
-        for row in ws.iter_rows(min_row=start_row+1, max_row=ws.max_row, min_col=1, max_col=ws.max_column):
+        for row in ws.iter_rows(min_row=2, max_row=ws.max_row, min_col=1, max_col=ws.max_column):
+            for cell in row:
+                cell.border = T.EX_FORMAT_THIN_BORDER
+                cell.font = T.EX_FORMAT_NORMAL_FONT
+
+        wb.save(self.excel_output_path)
+        wb.close()
+
+    def write_data_to_chtiet_ttvt(self, data_list, sheet_name):
+        wb = openpyxl.load_workbook(self.excel_output_path)
+        ws = wb[sheet_name]
+
+        header_list = [
+            SC.K_STT,
+            SC.K_MA_CSHT_CUA_CELL,
+            SC.K_LOAI_NE,
+            SC.K_TEN_NE,
+            SC.K_TEN_CSHT,
+            SC.K_TG_SU_CO_1,
+            SC.K_NGUYEN_NHAN,
+            SC.K_TTVT,
+            SC.K_TEN_DVI_QLY,
+            SC.K_PHAN_LOAI_TRAM,
+        ]
+
+        counter = 0
+        for item in data_list:
+            counter += 1
+            item[SC.K_STT] = counter
+
+            row_data = [item.get(header, 'N/A') for header in header_list]
+            ws.append(row_data)
+
+        # --- set format ---
+        for row in ws.iter_rows(min_row=2, max_row=ws.max_row, min_col=1, max_col=ws.max_column):
             for cell in row:
                 cell.border = T.EX_FORMAT_THIN_BORDER
                 cell.font = T.EX_FORMAT_NORMAL_FONT
@@ -585,7 +634,7 @@ class ExcelBcCellMllWriter:
             if re.search("Trung tâm Viễn thông", k, re.IGNORECASE):
                 sheet_name = f'Chi Tiết TTVT {k[21:].strip()}'
             else:
-                sheet_name = f'Chi Tiết TTVT UNKNOWN'
+                sheet_name = f'Chi Tiết TTVT KXĐ'
 
             wb = openpyxl.load_workbook(self.excel_output_path)
             template_sheet = wb['Chi tiết TTVT X']
@@ -595,7 +644,7 @@ class ExcelBcCellMllWriter:
             ws.sheet_view.showGridLines = False
             wb.save(self.excel_output_path)
             wb.close()
-            self.write_data_to_excel_all_header_list(v, sheet_name)
+            self.write_data_to_chtiet_ttvt(v, sheet_name)
 
     def write_data_to_excel_bc_tong_hop_sheet(self, data_list, sheet_name):
         dynamic_info_util = DynamicInfoUtil()
@@ -666,3 +715,65 @@ class ExcelBcCellMllWriter:
 
         wb.save(self.excel_output_path)
         wb.close()
+
+class ExcelDsachLoiWriter:
+    def __init__(self):
+        pass
+
+    def write_excel(self, data: list) -> str:
+        return self._write_excel_dsach_loi(data)
+
+    def _write_data_to_excel_by_header(self,
+                                       sheet_opened: Worksheet,
+                                       row_index: int,
+                                       header_dict: dict,
+                                       data_dict: dict,
+    ):
+        for header in header_dict.keys():
+            sheet_opened.cell(row=row_index, column=header_dict[header]).value = data_dict[header]
+            T.format_normal_cell(sheet_opened.cell(row=row_index, column=header_dict[header]))
+
+    def _create_dsach_loi_output(self) -> str:
+        dynamic_info_util = DynamicInfoUtil()
+        explorer_util = ExplorerUtil()
+
+        output_folder_path = (
+            dynamic_info_util.get_value(2, SC.K_SCREEN_INPUT, SC.K_OUTPUT_PATH)
+            or self._output_folder_path
+        )
+        excel_dsach_loi_name = (
+            SC.K_EXCEL_DSACH_LOI_TEMPLATE.replace("template.xlsx", "")
+            + "CELL_MLL"
+            + ".xlsx"
+        )
+
+        excel_dsach_loi_path = os.path.join(
+            output_folder_path, excel_dsach_loi_name
+        )
+
+        excel_output_template_path = (
+            explorer_util.get_output_template_file_path(SC.K_EXCEL_DSACH_LOI_TEMPLATE)
+        )
+
+        shutil.copy(excel_output_template_path, excel_dsach_loi_path)
+        return excel_dsach_loi_path
+
+    def _write_excel_dsach_loi(self, data: list[dict]) -> str:
+        excel_path = self._create_dsach_loi_output()
+
+        #
+        wb = openpyxl.load_workbook(excel_path)
+        sheet = wb[SC.K_SHEET_DSACH_LOI]
+        header_dict = {
+            SC.K_UI_ERROR: 2,
+            SC.K_UI_DESCRIPTION: 3,
+        }
+        start_row = 2
+        for item in data:
+            start_row += 1
+            self._write_data_to_excel_by_header(sheet, start_row, header_dict, item)
+
+        wb.save(excel_path)
+        wb.close()
+
+        return excel_path

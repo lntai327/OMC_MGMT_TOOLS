@@ -1,6 +1,6 @@
 from pubsub import pub
 
-from backend.services.bc_cell_mll_service import BcCellMllService
+from backend.services.bc_cell_mll_service import BcCellMllService, ExcelDsachLoiWriter
 from frontend.viewmodels.base_vm import BaseViewModel
 from share.util.logger_util import LoggerUtil
 from share.util.dynamic_info_util import DynamicInfoUtil
@@ -234,3 +234,15 @@ class BcCellMllViewModel(BaseViewModel):
                 self._dynamic_info_util.get_value(2, SC.K_SCREEN_INPUT, SC.K_OUTPUT_PATH) or ""
             )
         self.notify("make_report_finished" if success else "make_report_failed")
+
+    def write_excel_dsach_loi(self, data: list[dict]):
+        ret_path = None
+
+        try:
+            ret_path = ExcelDsachLoiWriter().write_excel(data)
+        except Exception as e:
+            LoggerUtil.get_logger().error(
+                f"{self.__class__.__name__} cannot export ds loi due to {e}"
+            )
+
+        return ret_path
