@@ -665,3 +665,9 @@ Worker độc lập lấy task từ Redis và thực hiện trong hàm `_run_imp
      - Khi container khởi động lần đầu, Docker sẽ tự động copy toàn bộ nội dung từ image (`/app/storage/templates`) vào volume này.
 3. **Đồng bộ biến môi trường**:
    - Thêm `LOGS_PATH=/app/storage/logs` vào file [`.env`] và [`.env.example`] để đồng bộ 5 đường dẫn lưu trữ (`STORAGE_PATH`, `TEMPLATES_PATH`, `UPLOADS_PATH`, `EXPORTS_PATH`, `LOGS_PATH`) đều trỏ vào `/app/storage/...`.
+
+
+######
+alembic upgrade head && python -c 'import asyncio; from app.core.seed import seed_default_admin; asyncio.run(seed_default_admin())'
+
+docker exec -it backend alembic upgrade head

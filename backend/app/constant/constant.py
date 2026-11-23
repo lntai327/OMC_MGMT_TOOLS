@@ -412,3 +412,9 @@ K_CREATED_AT = "created_at"
 K_UPDATED_AT = "updated_at"
 
 K_ACTION = "action"
+
+K_TEN_THBI = "ten_thbi"
+K_IP_THBI = "ip_thbi"
+K_PORT_THBI = "port_thbi"
+K_IP_KH = "ip_kh"
+K_IP_GW = "ip_gw"

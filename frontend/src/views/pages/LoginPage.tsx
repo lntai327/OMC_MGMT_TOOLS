@@ -11,7 +11,7 @@ interface LoginPageProps {
 }
 
 export const LoginPage: React.FC<LoginPageProps> = ({ onLogin, loading, error }) => {
-  let df_user = "";
+  let df_user = "dev";
   let df_pw = "";
   df_user = ""
   df_pw = "" /*dev only*/

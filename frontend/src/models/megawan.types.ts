@@ -7,21 +7,19 @@ export interface MegawanRecord {
   ten_th_bao?: string | null;
   dia_chi?: string | null;
   diem_cuoi?: string | null;
-  ip_src?: string | null;
-  ip_des?: string | null;
   svlan_cvlan?: string | null;
-  cap_adsl?: string | null;
+  ten_thbi?: string | null;
+  ip_thbi?: string | null;
+  port_thbi?: string | null;
+  upe?: string | null;
+  ip_kh?: string | null;
+  ip_gw?: string | null;
+  loai_hinh_tb?: string | null;
+  toc_do?: string | null;
+  loai_kenh?: string | null;
+  trang_thai?: string | null;
   cap_odf?: string | null;
   ghi_chu?: string | null;
-  ip?: string | null;
-  ten_he_thong?: string | null;
-  port_switch?: string | null;
-  upe?: string | null;
-  loai_hinh_tb?: string | null;
-  trang_thai?: string | null;
-  toc_do?: string | null;
-  don_vi?: string | null;
-  loai_kenh?: string | null;
 }
 
 export interface MegawanFilterParams {
@@ -30,7 +28,7 @@ export interface MegawanFilterParams {
   dia_chi?: string;
   loai_kenh?: string;
   svlan_cvlan?: string;
-  ten_he_thong?: string;
+  ten_thbi?: string;
   all_search?: string;
 }
 

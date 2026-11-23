@@ -23,21 +23,32 @@ class MegawanMetronetRepo(BaseRepository[MegawanMetronet]):
             conditions.append(MegawanMetronet.loai_kenh.ilike(f"%{filters.loai_kenh.strip()}%"))
         if filters.svlan_cvlan:
             conditions.append(MegawanMetronet.svlan_cvlan.ilike(f"%{filters.svlan_cvlan.strip()}%"))
-        if filters.ten_he_thong:
-            conditions.append(MegawanMetronet.ten_he_thong.ilike(f"%{filters.ten_he_thong.strip()}%"))
+        if filters.ten_thbi:
+            conditions.append(MegawanMetronet.ten_thbi.ilike(f"%{filters.ten_thbi.strip()}%"))
 
         if filters.all_search and filters.all_search.strip():
             kw = f"%{filters.all_search.strip()}%"
             conditions.append(
                 or_(
-                    MegawanMetronet.loai_hinh_tb.ilike(kw),
+                    MegawanMetronet.last_update.ilike(kw),
+                    MegawanMetronet.ma_tb.ilike(kw),
+                    MegawanMetronet.ma_lt_ma_tb_sub.ilike(kw),
                     MegawanMetronet.ten_th_bao.ilike(kw),
                     MegawanMetronet.dia_chi.ilike(kw),
-                    MegawanMetronet.loai_kenh.ilike(kw),
+                    MegawanMetronet.diem_cuoi.ilike(kw),
                     MegawanMetronet.svlan_cvlan.ilike(kw),
-                    MegawanMetronet.ten_he_thong.ilike(kw),
-                    MegawanMetronet.ma_tb.ilike(kw),
-                    MegawanMetronet.ip.ilike(kw),
+                    MegawanMetronet.ten_thbi.ilike(kw),
+                    MegawanMetronet.ip_thbi.ilike(kw),
+                    MegawanMetronet.port_thbi.ilike(kw),
+                    MegawanMetronet.upe.ilike(kw),
+                    MegawanMetronet.ip_kh.ilike(kw),
+                    MegawanMetronet.ip_gw.ilike(kw),
+                    MegawanMetronet.loai_hinh_tb.ilike(kw),
+                    MegawanMetronet.toc_do.ilike(kw),
+                    MegawanMetronet.loai_kenh.ilike(kw),
+                    MegawanMetronet.trang_thai.ilike(kw),
+                    MegawanMetronet.cap_odf.ilike(kw),
+                    MegawanMetronet.ghi_chu.ilike(kw),
                 )
             )
 

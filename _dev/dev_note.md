@@ -92,3 +92,5 @@ docker compose --env-file .env -f .\docker\docker-compose.release.yml up -d --no
 
 ##
 docker compose -f docker/docker-compose.yml logs -f celery_worker
+
+docker logs backend --tail 20

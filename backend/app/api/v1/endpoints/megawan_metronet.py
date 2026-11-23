@@ -43,7 +43,7 @@ async def list_megawan_records(
     dia_chi: Optional[str] = None,
     loai_kenh: Optional[str] = None,
     svlan_cvlan: Optional[str] = None,
-    ten_he_thong: Optional[str] = None,
+    ten_thbi: Optional[str] = None,
     all_search: Optional[str] = None,
     session: AsyncSession = Depends(get_db),
     current_user: User = Depends(get_current_user),
@@ -54,7 +54,7 @@ async def list_megawan_records(
         dia_chi=dia_chi,
         loai_kenh=loai_kenh,
         svlan_cvlan=svlan_cvlan,
-        ten_he_thong=ten_he_thong,
+        ten_thbi=ten_thbi,
         all_search=all_search,
     )
     pagination = PaginationParams(

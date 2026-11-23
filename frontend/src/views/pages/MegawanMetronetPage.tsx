@@ -29,26 +29,24 @@ interface MegawanPageProps {
 const COLUMNS: { label: string; width: number }[] = [
   { label: 'ID', width: 70 },
   { label: 'Mã TB', width: 130 },
-  { label: 'Mã LT / Mã TB Sub', width: 155 },
+  { label: 'Mã LT/Mã TB SUB', width: 155 },
   { label: 'Tên thuê bao', width: 220 },
   { label: 'Địa chỉ lắp đặt', width: 240 },
   { label: 'Điểm cuối', width: 150 },
-  { label: 'IP Src', width: 120 },
-  { label: 'IP Des', width: 120 },
-  { label: 'SVLAN / CVLAN', width: 130 },
-  { label: 'Cap ADSL', width: 110 },
-  { label: 'Cap ODF', width: 110 },
-  { label: 'Ghi chú', width: 160 },
-  { label: 'IP / Subnet', width: 140 },
-  { label: 'Hệ thống', width: 130 },
-  { label: 'Port Switch', width: 120 },
+  { label: 'SVLAN/CVLAN', width: 130 },
+  { label: 'Tên thiết bị', width: 110 },
+  { label: 'IP thiết bị', width: 140 },
+  { label: 'Port thiết bị', width: 140 },
   { label: 'UPE', width: 100 },
+  { label: 'IP KH', width: 140 },
+  { label: 'IP GW', width: 140 },
   { label: 'Loại hình TB', width: 130 },
-  { label: 'Trạng thái', width: 120 },
   { label: 'Tốc độ', width: 100 },
-  { label: 'Đơn vị', width: 90 },
   { label: 'Loại kênh', width: 120 },
-  { label: 'Cập nhật lúc', width: 150 },
+  { label: 'Trạng thái', width: 120 },
+  { label: 'Cáp ODF', width: 110 },
+  { label: 'Ghi chú', width: 160 },
+  { label: 'Ngày tác động', width: 150 },
   { label: 'Thao tác', width: 112 }, // sticky action col – not resizable
 ];
 
@@ -126,10 +124,13 @@ export const MegawanMetronetPage: React.FC<MegawanPageProps> = ({
     setSelectedRecord(null);
     setFormData({
       ma_tb: '', ma_lt_ma_tb_sub: '', ten_th_bao: '', dia_chi: '',
-      diem_cuoi: '', ip_src: '', ip_des: '', svlan_cvlan: '',
-      cap_adsl: '', cap_odf: '', ghi_chu: '', ip: '',
-      ten_he_thong: '', port_switch: '', upe: '', loai_hinh_tb: '',
-      trang_thai: '', toc_do: '', don_vi: '', loai_kenh: '',
+      diem_cuoi: '', svlan_cvlan: '',
+      ten_thbi: '', ip_thbi: '', port_thbi: '', upe: '',
+      ip_kh: '', ip_gw: '', loai_hinh_tb: '',
+      toc_do: '', loai_kenh: '',
+      trang_thai: '', 
+      cap_odf: '', ghi_chu: '',
+      last_update: '',
     });
     setIsFormModalOpen(true);
   };
@@ -221,8 +222,8 @@ export const MegawanMetronetPage: React.FC<MegawanPageProps> = ({
             value={filters.dia_chi || ''} onChange={(e) => updateFilter('dia_chi', e.target.value)} />
           <Input label="Loại kênh" placeholder="Loại kênh..."
             value={filters.loai_kenh || ''} onChange={(e) => updateFilter('loai_kenh', e.target.value)} />
-          <Input label="Tên hệ thống" placeholder="Tên hệ thống..."
-            value={filters.ten_he_thong || ''} onChange={(e) => updateFilter('ten_he_thong', e.target.value)} />
+          <Input label="Tên thiết bị" placeholder="Tên thiết bị..."
+            value={filters.ten_thbi || ''} onChange={(e) => updateFilter('ten_thbi', e.target.value)} />
         </div>
       </div>
 
@@ -297,45 +298,39 @@ export const MegawanMetronetPage: React.FC<MegawanPageProps> = ({
                     className={`transition-colors cursor-default ${idx % 2 === 0 ? 'bg-white' : 'bg-slate-50/60'
                       } hover:bg-brand-50/70 group`}
                   >
-                    <td className="py-3 px-3 overflow-hidden text-ellipsis whitespace-nowrap text-slate-500 font-mono text-[13px]">{row.id}</td>
-                    <td className="py-3 px-3 overflow-hidden text-ellipsis whitespace-nowrap font-bold text-brand-800 font-mono">{row.ma_tb || '—'}</td>
+                    <td className="py-3 px-3 overflow-hidden text-ellipsis whitespace-nowrap text-slate-700 font-medium">{row.id}</td>
+                    <td className="py-3 px-3 overflow-hidden text-ellipsis whitespace-nowrap text-slate-700 font-medium">{row.ma_tb || '—'}</td>
                     <td className="py-3 px-3 overflow-hidden text-ellipsis whitespace-nowrap text-slate-700 font-medium">{row.ma_lt_ma_tb_sub || '—'}</td>
-                    <td className="py-3 px-3 overflow-hidden text-ellipsis whitespace-nowrap font-bold text-slate-900">{row.ten_th_bao || '—'}</td>
+                    <td className="py-3 px-3 overflow-hidden text-ellipsis whitespace-nowrap text-slate-700 font-medium">{row.ten_th_bao || '—'}</td>
                     <td className="py-3 px-3 overflow-hidden text-ellipsis whitespace-nowrap text-slate-700 font-medium" title={row.dia_chi || ''}>{row.dia_chi || '—'}</td>
                     <td className="py-3 px-3 overflow-hidden text-ellipsis whitespace-nowrap text-slate-700 font-medium">{row.diem_cuoi || '—'}</td>
-                    <td className="py-3 px-3 overflow-hidden text-ellipsis whitespace-nowrap text-slate-700 font-mono">{row.ip_src || '—'}</td>
-                    <td className="py-3 px-3 overflow-hidden text-ellipsis whitespace-nowrap text-slate-700 font-mono">{row.ip_des || '—'}</td>
-                    <td className="py-3 px-3 overflow-hidden text-ellipsis whitespace-nowrap text-slate-800 font-mono font-semibold">{row.svlan_cvlan || '—'}</td>
-                    <td className="py-3 px-3 overflow-hidden text-ellipsis whitespace-nowrap text-slate-700 font-medium">{row.cap_adsl || '—'}</td>
-                    <td className="py-3 px-3 overflow-hidden text-ellipsis whitespace-nowrap text-slate-700 font-medium">{row.cap_odf || '—'}</td>
-                    <td className="py-3 px-3 overflow-hidden text-ellipsis whitespace-nowrap text-slate-600" title={row.ghi_chu || ''}>{row.ghi_chu || '—'}</td>
-                    <td className="py-3 px-3 overflow-hidden text-ellipsis whitespace-nowrap text-slate-800 font-mono font-semibold">{row.ip || '—'}</td>
-                    <td className="py-3 px-3 overflow-hidden text-ellipsis whitespace-nowrap text-slate-700 font-medium">{row.ten_he_thong || '—'}</td>
-                    <td className="py-3 px-3 overflow-hidden text-ellipsis whitespace-nowrap text-slate-700 font-medium">{row.port_switch || '—'}</td>
-                    <td className="py-3 px-3 overflow-hidden text-ellipsis whitespace-nowrap text-slate-700 font-mono font-semibold">{row.upe || '—'}</td>
-                    <td className="py-3 px-3 overflow-hidden whitespace-nowrap">
-                      <span className="inline-block px-2.5 py-1 rounded-md text-xs font-bold bg-brand-100 text-brand-800 border border-brand-200">
-                        {row.loai_hinh_tb || '—'}
-                      </span>
-                    </td>
-                    <td className="py-3 px-3 overflow-hidden text-ellipsis whitespace-nowrap text-slate-700 font-medium">{row.trang_thai || '—'}</td>
-                    <td className="py-3 px-3 overflow-hidden text-ellipsis whitespace-nowrap text-slate-800 font-bold">{row.toc_do || '—'}</td>
-                    <td className="py-3 px-3 overflow-hidden text-ellipsis whitespace-nowrap text-slate-700 font-medium">{row.don_vi || '—'}</td>
+                    <td className="py-3 px-3 overflow-hidden text-ellipsis whitespace-nowrap text-slate-700 font-medium">{row.svlan_cvlan || '—'}</td>
+                    <td className="py-3 px-3 overflow-hidden text-ellipsis whitespace-nowrap text-slate-700 font-medium">{row.ten_thbi || '—'}</td>
+                    <td className="py-3 px-3 overflow-hidden text-ellipsis whitespace-nowrap text-slate-700 font-medium">{row.ip_thbi || '—'}</td>
+                    <td className="py-3 px-3 overflow-hidden text-ellipsis whitespace-nowrap text-slate-700 font-medium">{row.port_thbi || '—'}</td>
+                    <td className="py-3 px-3 overflow-hidden text-ellipsis whitespace-nowrap text-slate-700 font-medium">{row.upe || '—'}</td>
+                    <td className="py-3 px-3 overflow-hidden text-ellipsis whitespace-nowrap text-slate-700 font-medium">{row.ip_kh || '—'}</td>
+                    <td className="py-3 px-3 overflow-hidden text-ellipsis whitespace-nowrap text-slate-700 font-medium">{row.ip_gw || '—'}</td>
+                    <td className="py-3 px-3 overflow-hidden text-ellipsis whitespace-nowrap text-slate-700 font-medium">{row.loai_hinh_tb || '—'}</td>
+                    <td className="py-3 px-3 overflow-hidden text-ellipsis whitespace-nowrap text-slate-700 font-medium">{row.toc_do || '—'}</td>
                     <td className="py-3 px-3 overflow-hidden text-ellipsis whitespace-nowrap text-slate-700 font-medium">{row.loai_kenh || '—'}</td>
-                    <td className="py-3 px-3 overflow-hidden text-ellipsis whitespace-nowrap text-slate-500 text-xs font-medium">{row.last_update || '—'}</td>
+                    <td className="py-3 px-3 overflow-hidden text-ellipsis whitespace-nowrap text-slate-700 font-medium">{row.trang_thai || '—'}</td>
+                    <td className="py-3 px-3 overflow-hidden text-ellipsis whitespace-nowrap text-slate-700 font-medium">{row.cap_odf || '—'}</td>
+                    <td className="py-3 px-3 overflow-hidden text-ellipsis whitespace-nowrap text-slate-700 font-medium">{row.ghi_chu || '—'}</td>
+                    <td className="py-3 px-3 overflow-hidden text-ellipsis whitespace-nowrap text-slate-700 font-medium">{row.last_update || '—'}</td>
                     <td className="py-3 px-3 text-center sticky right-0 bg-white group-hover:bg-brand-50/70 transition-colors shadow-l">
                       <div className="flex items-center justify-center gap-2">
                         {isOperator && (
                           <button onClick={() => openEditModal(row)}
                             className="p-2 text-brand-600 hover:text-white hover:bg-brand-600 rounded-lg transition-colors border border-brand-200"
-                            title="Chỉnh sửa bản ghi">
+                            title="Chỉnh sửa">
                             <Edit2 className="w-4 h-4" />
                           </button>
                         )}
                         {isAdmin && (
                           <button onClick={() => deleteRecord(row.id)}
                             className="p-2 text-rose-600 hover:text-white hover:bg-rose-600 rounded-lg transition-colors border border-rose-200"
-                            title="Xóa bản ghi">
+                            title="Xóa">
                             <Trash2 className="w-4 h-4" />
                           </button>
                         )}
@@ -370,9 +365,9 @@ export const MegawanMetronetPage: React.FC<MegawanPageProps> = ({
       >
         <form onSubmit={handleFormSubmit} className="space-y-5">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <Input label="Mã Thuê Bao" value={formData.ma_tb || ''}
+            <Input label="Mã TB" value={formData.ma_tb || ''}
               onChange={(e) => setFormData({ ...formData, ma_tb: e.target.value })} />
-            <Input label="Mã LT / Mã TB Sub" value={formData.ma_lt_ma_tb_sub || ''}
+            <Input label="Mã LT/Mã TB Sub" value={formData.ma_lt_ma_tb_sub || ''}
               onChange={(e) => setFormData({ ...formData, ma_lt_ma_tb_sub: e.target.value })} />
             <div className="sm:col-span-2">
               <Input label="Tên thuê bao" value={formData.ten_th_bao || ''}
@@ -384,38 +379,35 @@ export const MegawanMetronetPage: React.FC<MegawanPageProps> = ({
             </div>
             <Input label="Điểm cuối" value={formData.diem_cuoi || ''}
               onChange={(e) => setFormData({ ...formData, diem_cuoi: e.target.value })} />
-            <Input label="IP Src" value={formData.ip_src || ''}
-              onChange={(e) => setFormData({ ...formData, ip_src: e.target.value })} />
-            <Input label="IP Des" value={formData.ip_des || ''}
-              onChange={(e) => setFormData({ ...formData, ip_des: e.target.value })} />
-            <Input label="SVLAN / CVLAN" value={formData.svlan_cvlan || ''}
+            <Input label="SVLAN/CVLAN" value={formData.svlan_cvlan || ''}
               onChange={(e) => setFormData({ ...formData, svlan_cvlan: e.target.value })} />
-            <Input label="Cap ADSL" value={formData.cap_adsl || ''}
-              onChange={(e) => setFormData({ ...formData, cap_adsl: e.target.value })} />
+            <Input label="Tên thiết bị" value={formData.ten_thbi || ''}
+              onChange={(e) => setFormData({ ...formData, ten_thbi: e.target.value })} />
+            <Input label="IP thiết bị" value={formData.ip_thbi || ''}
+              onChange={(e) => setFormData({ ...formData, ip_thbi: e.target.value })} />
+            <Input label="Port thiết bị" value={formData.port_thbi || ''}
+              onChange={(e) => setFormData({ ...formData, port_thbi: e.target.value })} />
+            <Input label="UPE" value={formData.upe || ''}
+              onChange={(e) => setFormData({ ...formData, upe: e.target.value })} />
+            <Input label="IP KH" value={formData.ip_kh || ''}
+              onChange={(e) => setFormData({ ...formData, ip_kh: e.target.value })} />
+            <Input label="IP GW" value={formData.ip_gw || ''}
+              onChange={(e) => setFormData({ ...formData, ip_gw: e.target.value })} />
+            <Input label="Loại hình TB" value={formData.loai_hinh_tb || ''}
+              onChange={(e) => setFormData({ ...formData, loai_hinh_tb: e.target.value })} />
+            <Input label="Tốc độ" value={formData.toc_do || ''}
+              onChange={(e) => setFormData({ ...formData, toc_do: e.target.value })} />
+            <Input label="Loại kênh" value={formData.loai_kenh || ''}
+              onChange={(e) => setFormData({ ...formData, loai_kenh: e.target.value })} />
+            <Input label="Trạng thái" value={formData.trang_thai || ''}
+              onChange={(e) => setFormData({ ...formData, trang_thai: e.target.value })} />
             <Input label="Cap ODF" value={formData.cap_odf || ''}
               onChange={(e) => setFormData({ ...formData, cap_odf: e.target.value })} />
             <div className="sm:col-span-2">
               <Input label="Ghi chú" value={formData.ghi_chu || ''}
                 onChange={(e) => setFormData({ ...formData, ghi_chu: e.target.value })} />
             </div>
-            <Input label="IP / Subnet" value={formData.ip || ''}
-              onChange={(e) => setFormData({ ...formData, ip: e.target.value })} />
-            <Input label="Tên hệ thống" value={formData.ten_he_thong || ''}
-              onChange={(e) => setFormData({ ...formData, ten_he_thong: e.target.value })} />
-            <Input label="Port Switch" value={formData.port_switch || ''}
-              onChange={(e) => setFormData({ ...formData, port_switch: e.target.value })} />
-            <Input label="UPE" value={formData.upe || ''}
-              onChange={(e) => setFormData({ ...formData, upe: e.target.value })} />
-            <Input label="Loại hình TB" value={formData.loai_hinh_tb || ''}
-              onChange={(e) => setFormData({ ...formData, loai_hinh_tb: e.target.value })} />
-            <Input label="Trạng thái" value={formData.trang_thai || ''}
-              onChange={(e) => setFormData({ ...formData, trang_thai: e.target.value })} />
-            <Input label="Tốc độ" value={formData.toc_do || ''}
-              onChange={(e) => setFormData({ ...formData, toc_do: e.target.value })} />
-            <Input label="Đơn vị" value={formData.don_vi || ''}
-              onChange={(e) => setFormData({ ...formData, don_vi: e.target.value })} />
-            <Input label="Loại kênh" value={formData.loai_kenh || ''}
-              onChange={(e) => setFormData({ ...formData, loai_kenh: e.target.value })} />
+
           </div>
 
           <div className="flex justify-end gap-3 pt-5 border-t-2 border-slate-100">

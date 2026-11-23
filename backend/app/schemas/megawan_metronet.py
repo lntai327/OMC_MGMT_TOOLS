@@ -5,27 +5,25 @@ from app.core.timezone import isoformat_vietnam
 
 
 class MegawanBase(BaseModel):
+    last_update: Optional[str] = None
     ma_tb: Optional[str] = None
     ma_lt_ma_tb_sub: Optional[str] = None
     ten_th_bao: Optional[str] = None
     dia_chi: Optional[str] = None
     diem_cuoi: Optional[str] = None
-    ip_src: Optional[str] = None
-    ip_des: Optional[str] = None
     svlan_cvlan: Optional[str] = None
-    cap_adsl: Optional[str] = None
+    ten_thbi: Optional[str] = None
+    ip_thbi: Optional[str] = None
+    port_thbi: Optional[str] = None
+    upe: Optional[str] = None
+    ip_kh: Optional[str] = None
+    ip_gw: Optional[str] = None
+    loai_hinh_tb: Optional[str] = None
+    toc_do: Optional[str] = None
+    loai_kenh: Optional[str] = None
+    trang_thai: Optional[str] = None
     cap_odf: Optional[str] = None
     ghi_chu: Optional[str] = None
-    ip: Optional[str] = None
-    ten_he_thong: Optional[str] = None
-    port_switch: Optional[str] = None
-    upe: Optional[str] = None
-    loai_hinh_tb: Optional[str] = None
-    trang_thai: Optional[str] = None
-    toc_do: Optional[str] = None
-    don_vi: Optional[str] = None
-    loai_kenh: Optional[str] = None
-
 
 class MegawanCreate(MegawanBase):
     pass
@@ -56,6 +54,6 @@ class MegawanFilterParams(BaseModel):
     dia_chi: Optional[str] = None
     loai_kenh: Optional[str] = None
     svlan_cvlan: Optional[str] = None
-    ten_he_thong: Optional[str] = None
+    ten_thbi: Optional[str] = None
     all_search: Optional[str] = Field(default=None, description="Global keyword matching across all search fields")
 

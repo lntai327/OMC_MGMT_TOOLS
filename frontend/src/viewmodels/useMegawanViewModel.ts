@@ -25,7 +25,7 @@ export function useMegawanViewModel(onJobStarted?: (jobId: string, title: string
     dia_chi: '',
     loai_kenh: '',
     svlan_cvlan: '',
-    ten_he_thong: '',
+    ten_thbi: '',
     all_search: '',
   });
 
@@ -65,7 +65,7 @@ export function useMegawanViewModel(onJobStarted?: (jobId: string, title: string
       dia_chi: '',
       loai_kenh: '',
       svlan_cvlan: '',
-      ten_he_thong: '',
+      ten_thbi: '',
       all_search: '',
     });
     setPagination((prev) => ({ ...prev, page: 1 }));

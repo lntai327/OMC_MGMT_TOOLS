@@ -21,7 +21,7 @@ export const megawanService = {
     if (filters.dia_chi) params.dia_chi = filters.dia_chi;
     if (filters.loai_kenh) params.loai_kenh = filters.loai_kenh;
     if (filters.svlan_cvlan) params.svlan_cvlan = filters.svlan_cvlan;
-    if (filters.ten_he_thong) params.ten_he_thong = filters.ten_he_thong;
+    if (filters.ten_thbi) params.ten_thbi = filters.ten_thbi;
     if (filters.all_search) params.all_search = filters.all_search;
 
     const response = await apiClient.get<PaginatedResponse<MegawanRecord>>('/megawan', { params });
