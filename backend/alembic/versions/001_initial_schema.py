@@ -90,7 +90,7 @@ def upgrade() -> None:
         sa.Column('loai_kenh', sa.String(length=500), nullable=True),
         sa.Column('trang_thai', sa.String(length=500), nullable=True),
         sa.Column('cap_odf', sa.String(length=500), nullable=True),
-        sa.Column('ghi_chu', sa.String(length=500), nullable=True),
+        sa.Column('ghi_chu', sa.Text(), nullable=True),
 
         sa.PrimaryKeyConstraint('id')
     )

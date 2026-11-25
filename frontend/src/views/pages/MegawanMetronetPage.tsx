@@ -302,7 +302,7 @@ export const MegawanMetronetPage: React.FC<MegawanPageProps> = ({
                     <td className="py-3 px-3 overflow-hidden text-ellipsis whitespace-nowrap text-slate-700 font-medium">{row.ma_tb || '—'}</td>
                     <td className="py-3 px-3 overflow-hidden text-ellipsis whitespace-nowrap text-slate-700 font-medium">{row.ma_lt_ma_tb_sub || '—'}</td>
                     <td className="py-3 px-3 overflow-hidden text-ellipsis whitespace-nowrap text-slate-700 font-medium">{row.ten_th_bao || '—'}</td>
-                    <td className="py-3 px-3 overflow-hidden text-ellipsis whitespace-nowrap text-slate-700 font-medium" title={row.dia_chi || ''}>{row.dia_chi || '—'}</td>
+                    <td className="py-3 px-3 overflow-hidden text-ellipsis whitespace-nowrap text-slate-700 font-medium">{row.dia_chi || '—'}</td>
                     <td className="py-3 px-3 overflow-hidden text-ellipsis whitespace-nowrap text-slate-700 font-medium">{row.diem_cuoi || '—'}</td>
                     <td className="py-3 px-3 overflow-hidden text-ellipsis whitespace-nowrap text-slate-700 font-medium">{row.svlan_cvlan || '—'}</td>
                     <td className="py-3 px-3 overflow-hidden text-ellipsis whitespace-nowrap text-slate-700 font-medium">{row.ten_thbi || '—'}</td>

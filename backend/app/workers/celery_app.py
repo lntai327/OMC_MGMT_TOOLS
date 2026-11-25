@@ -1,7 +1,9 @@
 import os
 from celery import Celery
 from celery.schedules import crontab
+from celery.signals import after_setup_logger, after_setup_task_logger
 from app.core.config import settings
+from app.core.logging import get_shared_file_handler
 
 celery = Celery(
     "omc_tasks",
@@ -14,6 +16,15 @@ celery = Celery(
         "app.workers.watchdog",
     ],
 )
+
+
+@after_setup_logger.connect
+@after_setup_task_logger.connect
+def setup_celery_logging_to_app_log(logger, *args, **kwargs):
+    """Automatically attaches the shared app.log file handler to Celery worker and task loggers."""
+    file_handler = get_shared_file_handler()
+    if file_handler not in logger.handlers:
+        logger.addHandler(file_handler)
 
 celery.conf.update(
     task_serializer="json",

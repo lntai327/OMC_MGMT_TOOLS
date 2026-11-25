@@ -28,7 +28,7 @@ class MegawanMetronet(Base, TimestampMixin):
     loai_kenh: Mapped[Optional[str]] = mapped_column(String(500), nullable=True)
     trang_thai: Mapped[Optional[str]] = mapped_column(String(500), nullable=True)
     cap_odf: Mapped[Optional[str]] = mapped_column(String(500), nullable=True)
-    ghi_chu: Mapped[Optional[str]] = mapped_column(String(500), nullable=True)
+    ghi_chu: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
 
 
     __table_args__ = (

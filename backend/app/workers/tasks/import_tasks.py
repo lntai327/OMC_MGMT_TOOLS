@@ -1,7 +1,9 @@
 import asyncio
 import json
 import uuid
+from typing import Any, Dict
 import redis
+from sqlalchemy import inspect
 from app.constant import constant as SC
 from app.core.config import settings
 from app.core.database import get_worker_session
@@ -49,6 +51,69 @@ def publish_progress_event(
         logger.warning(f"Failed to publish progress to Redis: {e}")
 
 
+def _truncate_row_fields(
+    row: Dict[str, Any],
+    col_max_lengths: Dict[str, int],
+    job_id_str: str,
+    row_identifier: Any = None,
+) -> Dict[str, Any]:
+    """Kiểm tra độ dài thực tế của các column trong table DB, so sánh với độ dài input,
+
+    cắt bớt input nếu vượt quá và ghi log cảnh báo.
+    """
+    for field_name, field_val in list(row.items()):
+        if field_val is not None and field_name in col_max_lengths:
+            max_len = col_max_lengths[field_name]
+            str_val = str(field_val)
+            if len(str_val) > max_len:
+                logger.warning(
+                    f"Job {job_id_str}: Row id={row_identifier!r}, cột '{field_name}' có độ dài {len(str_val)} "
+                    f"vượt quá giới hạn cột DB ({max_len}). Đã cắt bớt còn {max_len} ký tự."
+                )
+                row[field_name] = str_val[:max_len]
+    return row
+
+
+async def _get_column_max_lengths(session: Any, repo: Any) -> Dict[str, int]:
+    """Lấy giới hạn độ dài thực tế của các cột từ table DB và Model."""
+    col_limits: Dict[str, int] = {}
+
+    # 1. Lấy từ Model definition trước
+    model = getattr(repo, "model", None)
+    if model and hasattr(model, "__table__"):
+        for col in model.__table__.columns:
+            length = getattr(col.type, "length", None)
+            if length is not None and isinstance(length, int):
+                col_limits[col.name] = length
+
+    # 2. Truy vấn trực tiếp schema metadata thực tế từ DB để đảm bảo đồng bộ
+    table_name = getattr(model, "__tablename__", None)
+    if table_name and session:
+        try:
+            def _inspect_db(sync_session):
+                insp = inspect(sync_session.connection())
+                db_cols = insp.get_columns(table_name)
+                limits = {}
+                for col in db_cols:
+                    col_name = col.get("name")
+                    col_type = col.get("type")
+                    length = getattr(col_type, "length", None)
+                    if length is not None and isinstance(length, int):
+                        limits[col_name] = length
+                return limits
+
+            db_limits = await session.run_sync(_inspect_db)
+            if db_limits:
+                col_limits.update(db_limits)
+        except Exception as e:
+            logger.warning(
+                f"Không thể kiểm tra độ dài cột trực tiếp từ DB cho bảng '{table_name}': {e}. "
+                f"Sẽ sử dụng giới hạn từ Model definition."
+            )
+
+    return col_limits
+
+
 async def _run_import(
     job_id_str: str,
     file_path: str,
@@ -79,6 +144,19 @@ async def _run_import(
 
         logger.info(f"Bắt đầu xử lý import Job {job_id_str} với file_key '{file_key}'")
 
+        # 2.1. Lấy độ dài thực tế của các column trong table DB
+        col_max_lengths: Dict[str, int] = {}
+        try:
+            async with get_worker_session() as session:
+                col_max_lengths = await _get_column_max_lengths(session, repo)
+            if col_max_lengths:
+                table_name = getattr(getattr(repo, "model", None), "__tablename__", "unknown")
+                logger.info(
+                    f"Job {job_id_str}: Đã nạp giới hạn độ dài các cột cho bảng '{table_name}': {col_max_lengths}"
+                )
+        except Exception as e:
+            logger.warning(f"Job {job_id_str}: Lỗi khi lấy schema cột DB: {e}")
+
         # 3. Stream rows in chunks
         chunk_index = 0
         for chunk in ExcelStreamer.read_rows_chunked(
@@ -90,25 +168,29 @@ async def _run_import(
             async with get_worker_session() as session:
                 logger.info(f"Job {job_id_str}: processing chunk {chunk_index} - {len(chunk)} rows")
                 for row in chunk:
-                    #
-                    action_val = row.pop(SC.K_ACTION)
-                    if action_val is None:
+                    row_id = row.get(SC.K_ID)
+                    action_val = row.pop(SC.K_ACTION, None)
+                    if action_val is None or not str(action_val).strip():
                         logger.warning(
-                            f"Job {job_id_str}: {row.get(SC.K_ID)} no action."
+                            f"Job {job_id_str}: id={row_id} no action."
                         )
                         failed_counter += 1
                         continue
+
+                    # Kiểm tra và cắt bớt input nếu độ dài vượt quá giới hạn column trong DB
+                    if col_max_lengths:
+                        _truncate_row_fields(row, col_max_lengths, job_id_str, row_identifier=row_id)
 
                     try:
                         async with session.begin_nested():
                             match str(action_val).strip().lower():
                                 case "delete":
-                                    deleted = await repo.delete_by_id(session, row.get(SC.K_ID))
+                                    deleted = await repo.delete_by_id(session, row_id)
                                     if deleted:
                                         deleted_rows += 1
                                     else:
                                         logger.warning(
-                                            f"Job {job_id_str}: delete failed — id={row.get(SC.K_ID)} không tồn tại."
+                                            f"Job {job_id_str}: delete failed — id={row_id} không tồn tại."
                                         )
                                         failed_counter += 1
                                 case "insert":
@@ -120,7 +202,7 @@ async def _run_import(
                                         inserted_rows += 1
                                 case _:
                                     logger.warning(
-                                        f"Job {job_id_str}: id={row.get(SC.K_ID)} unknown action '{action_val}'."
+                                        f"Job {job_id_str}: id={row_id} unknown action '{action_val}'."
                                     )
                                     failed_counter += 1
                     except Exception as e:

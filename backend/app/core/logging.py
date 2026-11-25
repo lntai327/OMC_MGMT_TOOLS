@@ -4,6 +4,7 @@ from logging.handlers import TimedRotatingFileHandler
 import os
 from pathlib import Path
 import sys
+import time
 from typing import Optional
 
 from app.core.config import settings
@@ -13,7 +14,7 @@ from app.core.timezone import APP_TIMEZONE
 DEFAULT_LOG_FORMAT = "%(asctime)s [%(levelname)s] [%(name)s]: %(message)s"
 DEFAULT_DATE_FORMAT = "%Y-%m-%d %H:%M:%S"
 
-_shared_file_handler: Optional[TimedRotatingFileHandler] = None
+_shared_file_handler: Optional["MultiProcessTimedRotatingFileHandler"] = None
 
 
 class TimezoneFormatter(logging.Formatter):
@@ -37,6 +38,118 @@ class TimezoneFormatter(logging.Formatter):
         return dt.strftime(df or DEFAULT_DATE_FORMAT)
 
 
+class MultiProcessTimedRotatingFileHandler(TimedRotatingFileHandler):
+    """TimedRotatingFileHandler that safely handles multi-process and multi-container logging:
+    1. Inode / Stat Watching: Checks if the file on disk was renamed or rotated by another process/container
+       (like WatchedFileHandler). If so, it immediately closes the stale stream and re-opens the active base file.
+    2. Safe Rollover: Verifies file mtime before rotating to prevent multiple processes from cascading rotations.
+    3. Auto Flush: Flushes after every log write so logs appear in app.log immediately in real-time.
+    """
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self._last_stat: Optional[os.stat_result] = None
+        if self.stream and hasattr(self.stream, "fileno"):
+            try:
+                self._last_stat = os.fstat(self.stream.fileno())
+            except Exception:
+                self._last_stat = None
+
+    def _open(self):
+        stream = super()._open()
+        if hasattr(stream, "fileno"):
+            try:
+                self._last_stat = os.fstat(stream.fileno())
+            except Exception:
+                self._last_stat = None
+        return stream
+
+    def emit(self, record: logging.LogRecord) -> None:
+        try:
+            # 1. Check if the active log file on disk has changed (rotated or recreated by another process)
+            if self.stream is not None:
+                try:
+                    sres = os.stat(self.baseFilename)
+                except FileNotFoundError:
+                    sres = None
+
+                if sres is None or (
+                    self._last_stat is not None
+                    and (sres.st_ino != self._last_stat.st_ino or sres.st_dev != self._last_stat.st_dev)
+                ):
+                    if self.stream is not None:
+                        try:
+                            self.stream.flush()
+                            self.stream.close()
+                        except Exception:
+                            pass
+                        self.stream = None
+                    self.stream = self._open()
+
+            # 2. Check if rollover interval has arrived
+            if self.shouldRollover(record):
+                self.doRollover()
+
+            super().emit(record)
+
+            # 3. Always flush stream so writes appear on host immediately
+            if self.stream and hasattr(self.stream, "flush"):
+                self.stream.flush()
+        except Exception:
+            self.handleError(record)
+
+    def doRollover(self) -> None:
+        if self.stream is not None:
+            try:
+                self.stream.flush()
+                self.stream.close()
+            except Exception:
+                pass
+            self.stream = None
+
+        currentTime = int(time.time())
+        t = self.rolloverAt - self.interval
+        if self.utc:
+            timeTuple = time.gmtime(t)
+        else:
+            timeTuple = time.localtime(t)
+        dfn = self.rotation_filename(
+            self.baseFilename + "." + time.strftime(self.suffix, timeTuple)
+        )
+
+        try:
+            if os.path.exists(self.baseFilename):
+                stat_base = os.stat(self.baseFilename)
+                # Only rotate if the current file is actually older than rollover window
+                # and another process hasn't already created a fresh file today
+                if stat_base.st_mtime < self.rolloverAt:
+                    if not os.path.exists(dfn):
+                        try:
+                            self.rotate(self.baseFilename, dfn)
+                        except (FileNotFoundError, OSError):
+                            pass
+        except Exception:
+            pass
+
+        if self.backupCount > 0:
+            try:
+                for s in self.getFilesToDelete():
+                    try:
+                        os.remove(s)
+                    except OSError:
+                        pass
+            except Exception:
+                pass
+
+        if not self.delay:
+            self.stream = self._open()
+
+        newRolloverAt = self.computeRollover(currentTime)
+        while newRolloverAt <= currentTime:
+            newRolloverAt = newRolloverAt + self.interval
+        self.rolloverAt = newRolloverAt
+
+
 def get_shared_file_handler(
     log_file_name: str = "app.log",
     when: str = "midnight",
@@ -48,8 +161,8 @@ def get_shared_file_handler(
     utc: bool = False,
     fmt: str = DEFAULT_LOG_FORMAT,
     datefmt: str = DEFAULT_DATE_FORMAT,
-) -> TimedRotatingFileHandler:
-    """Returns a shared TimedRotatingFileHandler writing to settings.LOGS_PATH/app.log."""
+) -> MultiProcessTimedRotatingFileHandler:
+    """Returns a shared MultiProcessTimedRotatingFileHandler writing to settings.LOGS_PATH/app.log."""
     global _shared_file_handler
     if _shared_file_handler is None:
         log_dir = settings.LOGS_PATH
@@ -61,7 +174,7 @@ def get_shared_file_handler(
         log_file_path = os.path.join(log_dir, log_file_name)
         formatter = TimezoneFormatter(fmt=fmt, datefmt=datefmt)
 
-        _shared_file_handler = TimedRotatingFileHandler(
+        _shared_file_handler = MultiProcessTimedRotatingFileHandler(
             log_file_path,
             when=when,
             interval=interval,

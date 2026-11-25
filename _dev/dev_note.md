@@ -1,7 +1,7 @@
 # TODO
 
 Megawan
-- sửa lỗi thời gian DB k theo múi giờ : last_update, created_at, updated_at
+- TO do: verify runtime
 - trong file đầu vào chị gán sẵn UPE nhưng nếu e làm data theo file csht_upe có gì c chủ động thêm/xoá/sửa theo nguyên tắc ation là insert/delete -> đã thực hiện
 - Megawan à, chị làm gì thì cứ để đó đi,
 khi nào xong yêu cầu cũ -> thì e đọc yêu cầu mới rồi hỏi sau

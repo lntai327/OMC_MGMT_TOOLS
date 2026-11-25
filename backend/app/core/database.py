@@ -89,16 +89,16 @@ async def get_worker_session():
         autoflush=False,
         expire_on_commit=False,
     )
-    async with session_factory() as session:
-        try:
-            yield session
-            await session.commit()
-        except Exception:
-            await session.rollback()
-            raise
-        finally:
-            await session.close()
-            await engine.dispose()
+    try:
+        async with session_factory() as session:
+            try:
+                yield session
+                await session.commit()
+            except Exception:
+                await session.rollback()
+                raise
+    finally:
+        await engine.dispose()
 
 
 async def get_db() -> AsyncGenerator[AsyncSession, None]:
