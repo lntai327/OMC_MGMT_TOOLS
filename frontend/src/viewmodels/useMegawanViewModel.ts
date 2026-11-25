@@ -15,7 +15,7 @@ export function useMegawanViewModel(onJobStarted?: (jobId: string, title: string
     page: 1,
     page_size: 20,
     sort_by: 'id',
-    sort_desc: true,
+    sort_desc: false,
   });
 
   // Filter state

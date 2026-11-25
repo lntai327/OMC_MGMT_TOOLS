@@ -4,6 +4,8 @@ import traceback
 from datetime import datetime
 from typing import Generator, List, Dict, Any, Optional
 import openpyxl
+from openpyxl.utils import get_column_letter
+from openpyxl.worksheet.datavalidation import DataValidation
 from openpyxl.worksheet.worksheet import Worksheet
 
 from app.constant import excel_struct_info as ESI
@@ -282,6 +284,19 @@ class ExcelStreamer:
                 value = item.get(key, "") if key != SC.K_ACTION else ""
                 cell = ws.cell(row=row_idx, column=col_idx, value=value)
                 cell.border = T.EX_FORMAT_THIN_BORDER
+
+        # Thêm DataValidation dropdown cho cột SC.K_ACTION (DELETE / INSERT)
+        action_col_idx = MEGAWAN_EXPORT_HEADERS.index(SC.K_ACTION) + 1
+        action_col_letter = get_column_letter(action_col_idx)
+        max_row = max(len(records) + 1, 2)
+
+        dv = DataValidation(
+            type="list",
+            formula1='"DELETE,INSERT"',
+            allow_blank=True,
+        )
+        ws.add_data_validation(dv)
+        dv.add(f"{action_col_letter}2:{action_col_letter}{max_row}")
 
         wb.save(output_path)
         wb.close()

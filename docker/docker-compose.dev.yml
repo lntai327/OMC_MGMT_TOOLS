@@ -27,7 +27,7 @@ services:
     image: omc_mgmt_tool-backend:dev
     container_name: backend
     restart: always
-    command: sh -c "alembic upgrade head && python -c 'import asyncio; from app.core.seed import seed_default_admin; asyncio.run(seed_default_admin())' && uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload"
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
     env_file:
       - ../.env
     environment:

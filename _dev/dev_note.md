@@ -74,6 +74,8 @@ docker network create "omc_network" | Out-Null
 docker build -f .\docker\postgres.Dockerfile -t omc-postgres:latest .
 docker compose --env-file .env -f .\docker\docker-compose.postgres.prod.yml up -d
 
+docker compose --env-file .env -f .\docker\docker-compose.release.yml up -d --no-deps --build frontend
+
 docker compose -f .\docker\docker-compose.release.yml build
 docker compose --env-file .env -f .\docker\docker-compose.prod.yml up -d
 
@@ -94,3 +96,10 @@ docker compose --env-file .env -f .\docker\docker-compose.release.yml up -d --no
 docker compose -f docker/docker-compose.yml logs -f celery_worker
 
 docker logs backend --tail 20
+
+#
+=AND($B2<>"", MOD(SUMPRODUCT(($I$2:$I2<>$I$1:$I1)*($I$2:$I2<>"")),2)=0)
+=AND($B2<>"", MOD(SUMPRODUCT(($I$2:$I2<>$I$1:$I1)*($I$2:$I2<>"")),2)=1)
+
+=AND($B2<>"",MOD(SUMPRODUCT(--($I$2:$I2<>$I$1:$I1)),2)=0)
+=AND($B2<>"",MOD(SUMPRODUCT(--($I$2:$I2<>$I$1:$I1)),2)=1)

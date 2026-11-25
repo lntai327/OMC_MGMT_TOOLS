@@ -195,7 +195,7 @@ Modern, distributed web application Built with **FastAPI**, **React + Vite + Tai
 ```text
 TPNV_RPT_TOOLS/
 ├── docker/                 # Docker Compose & Dockerfiles
-├── backend/                # FastAPI application, SQLAlchemy models, Celery tasks, Alembic
+├── backend/                # FastAPI application, SQLAlchemy models, Celery tasks
 ├── frontend/               # React 18, Vite, Tailwind CSS, ViewModels, Views
 ├── storage/                # Templates, uploads, and exported report files
 ├── run.ps1                 # Convenience launcher script (PowerShell)
@@ -342,7 +342,7 @@ Lệnh trên sẽ tự động:
 1. Tạo bridge network `omc_network` (nếu chưa có).
 2. Khởi động PostgreSQL stack (`docker-compose.postgres.prod.yml`).
 3. Khởi động Application stack (`docker-compose.prod.yml`).
-4. Backend tự động chạy Alembic migration để tạo cấu trúc bảng database mới nhất.
+4. Backend tự động kiểm tra và tạo bảng database (`Base.metadata.create_all`) nếu chưa tồn tại.
 5. Tự động seed tài khoản admin mặc định.
 6. Khởi động Celery Worker, Celery Beat và Web Frontend Nginx (SSL HTTPS).
 

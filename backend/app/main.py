@@ -8,6 +8,7 @@ from starlette.exceptions import HTTPException as StarletteHTTPException
 from app.api.v1.router import api_v1_router
 from app.core.config import settings
 from app.core.database import db_manager
+from app.core.init_db import init_db
 from app.core.logging import setup_app_logging, get_logger
 
 # Initialize logging to intercept Uvicorn and FastAPI logs immediately
@@ -26,6 +27,10 @@ async def lifespan(app: FastAPI):
 
     # Attach file handler to uvicorn, uvicorn.access, uvicorn.error after server starts
     setup_app_logging()
+
+    # Automatically verify/create missing database tables and seed default admin
+    await init_db()
+
     yield
     # Shutdown: Close database connections
     await db_manager.close()

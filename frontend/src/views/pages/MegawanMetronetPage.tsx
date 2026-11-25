@@ -82,6 +82,8 @@ export const MegawanMetronetPage: React.FC<MegawanPageProps> = ({
 
   const [formData, setFormData] = useState<Partial<MegawanRecord>>({});
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [detailRecord, setDetailRecord] = useState<MegawanRecord | null>(null);
+  const [isDetailModalOpen, setIsDetailModalOpen] = useState<boolean>(false);
 
   // ── Resizable columns ──────────────────────────────────────────────────────
   const [colWidths, setColWidths] = useState<number[]>(COLUMNS.map((c) => c.width));
@@ -128,7 +130,7 @@ export const MegawanMetronetPage: React.FC<MegawanPageProps> = ({
       ten_thbi: '', ip_thbi: '', port_thbi: '', upe: '',
       ip_kh: '', ip_gw: '', loai_hinh_tb: '',
       toc_do: '', loai_kenh: '',
-      trang_thai: '', 
+      trang_thai: '',
       cap_odf: '', ghi_chu: '',
       last_update: '',
     });
@@ -139,6 +141,29 @@ export const MegawanMetronetPage: React.FC<MegawanPageProps> = ({
     setSelectedRecord(record);
     setFormData({ ...record });
     setIsFormModalOpen(true);
+  };
+
+  const openDetailModal = (record: MegawanRecord) => {
+    setDetailRecord(record);
+    setIsDetailModalOpen(true);
+  };
+
+  const handleEditFromDetail = () => {
+    if (detailRecord) {
+      const rec = detailRecord;
+      setIsDetailModalOpen(false);
+      openEditModal(rec);
+    }
+  };
+
+  const handleDeleteFromDetail = async () => {
+    if (detailRecord) {
+      const success = await deleteRecord(detailRecord.id);
+      if (success) {
+        setIsDetailModalOpen(false);
+        setDetailRecord(null);
+      }
+    }
   };
 
   const handleFormSubmit = async (e: React.FormEvent) => {
@@ -295,8 +320,10 @@ export const MegawanMetronetPage: React.FC<MegawanPageProps> = ({
                 records.map((row, idx) => (
                   <tr
                     key={row.id}
-                    className={`transition-colors cursor-default ${idx % 2 === 0 ? 'bg-white' : 'bg-slate-50/60'
+                    onDoubleClick={() => openDetailModal(row)}
+                    className={`transition-colors cursor-pointer select-none ${idx % 2 === 0 ? 'bg-white' : 'bg-slate-50/60'
                       } hover:bg-brand-50/70 group`}
+                    title="Nhấp đúp chuột để xem chi tiết bản ghi"
                   >
                     <td className="py-3 px-3 overflow-hidden text-ellipsis whitespace-nowrap text-slate-700 font-medium">{row.id}</td>
                     <td className="py-3 px-3 overflow-hidden text-ellipsis whitespace-nowrap text-slate-700 font-medium">{row.ma_tb || '—'}</td>
@@ -321,14 +348,14 @@ export const MegawanMetronetPage: React.FC<MegawanPageProps> = ({
                     <td className="py-3 px-3 text-center sticky right-0 bg-white group-hover:bg-brand-50/70 transition-colors shadow-l">
                       <div className="flex items-center justify-center gap-2">
                         {isOperator && (
-                          <button onClick={() => openEditModal(row)}
+                          <button onClick={(e) => { e.stopPropagation(); openEditModal(row); }}
                             className="p-2 text-brand-600 hover:text-white hover:bg-brand-600 rounded-lg transition-colors border border-brand-200"
                             title="Chỉnh sửa">
                             <Edit2 className="w-4 h-4" />
                           </button>
                         )}
                         {isAdmin && (
-                          <button onClick={() => deleteRecord(row.id)}
+                          <button onClick={(e) => { e.stopPropagation(); deleteRecord(row.id); }}
                             className="p-2 text-rose-600 hover:text-white hover:bg-rose-600 rounded-lg transition-colors border border-rose-200"
                             title="Xóa">
                             <Trash2 className="w-4 h-4" />
@@ -360,15 +387,11 @@ export const MegawanMetronetPage: React.FC<MegawanPageProps> = ({
         onClose={() => setIsFormModalOpen(false)}
         title={selectedRecord
           ? `Chỉnh sửa bản ghi ID #${selectedRecord.id}`
-          : 'Thêm bản ghi Megawan-Metronet'}
+          : 'Thêm bản ghi'}
         maxWidth="2xl"
       >
         <form onSubmit={handleFormSubmit} className="space-y-5">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <Input label="Mã TB" value={formData.ma_tb || ''}
-              onChange={(e) => setFormData({ ...formData, ma_tb: e.target.value })} />
-            <Input label="Mã LT/Mã TB Sub" value={formData.ma_lt_ma_tb_sub || ''}
-              onChange={(e) => setFormData({ ...formData, ma_lt_ma_tb_sub: e.target.value })} />
             <div className="sm:col-span-2">
               <Input label="Tên thuê bao" value={formData.ten_th_bao || ''}
                 onChange={(e) => setFormData({ ...formData, ten_th_bao: e.target.value })} />
@@ -377,32 +400,56 @@ export const MegawanMetronetPage: React.FC<MegawanPageProps> = ({
               <Input label="Địa chỉ lắp đặt" value={formData.dia_chi || ''}
                 onChange={(e) => setFormData({ ...formData, dia_chi: e.target.value })} />
             </div>
-            <Input label="Điểm cuối" value={formData.diem_cuoi || ''}
-              onChange={(e) => setFormData({ ...formData, diem_cuoi: e.target.value })} />
-            <Input label="SVLAN/CVLAN" value={formData.svlan_cvlan || ''}
-              onChange={(e) => setFormData({ ...formData, svlan_cvlan: e.target.value })} />
+            <div className="sm:col-span-2">
+              <Input label="Điểm cuối" value={formData.diem_cuoi || ''}
+                onChange={(e) => setFormData({ ...formData, diem_cuoi: e.target.value })} />
+            </div>
+
+            <Input label="Mã TB" value={formData.ma_tb || ''}
+              onChange={(e) => setFormData({ ...formData, ma_tb: e.target.value })} />
+            <Input label="Mã LT/Mã TB Sub" value={formData.ma_lt_ma_tb_sub || ''}
+              onChange={(e) => setFormData({ ...formData, ma_lt_ma_tb_sub: e.target.value })} />
+
+            <Input label="Loại hình TB" value={formData.loai_hinh_tb || ''}
+              onChange={(e) => setFormData({ ...formData, loai_hinh_tb: e.target.value })} />
+            <Input label="Loại kênh" value={formData.loai_kenh || ''}
+              onChange={(e) => setFormData({ ...formData, loai_kenh: e.target.value })} />
+
+            <div className="sm:col-span-2">
+              <Input label="Tốc độ" value={formData.toc_do || ''}
+                onChange={(e) => setFormData({ ...formData, toc_do: e.target.value })} />
+            </div>
+
             <Input label="Tên thiết bị" value={formData.ten_thbi || ''}
               onChange={(e) => setFormData({ ...formData, ten_thbi: e.target.value })} />
+            <Input label="UPE" value={formData.upe || ''}
+              onChange={(e) => setFormData({ ...formData, upe: e.target.value })} />
+
+            <div className="sm:col-span-2">
+              <Input label="SVLAN/CVLAN" value={formData.svlan_cvlan || ''}
+                onChange={(e) => setFormData({ ...formData, svlan_cvlan: e.target.value })} />
+            </div>
+
             <Input label="IP thiết bị" value={formData.ip_thbi || ''}
               onChange={(e) => setFormData({ ...formData, ip_thbi: e.target.value })} />
             <Input label="Port thiết bị" value={formData.port_thbi || ''}
               onChange={(e) => setFormData({ ...formData, port_thbi: e.target.value })} />
-            <Input label="UPE" value={formData.upe || ''}
-              onChange={(e) => setFormData({ ...formData, upe: e.target.value })} />
+
             <Input label="IP KH" value={formData.ip_kh || ''}
               onChange={(e) => setFormData({ ...formData, ip_kh: e.target.value })} />
             <Input label="IP GW" value={formData.ip_gw || ''}
               onChange={(e) => setFormData({ ...formData, ip_gw: e.target.value })} />
-            <Input label="Loại hình TB" value={formData.loai_hinh_tb || ''}
-              onChange={(e) => setFormData({ ...formData, loai_hinh_tb: e.target.value })} />
-            <Input label="Tốc độ" value={formData.toc_do || ''}
-              onChange={(e) => setFormData({ ...formData, toc_do: e.target.value })} />
-            <Input label="Loại kênh" value={formData.loai_kenh || ''}
-              onChange={(e) => setFormData({ ...formData, loai_kenh: e.target.value })} />
-            <Input label="Trạng thái" value={formData.trang_thai || ''}
-              onChange={(e) => setFormData({ ...formData, trang_thai: e.target.value })} />
-            <Input label="Cap ODF" value={formData.cap_odf || ''}
-              onChange={(e) => setFormData({ ...formData, cap_odf: e.target.value })} />
+
+            <div className="sm:col-span-2">
+              <Input label="Cap ODF" value={formData.cap_odf || ''}
+                onChange={(e) => setFormData({ ...formData, cap_odf: e.target.value })} />
+            </div>
+
+            <div className="sm:col-span-2">
+              <Input label="Trạng thái" value={formData.trang_thai || ''}
+                onChange={(e) => setFormData({ ...formData, trang_thai: e.target.value })} />
+            </div>
+
             <div className="sm:col-span-2">
               <Input label="Ghi chú" value={formData.ghi_chu || ''}
                 onChange={(e) => setFormData({ ...formData, ghi_chu: e.target.value })} />
@@ -410,7 +457,7 @@ export const MegawanMetronetPage: React.FC<MegawanPageProps> = ({
 
           </div>
 
-          <div className="flex justify-end gap-3 pt-5 border-t-2 border-slate-100">
+          <div className="flex justify-center gap-3 pt-5 border-t-2 border-slate-100">
             <Button variant="outline" size="md" type="button" onClick={() => setIsFormModalOpen(false)}>
               Hủy bỏ
             </Button>
@@ -451,6 +498,199 @@ export const MegawanMetronetPage: React.FC<MegawanPageProps> = ({
             </Button>
           </div>
         </form>
+      </Modal>
+
+      {/* 6. MODAL XEM CHI TIẾT BẢN GHI (KHI DOUBLE CLICK VÀO DÒNG DỮ LIỆU) */}
+      <Modal
+        isOpen={isDetailModalOpen && !!detailRecord}
+        onClose={() => {
+          setIsDetailModalOpen(false);
+          setDetailRecord(null);
+        }}
+        title={`Chi tiết bản ghi #${detailRecord?.id || ''}`}
+        maxWidth="2xl"
+      >
+        {detailRecord && (
+          <div className="space-y-5">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 max-h-[60vh] overflow-y-auto pr-1">
+              <Input
+                label="ID"
+                value={detailRecord.id ?? ''}
+                readOnly
+                className="bg-slate-50 text-slate-800 cursor-default"
+              />
+              <Input
+                label="Ngày tác động"
+                value={detailRecord.last_update || '—'}
+                readOnly
+                className="bg-slate-50 text-slate-800 cursor-default"
+              />
+
+              <div className="sm:col-span-2">
+                <Input
+                  label="Tên thuê bao"
+                  value={detailRecord.ten_th_bao || '—'}
+                  readOnly
+                  className="bg-slate-50 text-slate-800 cursor-default"
+                />
+              </div>
+              <div className="sm:col-span-2">
+                <Input
+                  label="Địa chỉ lắp đặt"
+                  value={detailRecord.dia_chi || '—'}
+                  readOnly
+                  className="bg-slate-50 text-slate-800 cursor-default"
+                />
+              </div>
+              <div className="sm:col-span-2">
+                <Input
+                  label="Điểm cuối"
+                  value={detailRecord.diem_cuoi || '—'}
+                  readOnly
+                  className="bg-slate-50 text-slate-800 cursor-default"
+                />
+              </div>
+
+              <Input
+                label="Mã TB"
+                value={detailRecord.ma_tb || '—'}
+                readOnly
+                className="bg-slate-50 text-slate-800 cursor-default"
+              />
+              <Input
+                label="Mã LT/Mã TB Sub"
+                value={detailRecord.ma_lt_ma_tb_sub || '—'}
+                readOnly
+                className="bg-slate-50 text-slate-800 cursor-default"
+              />
+
+              <Input
+                label="Loại hình TB"
+                value={detailRecord.loai_hinh_tb || '—'}
+                readOnly
+                className="bg-slate-50 text-slate-800 cursor-default"
+              />
+              <Input
+                label="Loại kênh"
+                value={detailRecord.loai_kenh || '—'}
+                readOnly
+                className="bg-slate-50 text-slate-800 cursor-default"
+              />
+
+              <div className="sm:col-span-2">
+                <Input
+                  label="Tốc độ"
+                  value={detailRecord.toc_do || '—'}
+                  readOnly
+                  className="bg-slate-50 text-slate-800 cursor-default"
+                />
+              </div>
+
+              <Input
+                label="Tên thiết bị"
+                value={detailRecord.ten_thbi || '—'}
+                readOnly
+                className="bg-slate-50 text-slate-800 cursor-default"
+              />
+              <Input
+                label="UPE"
+                value={detailRecord.upe || '—'}
+                readOnly
+                className="bg-slate-50 text-slate-800 cursor-default"
+              />
+
+              <div className="sm:col-span-2">
+                <Input
+                  label="SVLAN/CVLAN"
+                  value={detailRecord.svlan_cvlan || '—'}
+                  readOnly
+                  className="bg-slate-50 text-slate-800 cursor-default"
+                />
+              </div>
+
+              <Input
+                label="IP thiết bị"
+                value={detailRecord.ip_thbi || '—'}
+                readOnly
+                className="bg-slate-50 text-slate-800 cursor-default"
+              />
+              <Input
+                label="Port thiết bị"
+                value={detailRecord.port_thbi || '—'}
+                readOnly
+                className="bg-slate-50 text-slate-800 cursor-default"
+              />
+
+              <Input
+                label="IP KH"
+                value={detailRecord.ip_kh || '—'}
+                readOnly
+                className="bg-slate-50 text-slate-800 cursor-default"
+              />
+              <Input
+                label="IP GW"
+                value={detailRecord.ip_gw || '—'}
+                readOnly
+                className="bg-slate-50 text-slate-800 cursor-default"
+              />
+
+              <div className="sm:col-span-2">
+                <Input
+                  label="Cap ODF"
+                  value={detailRecord.cap_odf || '—'}
+                  readOnly
+                  className="bg-slate-50 text-slate-800 cursor-default"
+                />
+              </div>
+
+              <div className="sm:col-span-2">
+                <Input
+                  label="Trạng thái"
+                  value={detailRecord.trang_thai || '—'}
+                  readOnly
+                  className="bg-slate-50 text-slate-800 cursor-default"
+                />
+              </div>
+
+              <div className="sm:col-span-2">
+                <Input
+                  label="Ghi chú"
+                  value={detailRecord.ghi_chu || '—'}
+                  readOnly
+                  className="bg-slate-50 text-slate-800 cursor-default"
+                />
+              </div>
+            </div>
+
+            <div className="flex justify-center items-center gap-3 pt-5 border-t-2 border-slate-100">
+              {isOperator && (
+                <Button
+                  variant="primary"
+                  size="md"
+                  type="button"
+                  onClick={handleEditFromDetail}
+                  className="font-bold bg-brand-600 hover:bg-brand-700"
+                >
+                  <Edit2 className="w-4 h-4 mr-1.5" />
+                  Chỉnh sửa
+                </Button>
+              )}
+              {isAdmin && (
+                <Button
+                  variant="danger"
+                  size="md"
+                  type="button"
+                  onClick={handleDeleteFromDetail}
+                  loading={loading}
+                  className="font-bold bg-rose-600 hover:bg-rose-700"
+                >
+                  <Trash2 className="w-4 h-4 mr-1.5" />
+                  Xóa
+                </Button>
+              )}
+            </div>
+          </div>
+        )}
       </Modal>
     </div>
   );
