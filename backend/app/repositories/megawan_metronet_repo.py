@@ -4,6 +4,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.models.megawan_metronet import MegawanMetronet
 from app.schemas.megawan_metronet import MegawanFilterParams
 from app.repositories.base_repo import BaseRepository
+from app.core.timezone import now_vietnam
 
 
 class MegawanMetronetRepo(BaseRepository[MegawanMetronet]):
@@ -147,6 +148,7 @@ class MegawanMetronetRepo(BaseRepository[MegawanMetronet]):
                     for k, v in record_dict.items():
                         if k not in skip_on_update and k in valid_cols:
                             setattr(existing, k, v)
+                    existing.updated_at = now_vietnam()
                     await session.flush()
                     return "updated"
             except (ValueError, TypeError):
@@ -180,6 +182,26 @@ class MegawanMetronetRepo(BaseRepository[MegawanMetronet]):
         except (ValueError, TypeError):
             pass
         return False
+
+
+    async def get_distinct_field_options(self, session: AsyncSession) -> dict[str, List[str]]:
+        cols = {
+            "loai_hinh_tb": MegawanMetronet.loai_hinh_tb,
+            "loai_kenh": MegawanMetronet.loai_kenh,
+            "trang_thai": MegawanMetronet.trang_thai,
+        }
+        result: dict[str, List[str]] = {}
+        for key, col in cols.items():
+            query = (
+                select(col)
+                .where(col.isnot(None), col != "")
+                .distinct()
+                .order_by(col)
+            )
+            rows = await session.execute(query)
+            distinct_values = sorted(list({str(r[0]).strip() for r in rows.all() if r[0] and str(r[0]).strip()}))
+            result[key] = distinct_values
+        return result
 
 
 megawan_metronet_repo = MegawanMetronetRepo()

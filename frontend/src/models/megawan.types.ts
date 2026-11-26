@@ -2,6 +2,9 @@ export interface MegawanRecord {
   id: number;
   last_update?: string | null;
   expected_last_update?: string | null;
+  expected_updated_at?: string | null;
+  created_at?: string | null;
+  updated_at?: string | null;
   ma_tb?: string | null;
   ma_lt_ma_tb_sub?: string | null;
   ten_th_bao?: string | null;
@@ -30,5 +33,11 @@ export interface MegawanFilterParams {
   svlan_cvlan?: string;
   ten_thbi?: string;
   all_search?: string;
+}
+
+export interface MegawanFieldOptions {
+  loai_hinh_tb: string[];
+  loai_kenh: string[];
+  trang_thai: string[];
 }
 

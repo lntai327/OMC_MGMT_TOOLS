@@ -1,6 +1,8 @@
 # Flet
 .flet/
-storage/
+
+#
+storage/certs/key.pem
 
 # IDE
 .idea/
@@ -48,4 +50,4 @@ backend/celerybeat-schedule*
 **/node_modules/
 
 # Keep
-!Báo cáo cell mất liên lạc-template.xlsx
+!template.xlsx

@@ -25,6 +25,12 @@ class MegawanBase(BaseModel):
     cap_odf: Optional[str] = None
     ghi_chu: Optional[str] = None
 
+class MegawanFieldOptions(BaseModel):
+    loai_hinh_tb: list[str] = []
+    loai_kenh: list[str] = []
+    trang_thai: list[str] = []
+
+
 class MegawanCreate(MegawanBase):
     pass
 

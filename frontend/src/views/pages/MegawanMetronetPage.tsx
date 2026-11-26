@@ -78,6 +78,7 @@ export const MegawanMetronetPage: React.FC<MegawanPageProps> = ({
     deleteRecord,
     handleImportExcel,
     handleExportExcel,
+    fieldOptions,
   } = useMegawanViewModel(onJobStarted);
 
   const [formData, setFormData] = useState<Partial<MegawanRecord>>({});
@@ -240,12 +241,14 @@ export const MegawanMetronetPage: React.FC<MegawanPageProps> = ({
               className="border-brand-300 focus:border-brand-600 font-medium" />
           </div>
           <Input label="Loại hình TB" placeholder="Loại hình..."
+            list="megawan-loai-hinh-tb-list"
             value={filters.loai_hinh_tb || ''} onChange={(e) => updateFilter('loai_hinh_tb', e.target.value)} />
           <Input label="Tên thuê bao" placeholder="Tên thuê bao..."
             value={filters.ten_th_bao || ''} onChange={(e) => updateFilter('ten_th_bao', e.target.value)} />
           <Input label="Địa chỉ lắp đặt" placeholder="Địa chỉ..."
             value={filters.dia_chi || ''} onChange={(e) => updateFilter('dia_chi', e.target.value)} />
           <Input label="Loại kênh" placeholder="Loại kênh..."
+            list="megawan-loai-kenh-list"
             value={filters.loai_kenh || ''} onChange={(e) => updateFilter('loai_kenh', e.target.value)} />
           <Input label="Tên thiết bị" placeholder="Tên thiết bị..."
             value={filters.ten_thbi || ''} onChange={(e) => updateFilter('ten_thbi', e.target.value)} />
@@ -411,8 +414,12 @@ export const MegawanMetronetPage: React.FC<MegawanPageProps> = ({
               onChange={(e) => setFormData({ ...formData, ma_lt_ma_tb_sub: e.target.value })} />
 
             <Input label="Loại hình TB" value={formData.loai_hinh_tb || ''}
+              list="megawan-loai-hinh-tb-list"
+              placeholder="Chọn hoặc nhập loại hình..."
               onChange={(e) => setFormData({ ...formData, loai_hinh_tb: e.target.value })} />
             <Input label="Loại kênh" value={formData.loai_kenh || ''}
+              list="megawan-loai-kenh-list"
+              placeholder="Chọn hoặc nhập loại kênh..."
               onChange={(e) => setFormData({ ...formData, loai_kenh: e.target.value })} />
 
             <div className="sm:col-span-2">
@@ -441,12 +448,14 @@ export const MegawanMetronetPage: React.FC<MegawanPageProps> = ({
               onChange={(e) => setFormData({ ...formData, ip_gw: e.target.value })} />
 
             <div className="sm:col-span-2">
-              <Input label="Cap ODF" value={formData.cap_odf || ''}
+              <Input label="Cáp ODF" value={formData.cap_odf || ''}
                 onChange={(e) => setFormData({ ...formData, cap_odf: e.target.value })} />
             </div>
 
             <div className="sm:col-span-2">
               <Input label="Trạng thái" value={formData.trang_thai || ''}
+                list="megawan-trang-thai-list"
+                placeholder="Chọn hoặc nhập trạng thái..."
                 onChange={(e) => setFormData({ ...formData, trang_thai: e.target.value })} />
             </div>
 
@@ -692,6 +701,25 @@ export const MegawanMetronetPage: React.FC<MegawanPageProps> = ({
           </div>
         )}
       </Modal>
+
+      {/* 7. DATALISTS CHO GỢI Ý DROPDOWN (LẤY TỪ DB) */}
+      <datalist id="megawan-loai-hinh-tb-list">
+        {fieldOptions.loai_hinh_tb.map((opt) => (
+          <option key={`opt-lh-${opt}`} value={opt} />
+        ))}
+      </datalist>
+
+      <datalist id="megawan-loai-kenh-list">
+        {fieldOptions.loai_kenh.map((opt) => (
+          <option key={`opt-lk-${opt}`} value={opt} />
+        ))}
+      </datalist>
+
+      <datalist id="megawan-trang-thai-list">
+        {fieldOptions.trang_thai.map((opt) => (
+          <option key={`opt-tt-${opt}`} value={opt} />
+        ))}
+      </datalist>
     </div>
   );
 };

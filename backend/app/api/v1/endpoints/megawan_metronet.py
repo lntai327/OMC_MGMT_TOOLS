@@ -24,6 +24,7 @@ from app.schemas.megawan_metronet import (
     MegawanFilterParams,
     MegawanResponse,
     MegawanUpdate,
+    MegawanFieldOptions,
 )
 from app.services.job_service import job_service
 from app.services.megawan_metronet_service import megawan_metronet_service
@@ -64,6 +65,14 @@ async def list_megawan_records(
         sort_desc=sort_desc,
     )
     return await megawan_metronet_service.get_records(session, filters, pagination)
+
+
+@router.get("/field-options", response_model=MegawanFieldOptions)
+async def get_megawan_field_options(
+    session: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    return await megawan_metronet_service.get_field_options(session)
 
 
 @router.get("/{record_id}", response_model=MegawanResponse)

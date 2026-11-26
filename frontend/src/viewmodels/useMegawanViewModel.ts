@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { MegawanRecord, MegawanFilterParams } from '../models/megawan.types';
+import { MegawanRecord, MegawanFilterParams, MegawanFieldOptions } from '../models/megawan.types';
 import { PaginationParams } from '../models/common.types';
 import { megawanService } from '../services/megawan.service';
 
@@ -9,6 +9,13 @@ export function useMegawanViewModel(onJobStarted?: (jobId: string, title: string
   const [totalPages, setTotalPages] = useState<number>(1);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
+
+  // Field options (DISTINCT values from DB for dropdowns)
+  const [fieldOptions, setFieldOptions] = useState<MegawanFieldOptions>({
+    loai_hinh_tb: [],
+    loai_kenh: [],
+    trang_thai: [],
+  });
 
   // Pagination state
   const [pagination, setPagination] = useState<PaginationParams>({
@@ -33,6 +40,19 @@ export function useMegawanViewModel(onJobStarted?: (jobId: string, title: string
   const [selectedRecord, setSelectedRecord] = useState<MegawanRecord | null>(null);
   const [isFormModalOpen, setIsFormModalOpen] = useState<boolean>(false);
   const [isImportModalOpen, setIsImportModalOpen] = useState<boolean>(false);
+
+  const fetchFieldOptions = useCallback(async () => {
+    try {
+      const data = await megawanService.getFieldOptions();
+      setFieldOptions(data);
+    } catch {
+      // Keep existing options if fetch fails
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchFieldOptions();
+  }, [fetchFieldOptions]);
 
   const fetchRecords = useCallback(async () => {
     setLoading(true);
@@ -85,7 +105,7 @@ export function useMegawanViewModel(onJobStarted?: (jobId: string, title: string
       if (selectedRecord?.id) {
         await megawanService.update(selectedRecord.id, {
           ...data,
-          expected_last_update: selectedRecord.last_update,
+          expected_updated_at: selectedRecord.updated_at,
         });
       } else {
         await megawanService.create(data);
@@ -93,6 +113,7 @@ export function useMegawanViewModel(onJobStarted?: (jobId: string, title: string
       setIsFormModalOpen(false);
       setSelectedRecord(null);
       await fetchRecords();
+      fetchFieldOptions();
       return true;
     } catch (err: any) {
       alert(err.response?.data?.detail || 'Có lỗi xảy ra khi lưu bản ghi.');
@@ -122,8 +143,11 @@ export function useMegawanViewModel(onJobStarted?: (jobId: string, title: string
       const res = await megawanService.importExcel(file);
       setIsImportModalOpen(false);
       if (onJobStarted) {
-        // Pass fetchRecords as completion callback so table auto-refreshes when import finishes
-        onJobStarted(res.job_id, 'Nhập dữ liệu Excel Megawan / Metronet', fetchRecords);
+        // Pass fetchRecords & fetchFieldOptions as completion callback so table and options auto-refresh when import finishes
+        onJobStarted(res.job_id, 'Nhập dữ liệu Excel Megawan / Metronet', () => {
+          fetchRecords();
+          fetchFieldOptions();
+        });
       }
     } catch (err: any) {
       alert(err.response?.data?.detail || 'Lỗi nhập dữ liệu.');
@@ -160,6 +184,8 @@ export function useMegawanViewModel(onJobStarted?: (jobId: string, title: string
     changePage,
     changePageSize,
     fetchRecords,
+    fetchFieldOptions,
+    fieldOptions,
     saveRecord,
     deleteRecord,
     handleImportExcel,

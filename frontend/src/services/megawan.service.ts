@@ -1,5 +1,5 @@
 import { apiClient } from './api.client';
-import { MegawanRecord, MegawanFilterParams } from '../models/megawan.types';
+import { MegawanRecord, MegawanFilterParams, MegawanFieldOptions } from '../models/megawan.types';
 import { PaginatedResponse, PaginationParams, MessageResponse } from '../models/common.types';
 import { JobCreateResponse } from '../models/job.types';
 
@@ -30,6 +30,11 @@ export const megawanService = {
 
   async getById(id: number): Promise<MegawanRecord> {
     const response = await apiClient.get<MegawanRecord>(`/megawan/${id}`);
+    return response.data;
+  },
+
+  async getFieldOptions(): Promise<MegawanFieldOptions> {
+    const response = await apiClient.get<MegawanFieldOptions>('/megawan/field-options');
     return response.data;
   },
 

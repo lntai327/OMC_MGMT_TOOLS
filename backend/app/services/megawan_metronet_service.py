@@ -1,3 +1,4 @@
+from datetime import timezone
 from typing import Optional, List, Dict, Any
 from sqlalchemy.ext.asyncio import AsyncSession
 from fastapi import HTTPException, status
@@ -9,6 +10,7 @@ from app.schemas.megawan_metronet import (
     MegawanUpdate,
     MegawanFilterParams,
     MegawanResponse,
+    MegawanFieldOptions,
 )
 from app.schemas.common import PaginationParams, PaginatedResponse
 
@@ -48,7 +50,10 @@ class MegawanMetronetService:
 
     async def create(self, session: AsyncSession, data: MegawanCreate) -> MegawanResponse:
         record_dict = data.model_dump(exclude_unset=True)
-        record_dict["last_update"] = now_vietnam().strftime("%Y-%m-%d %H:%M:%S")
+        now = now_vietnam()
+        record_dict["last_update"] = now.strftime("%Y-%m-%d %H:%M:%S")
+        record_dict["created_at"] = now
+        record_dict["updated_at"] = now
 
         created = await megawan_metronet_repo.create(session, record_dict)
         return MegawanResponse.model_validate(created)
@@ -58,8 +63,24 @@ class MegawanMetronetService:
         if not record:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Record not found")
 
-        # Optimistic locking check to prevent lost updates when concurrent users edit the same record
-        if (
+        # Optimistic locking check using updated_at timestamp to prevent lost updates
+        if data.expected_updated_at and record.updated_at:
+            rec_ts = (
+                record.updated_at.timestamp()
+                if record.updated_at.tzinfo
+                else record.updated_at.replace(tzinfo=timezone.utc).timestamp()
+            )
+            exp_ts = (
+                data.expected_updated_at.timestamp()
+                if data.expected_updated_at.tzinfo
+                else data.expected_updated_at.replace(tzinfo=timezone.utc).timestamp()
+            )
+            if abs(rec_ts - exp_ts) > 0.001:
+                raise HTTPException(
+                    status_code=status.HTTP_409_CONFLICT,
+                    detail="Bản ghi đã được người dùng khác cập nhật trước đó. Tải lại dữ liệu trước khi sửa đổi.",
+                )
+        elif (
             data.expected_last_update
             and record.last_update
             and record.last_update != data.expected_last_update
@@ -73,7 +94,9 @@ class MegawanMetronetService:
             exclude_unset=True,
             exclude={"expected_last_update", "expected_updated_at"}
         )
-        record_dict["last_update"] = now_vietnam().strftime("%Y-%m-%d %H:%M:%S")
+        now = now_vietnam()
+        record_dict["last_update"] = now.strftime("%Y-%m-%d %H:%M:%S")
+        record_dict["updated_at"] = now
 
         updated = await megawan_metronet_repo.update(session, record_id, record_dict)
         return MegawanResponse.model_validate(updated)
@@ -84,6 +107,10 @@ class MegawanMetronetService:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Record not found")
 
         return await megawan_metronet_repo.delete(session, record_id)
+
+    async def get_field_options(self, session: AsyncSession) -> MegawanFieldOptions:
+        data = await megawan_metronet_repo.get_distinct_field_options(session)
+        return MegawanFieldOptions(**data)
 
 
 megawan_metronet_service = MegawanMetronetService()
