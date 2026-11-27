@@ -39,5 +39,6 @@ export interface MegawanFieldOptions {
   loai_hinh_tb: string[];
   loai_kenh: string[];
   trang_thai: string[];
+  ten_thbi: string[];
 }
 

@@ -20,10 +20,6 @@ class ExcelStreamer:
 
     @staticmethod
     def convert_old_xls_to_xlsx(file_path: str) -> str:
-        """
-        Tự động chuyển đổi ngầm định dạng cũ .xls sang .xlsx (sử dụng xlrd + openpyxl).
-        Nếu file đã là .xlsx thì trả về nguyên vẹn đường dẫn.
-        """
         if not file_path.lower().endswith(".xls"):
             return file_path
 
@@ -67,7 +63,7 @@ class ExcelStreamer:
         except Exception as e:
             tb = traceback.format_exc()
             logger.error(f"convert_old_xls_to_xlsx failed for '{file_path}': {e}\n{tb}")
-            raise RuntimeError(f"Không thể chuyển đổi file .xls sang .xlsx: {e}")
+            raise RuntimeError(f"Cannot convert file .xls to .xlsx: {e}")
 
     @staticmethod
     def _find_header_idx_mapping(
@@ -131,8 +127,8 @@ class ExcelStreamer:
                 missing_cols.append(req_col)
 
         if missing_cols:
-            err_msg = f"File Excel thiếu các cột bắt buộc: {missing_cols}"
-            logger.error(f"{err_msg}. Các cột tìm thấy trong file: {list(header_idx_map.keys())}")
+            err_msg = f"File Excel missing columns: {missing_cols}"
+            logger.error(f"{err_msg}. Columns found in file: {list(header_idx_map.keys())}")
             raise RuntimeError(err_msg)
 
         data_start_row_idx = last_header_row_idx + 1
@@ -186,7 +182,7 @@ class ExcelStreamer:
 
             for sheet_name in matched_sheets:
                 ws = wb[sheet_name]
-                logger.info(f"Đang đọc dữ liệu từ sheet: '{sheet_name}'")
+                logger.info(f"Reading data from sheet: '{sheet_name}'")
 
                 # Tìm dòng header và index các cột require_col_map cho sheet này
                 req_col_idx_map, data_start_row_idx = cls._find_header_idx_mapping(

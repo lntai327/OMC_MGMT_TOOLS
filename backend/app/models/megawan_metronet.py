@@ -6,7 +6,7 @@ from app.models.base import Base, TimestampMixin
 from app.constant import constant as SC
 
 
-class MegawanMetronet(Base, TimestampMixin):
+class MegawanMetronetMd(Base, TimestampMixin):
     __tablename__ = "megawan_metronet"
 
     id: Mapped[int] = mapped_column(BigInteger, primary_key=True, autoincrement=True)
@@ -23,7 +23,7 @@ class MegawanMetronet(Base, TimestampMixin):
     upe: Mapped[Optional[str]] = mapped_column(String(500), nullable=True)
     ip_kh: Mapped[Optional[str]] = mapped_column(String(500), nullable=True)
     ip_gw: Mapped[Optional[str]] = mapped_column(String(500), nullable=True)
-    loai_hinh_tb: Mapped[Optional[str]] = mapped_column(String(500), nullable=True, index=True)
+    loai_hinh_tb: Mapped[Optional[str]] = mapped_column(String(500), nullable=True)
     toc_do: Mapped[Optional[str]] = mapped_column(String(500), nullable=True)
     loai_kenh: Mapped[Optional[str]] = mapped_column(String(500), nullable=True)
     trang_thai: Mapped[Optional[str]] = mapped_column(String(500), nullable=True)

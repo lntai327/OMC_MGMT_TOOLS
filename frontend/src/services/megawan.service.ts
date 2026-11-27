@@ -53,15 +53,19 @@ export const megawanService = {
     return response.data;
   },
 
-  async importExcel(file: File): Promise<JobCreateResponse> {
+  async importExcel(file: File, fileType: string = 'megawan_metronet'): Promise<JobCreateResponse> {
     const formData = new FormData();
     formData.append('file', file);
 
-    const response = await apiClient.post<JobCreateResponse>('/megawan/import', formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      },
-    });
+    const response = await apiClient.post<JobCreateResponse>(
+      `/megawan/import?file_type=${encodeURIComponent(fileType)}`,
+      formData,
+      {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      }
+    );
     return response.data;
   },
 

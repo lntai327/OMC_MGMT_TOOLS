@@ -116,12 +116,19 @@ async def delete_megawan_record(
 @router.post("/import", response_model=JobCreateResponse, status_code=status.HTTP_202_ACCEPTED)
 async def import_megawan_excel(
     file: UploadFile = File(...),
+    file_type: str = Query(SC.K_EXCEL_MEGAWAN, description="Excel: Megawan-Metronet hoặc Thiết bị OLT"),
     session: AsyncSession = Depends(get_db),
     current_user: User = Depends(require_roles(["admin", "operator"])),
 ):
     """Async Job endpoint accepting Excel upload and queuing Celery worker."""
     if not file.filename.endswith((".xlsx", ".xls")):
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Only Excel files (.xlsx, .xls) are allowed")
+
+    if file_type not in (SC.K_EXCEL_MEGAWAN, SC.K_EXCEL_THBI_ACCESS):
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"file '{file_type}' không hợp lệ. Chỉ chấp nhận Megawan-Metronet hoặc Thiết bị OLT",
+        )
 
     os.makedirs(settings.UPLOADS_PATH, exist_ok=True)
     temp_filename = f"upload_{uuid.uuid4()}_{file.filename}"
@@ -138,7 +145,7 @@ async def import_megawan_excel(
         session=session,
         user_id=current_user.id,
         temp_file_path=temp_file_path,
-        file_key=SC.K_EXCEL_MEGAWAN,
+        file_key=file_type,
     )
 
 

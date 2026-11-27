@@ -15,6 +15,7 @@ export function useMegawanViewModel(onJobStarted?: (jobId: string, title: string
     loai_hinh_tb: [],
     loai_kenh: [],
     trang_thai: [],
+    ten_thbi: [],
   });
 
   // Pagination state
@@ -138,13 +139,20 @@ export function useMegawanViewModel(onJobStarted?: (jobId: string, title: string
     }
   };
 
-  const handleImportExcel = async (file: File) => {
+  const handleImportExcel = async (
+    file: File,
+    fileType: 'megawan_metronet' | 'thbi_access' = 'megawan_metronet'
+  ) => {
     try {
-      const res = await megawanService.importExcel(file);
+      const res = await megawanService.importExcel(file, fileType);
       setIsImportModalOpen(false);
       if (onJobStarted) {
         // Pass fetchRecords & fetchFieldOptions as completion callback so table and options auto-refresh when import finishes
-        onJobStarted(res.job_id, 'Nhập dữ liệu Excel Megawan / Metronet', () => {
+        const title =
+          fileType === 'thbi_access'
+            ? 'Nhập dữ liệu Thiết bị OLT'
+            : 'Nhập dữ liệu Excel Megawan / Metronet';
+        onJobStarted(res.job_id, title, () => {
           fetchRecords();
           fetchFieldOptions();
         });

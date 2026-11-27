@@ -4,7 +4,7 @@ from sqlalchemy import text
 from app.core.config import settings
 from app.core.database import db_manager
 from app.models.base import Base
-import app.models  # Ensure all model declarations (User, Job, MegawanMetronet, etc.) are loaded into Base.metadata
+import app.models  # Ensure all model declarations are loaded into Base.metadata
 from app.core.seed import seed_default_admin
 
 logger = logging.getLogger("init_db")

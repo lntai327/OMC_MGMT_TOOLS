@@ -29,6 +29,7 @@ class MegawanFieldOptions(BaseModel):
     loai_hinh_tb: list[str] = []
     loai_kenh: list[str] = []
     trang_thai: list[str] = []
+    ten_thbi: list[str] = []
 
 
 class MegawanCreate(MegawanBase):

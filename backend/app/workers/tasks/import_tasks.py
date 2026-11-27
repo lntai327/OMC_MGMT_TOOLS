@@ -55,7 +55,7 @@ def _truncate_row_fields(
     row: Dict[str, Any],
     col_max_lengths: Dict[str, int],
     job_id_str: str,
-    row_identifier: Any = None,
+    row_id: Any = None,
 ) -> Dict[str, Any]:
     """Kiểm tra độ dài thực tế của các column trong table DB, so sánh với độ dài input,
 
@@ -67,8 +67,8 @@ def _truncate_row_fields(
             str_val = str(field_val)
             if len(str_val) > max_len:
                 logger.warning(
-                    f"Job {job_id_str}: Row id={row_identifier!r}, cột '{field_name}' có độ dài {len(str_val)} "
-                    f"vượt quá giới hạn cột DB ({max_len}). Đã cắt bớt còn {max_len} ký tự."
+                    f"Job {job_id_str}: Row id={row_id!r}, column '{field_name}' has length {len(str_val)} "
+                    f"exceeding DB column limit ({max_len}). Truncated to {max_len} characters."
                 )
                 row[field_name] = str_val[:max_len]
     return row
@@ -106,15 +106,15 @@ async def _get_column_max_lengths(session: Any, repo: Any) -> Dict[str, int]:
             if db_limits:
                 col_limits.update(db_limits)
         except Exception as e:
-            logger.warning(
-                f"Không thể kiểm tra độ dài cột trực tiếp từ DB cho bảng '{table_name}': {e}. "
-                f"Sẽ sử dụng giới hạn từ Model definition."
+            logger.error(
+                f"Could not inspect column lengths directly from DB for table '{table_name}': {e}. "
+                f"Will use limits from Model definition."
             )
 
     return col_limits
 
 
-async def _run_import(
+async def _run_import_by_action(
     job_id_str: str,
     file_path: str,
     file_key: str,
@@ -142,7 +142,7 @@ async def _run_import(
         repo = module_cfg["repo"]
         header_row_range = module_cfg["header_row_range"]
 
-        logger.info(f"Bắt đầu xử lý import Job {job_id_str} với file_key '{file_key}'")
+        logger.info(f"Start import Job {job_id_str} with file_key '{file_key}'")
 
         # 2.1. Lấy độ dài thực tế của các column trong table DB
         col_max_lengths: Dict[str, int] = {}
@@ -151,11 +151,11 @@ async def _run_import(
                 col_max_lengths = await _get_column_max_lengths(session, repo)
             if col_max_lengths:
                 table_name = getattr(getattr(repo, "model", None), "__tablename__", "unknown")
-                logger.info(
-                    f"Job {job_id_str}: Đã nạp giới hạn độ dài các cột cho bảng '{table_name}': {col_max_lengths}"
+                logger.debug(
+                    f"Job {job_id_str}: Got max lengths column for table '{table_name}': {col_max_lengths}"
                 )
         except Exception as e:
-            logger.warning(f"Job {job_id_str}: Lỗi khi lấy schema cột DB: {e}")
+            logger.error(f"Job {job_id_str}: Error occurred while fetching DB column schema: {e}")
 
         # 3. Stream rows in chunks
         chunk_index = 0
@@ -179,7 +179,7 @@ async def _run_import(
 
                     # Kiểm tra và cắt bớt input nếu độ dài vượt quá giới hạn column trong DB
                     if col_max_lengths:
-                        _truncate_row_fields(row, col_max_lengths, job_id_str, row_identifier=row_id)
+                        _truncate_row_fields(row, col_max_lengths, job_id_str, row_id=row_id)
 
                     try:
                         async with session.begin_nested():
@@ -190,7 +190,7 @@ async def _run_import(
                                         deleted_rows += 1
                                     else:
                                         logger.warning(
-                                            f"Job {job_id_str}: delete failed — id={row_id} không tồn tại."
+                                            f"Job {job_id_str}: delete failed — id={row_id} not found."
                                         )
                                         failed_counter += 1
                                 case "insert":
@@ -207,7 +207,7 @@ async def _run_import(
                                     failed_counter += 1
                     except Exception as e:
                         logger.error(
-                            f"Job {job_id_str}: lỗi xử lý row (action={action_val!r}): {e}"
+                            f"Job {job_id_str}: failed to process row (action={action_val!r}): {e}"
                         )
                         failed_counter += 1
 
@@ -270,7 +270,112 @@ async def _run_import(
         )
 
 
+async def _run_import_sync_by_key(
+    job_id_str: str,
+    file_path: str,
+    file_key: str,
+):
+    job_uuid = uuid.UUID(job_id_str)
+
+    async with get_worker_session() as session:
+        job = await job_repo.claim_next_pending_job(session, target_job_id=job_uuid)
+        if not job:
+            logger.warning(f"Could not claim job {job_id_str} (already claimed or cancelled).")
+            return
+
+        publish_progress_event(job_id_str, 5, "processing")
+
+    try:
+        module_cfg = get_module_config(file_key)
+        repo = module_cfg["repo"]
+        header_row_range = module_cfg.get("header_row_range", 10)
+
+        logger.info(f"Start import sync Job {job_id_str} with file_key '{file_key}'")
+
+        # 1. Đọc dữ liệu từ file Excel
+        excel_records: Dict[str, Dict[str, Any]] = {}
+        total_rows = 0
+
+        for chunk in ExcelStreamer.read_rows_chunked(
+            file_path=file_path,
+            file_key=file_key,
+            chunk_size=1000,
+            header_row_range=header_row_range,
+        ):
+            for row in chunk:
+                total_rows += 1
+                ten_ht = row.get(SC.K_TEN_HE_THONG)
+                if ten_ht is None or not str(ten_ht).strip():
+                    continue
+                key = str(ten_ht).strip()
+                excel_records[key] = {
+                    "ma_csht": str(row.get(SC.K_MA_CSHT) or "").strip(),
+                    "ten_he_thong": key,
+                    "chuc_nang": str(row.get(SC.K_CHUC_NANG) or "").strip(),
+                    "ip": str(row.get(SC.K_IP) or "").strip(),
+                    "dong": str(row.get(SC.K_DONG) or "").strip(),
+                }
+
+        publish_progress_event(job_id_str, 40, "processing")
+
+        # 2. Đồng bộ dữ liệu vào DB theo ThbiAccessMd.ten_he_thong
+        async with get_worker_session() as session:
+            stats = await repo.sync_records_by_ten_he_thong(session, excel_records)
+            await session.commit()
+
+        # 3. Hoàn thành Job
+        final_meta = {
+            "failed_counter": 0,
+            "total_excel_rows": total_rows,
+            "unique_excel_keys": len(excel_records),
+            "inserted": stats["inserted"],
+            "updated": stats["updated"],
+            "deleted": stats["deleted"],
+            "detail": (
+                f"Tổng bản ghi Excel: {total_rows}\n"
+                f"Thiết bị hợp lệ: {len(excel_records)}\n"
+                f"Đã thêm mới: {stats['inserted']}\n"
+                f"Đã cập nhật: {stats['updated']}\n"
+                f"Đã xóa khỏi DB: {stats['deleted']}"
+            ),
+        }
+
+        async with get_worker_session() as session:
+            await job_repo.complete_job(session, job_uuid, result_meta=final_meta)
+
+        publish_progress_event(job_id_str, 100, "completed", final_meta)
+        logger.info(
+            f"Job {job_id_str} ({file_key}) sync complete. "
+            f"Create: {stats['inserted']} | Update: {stats['updated']} | Delete: {stats['deleted']}"
+        )
+
+    except Exception as e:
+        error_msg = str(e)
+        logger.exception(f"Job {job_id_str} ({file_key}) failed with error: {error_msg}")
+        try:
+            async with get_worker_session() as session:
+                await job_repo.fail_job(session, job_uuid, error_msg)
+        except Exception:
+            pass
+        publish_progress_event(
+            job_id_str,
+            0,
+            "failed",
+            meta={"error": error_msg},
+            error_message=error_msg,
+        )
+
+
 @celery.task(name="app.workers.tasks.import_tasks.process_import")
 def process_import(job_id: str, file_path: str, file_key: str):
     """Generic Celery task entrypoint for Excel imports."""
-    asyncio.run(_run_import(job_id, file_path, file_key))
+    try:
+        module_cfg = get_module_config(file_key)
+        import_mode = module_cfg.get("import_mode", "action")
+    except Exception:
+        import_mode = "action"
+
+    if import_mode == "sync_by_key":
+        asyncio.run(_run_import_sync_by_key(job_id, file_path, file_key))
+    else:
+        asyncio.run(_run_import_by_action(job_id, file_path, file_key))

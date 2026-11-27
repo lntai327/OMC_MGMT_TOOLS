@@ -1,12 +1,18 @@
 from app.constant import constant as SC
 
 EXCEL_STRUCT_INFO = {
-  "excel_thbi_access": {
+  "thbi_access": {
     "sheet_info": {
       "sheet_data": {
         "key": "sheet",
-        "start_cell": "",
-        "require_col_map": {}
+        "start_cell": "Tên hệ thống",
+        "require_col_map": {
+          "Mã nhà trạm": SC.K_MA_CSHT,
+          "Địa chỉ IP": SC.K_IP,
+          "Tên hệ thống": SC.K_TEN_HE_THONG,
+          "Dòng": SC.K_DONG,
+          "Chức năng": SC.K_CHUC_NANG
+        }
       }
     },
     "hint": "ex: (abc)thiet bi access(abc).xlsx | sheet: Sheet(abc)"
@@ -15,7 +21,7 @@ EXCEL_STRUCT_INFO = {
   "megawan_metronet": {
     "sheet_info": {
       "sheet_data": {
-        "key": "",
+        "key": "data",
         "start_cell": "ACTION",
         "require_col_map": {
           "ACTION": SC.K_ACTION,
@@ -42,6 +48,6 @@ EXCEL_STRUCT_INFO = {
         }
       }
     },
-    "hint": "ex: (abc).xlsx | sheet: (abc)"
+    "hint": "ex: (abc).xlsx | sheet: data(abc)"
   },
 }

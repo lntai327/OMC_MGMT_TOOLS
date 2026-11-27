@@ -3,7 +3,6 @@ from typing import Optional, List, Dict, Any
 from sqlalchemy.ext.asyncio import AsyncSession
 from fastapi import HTTPException, status
 from app.core.timezone import format_vietnam, now_vietnam
-from app.models.megawan_metronet import MegawanMetronet
 from app.repositories.megawan_metronet_repo import megawan_metronet_repo
 from app.schemas.megawan_metronet import (
     MegawanCreate,

@@ -83,6 +83,7 @@ export const MegawanMetronetPage: React.FC<MegawanPageProps> = ({
 
   const [formData, setFormData] = useState<Partial<MegawanRecord>>({});
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [importType, setImportType] = useState<'megawan_metronet' | 'thbi_access'>('megawan_metronet');
   const [detailRecord, setDetailRecord] = useState<MegawanRecord | null>(null);
   const [isDetailModalOpen, setIsDetailModalOpen] = useState<boolean>(false);
 
@@ -175,7 +176,7 @@ export const MegawanMetronetPage: React.FC<MegawanPageProps> = ({
   const handleImportSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (selectedFile) {
-      await handleImportExcel(selectedFile);
+      await handleImportExcel(selectedFile, importType);
       setSelectedFile(null);
     }
   };
@@ -251,6 +252,7 @@ export const MegawanMetronetPage: React.FC<MegawanPageProps> = ({
             list="megawan-loai-kenh-list"
             value={filters.loai_kenh || ''} onChange={(e) => updateFilter('loai_kenh', e.target.value)} />
           <Input label="Tên thiết bị" placeholder="Tên thiết bị..."
+            list="megawan-ten-thbi-list"
             value={filters.ten_thbi || ''} onChange={(e) => updateFilter('ten_thbi', e.target.value)} />
         </div>
       </div>
@@ -428,6 +430,8 @@ export const MegawanMetronetPage: React.FC<MegawanPageProps> = ({
             </div>
 
             <Input label="Tên thiết bị" value={formData.ten_thbi || ''}
+              list="megawan-ten-thbi-list"
+              placeholder="Chọn hoặc nhập tên thiết bị..."
               onChange={(e) => setFormData({ ...formData, ten_thbi: e.target.value })} />
             <Input label="UPE" value={formData.upe || ''}
               onChange={(e) => setFormData({ ...formData, upe: e.target.value })} />
@@ -480,25 +484,73 @@ export const MegawanMetronetPage: React.FC<MegawanPageProps> = ({
       {/* 5. MODAL IMPORT FILE EXCEL */}
       <Modal
         isOpen={isImportModalOpen}
-        onClose={() => setIsImportModalOpen(false)}
-        title="Nhập dữ liệu Excel Megawan & Metronet"
+        onClose={() => {
+          setIsImportModalOpen(false);
+          setSelectedFile(null);
+        }}
+        title="Nhập dữ liệu Excel"
         maxWidth="lg"
       >
-        <form onSubmit={handleImportSubmit} className="space-y-6 text-center py-2">
-          <div className="border-3 border-dashed border-brand-300 rounded-2xl p-10 hover:border-brand-600 transition-colors bg-brand-50/40">
-            <FileSpreadsheet className="w-16 h-16 text-brand-600 mx-auto mb-4" />
-            <h4 className="text-lg font-bold text-slate-800 mb-1">
+        <form onSubmit={handleImportSubmit} className="space-y-5 text-center py-2">
+          {/* Lựa chọn loại dữ liệu import */}
+          <div className="text-left space-y-2">
+            <label className="block text-sm font-bold text-slate-700">Chọn dữ liệu nhập:</label>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <button
+                type="button"
+                onClick={() => setImportType('megawan_metronet')}
+                className={`p-3.5 rounded-xl border-2 text-left transition-all ${
+                  importType === 'megawan_metronet'
+                    ? 'border-brand-600 bg-brand-50/60 text-brand-900 shadow-sm'
+                    : 'border-slate-200 hover:border-slate-300 text-slate-700 bg-white'
+                }`}
+              >
+                <div className="font-bold text-sm flex items-center justify-between">
+                  <span>Megawan-Metronet</span>
+                  {importType === 'megawan_metronet' && (
+                    <span className="w-2.5 h-2.5 rounded-full bg-brand-600 inline-block"></span>
+                  )}
+                </div>
+                <div className="text-xs text-slate-500 mt-1">Cập nhật theo ACTION (INSERT / DELETE)</div>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setImportType('thbi_access')}
+                className={`p-3.5 rounded-xl border-2 text-left transition-all ${
+                  importType === 'thbi_access'
+                    ? 'border-brand-600 bg-brand-50/60 text-brand-900 shadow-sm'
+                    : 'border-slate-200 hover:border-slate-300 text-slate-700 bg-white'
+                }`}
+              >
+                <div className="font-bold text-sm flex items-center justify-between">
+                  <span>Thiết bị OLT</span>
+                  {importType === 'thbi_access' && (
+                    <span className="w-2.5 h-2.5 rounded-full bg-brand-600 inline-block"></span>
+                  )}
+                </div>
+                <div className="text-xs text-slate-500 mt-1">Cập nhật theo Tên hệ thống</div>
+              </button>
+            </div>
+          </div>
+
+          <div className="border-3 border-dashed border-brand-300 rounded-2xl p-8 hover:border-brand-600 transition-colors bg-brand-50/40">
+            <FileSpreadsheet className="w-14 h-14 text-brand-600 mx-auto mb-3" />
+            <h4 className="text-base font-bold text-slate-800 mb-1">
               {selectedFile ? selectedFile.name : 'Chọn file Excel (.xlsx, .xls)'}
             </h4>
             <input type="file" id="excel-file-input" accept=".xlsx, .xls" className="hidden"
               onChange={(e) => { if (e.target.files?.[0]) setSelectedFile(e.target.files[0]); }} />
             <label htmlFor="excel-file-input"
-              className="inline-flex items-center px-6 py-3 bg-brand-600 text-white rounded-xl text-base font-bold hover:bg-brand-700 cursor-pointer shadow-md shadow-brand-600/30 transition-all hover:scale-[1.02]">
+              className="inline-flex items-center px-5 py-2.5 bg-brand-600 text-white rounded-xl text-sm font-bold hover:bg-brand-700 cursor-pointer shadow-md shadow-brand-600/30 transition-all hover:scale-[1.02] mt-2">
               Chọn tệp tin Excel...
             </label>
           </div>
           <div className="flex justify-center gap-3">
-            <Button variant="outline" size="md" type="button" onClick={() => setIsImportModalOpen(false)}>
+            <Button variant="outline" size="md" type="button" onClick={() => {
+              setIsImportModalOpen(false);
+              setSelectedFile(null);
+            }}>
               Hủy
             </Button>
             <Button variant="primary" size="md" type="submit" disabled={!selectedFile}
@@ -718,6 +770,12 @@ export const MegawanMetronetPage: React.FC<MegawanPageProps> = ({
       <datalist id="megawan-trang-thai-list">
         {fieldOptions.trang_thai.map((opt) => (
           <option key={`opt-tt-${opt}`} value={opt} />
+        ))}
+      </datalist>
+
+      <datalist id="megawan-ten-thbi-list">
+        {fieldOptions.ten_thbi?.map((opt) => (
+          <option key={`opt-thbi-${opt}`} value={opt} />
         ))}
       </datalist>
     </div>
